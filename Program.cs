@@ -16,10 +16,9 @@ namespace py2cs
             Python3Parser parser = new Python3Parser(tokens);
             parser.BuildParseTree = true;
             IParseTree tree = parser.file_input();
-            ParseTreeWalker walker = new ParseTreeWalker();
-            Python3Translator translator = new Python3Translator();
-            walker.Walk(translator, tree);
-            File.WriteAllText("out.cs", translator.output.ToString());
+            CustomVisitor visitor = new CustomVisitor();
+            visitor.Visit(tree);
+            Console.WriteLine(visitor.output.ToString());
         }
     }
 }

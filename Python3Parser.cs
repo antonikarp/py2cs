@@ -172,14 +172,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_single_input; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterSingle_input(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitSingle_input(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSingle_input(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -283,14 +279,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_file_input; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterFile_input(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitFile_input(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFile_input(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -397,14 +389,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_eval_input; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterEval_input(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitEval_input(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitEval_input(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -464,14 +452,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_decorator; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDecorator(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDecorator(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDecorator(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -537,14 +521,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_decorators; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDecorators(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDecorators(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDecorators(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -602,14 +582,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_decorated; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDecorated(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDecorated(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDecorated(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -670,14 +646,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_async_funcdef; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAsync_funcdef(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAsync_funcdef(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAsync_funcdef(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -725,14 +697,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_funcdef; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterFuncdef(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitFuncdef(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFuncdef(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -791,14 +759,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_parameters; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterParameters(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitParameters(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameters(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -866,14 +830,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_typedargslist; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTypedargslist(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTypedargslist(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTypedargslist(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1175,14 +1135,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_tfpdef; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTfpdef(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTfpdef(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTfpdef(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1250,14 +1206,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_varargslist; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterVarargslist(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitVarargslist(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVarargslist(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1555,14 +1507,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_vfpdef; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterVfpdef(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitVfpdef(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVfpdef(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1601,14 +1549,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterStmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitStmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1703,14 +1647,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_simple_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterSimple_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitSimple_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSimple_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1799,14 +1739,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_small_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterSmall_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitSmall_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSmall_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1937,14 +1873,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_expr_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterExpr_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitExpr_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExpr_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2103,14 +2035,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_annassign; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAnnassign(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAnnassign(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAnnassign(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2174,14 +2102,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_testlist_star_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTestlist_star_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTestlist_star_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTestlist_star_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2319,14 +2243,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_augassign; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAugassign(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAugassign(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAugassign(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2371,14 +2291,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_del_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDel_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDel_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDel_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2414,14 +2330,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_pass_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterPass_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitPass_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitPass_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2469,14 +2381,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_flow_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterFlow_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitFlow_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFlow_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2546,14 +2454,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_break_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterBreak_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitBreak_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBreak_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2587,14 +2491,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_continue_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterContinue_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitContinue_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitContinue_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2631,14 +2531,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_return_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterReturn_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitReturn_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitReturn_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2685,14 +2581,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_yield_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterYield_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitYield_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitYield_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2733,14 +2625,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_raise_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterRaise_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitRaise_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRaise_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2802,14 +2690,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_import_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterImport_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitImport_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitImport_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2861,14 +2745,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_import_name; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterImport_name(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitImport_name(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitImport_name(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -2922,14 +2802,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_import_from; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterImport_from(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitImport_from(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitImport_from(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3056,14 +2932,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_import_as_name; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterImport_as_name(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitImport_as_name(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitImport_as_name(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3114,14 +2986,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_dotted_as_name; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDotted_as_name(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDotted_as_name(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDotted_as_name(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3177,14 +3045,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_import_as_names; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterImport_as_names(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitImport_as_names(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitImport_as_names(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3257,14 +3121,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_dotted_as_names; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDotted_as_names(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDotted_as_names(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDotted_as_names(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3322,14 +3182,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_dotted_name; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDotted_name(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDotted_name(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDotted_name(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3388,14 +3244,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_global_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterGlobal_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitGlobal_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitGlobal_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3456,14 +3308,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_nonlocal_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterNonlocal_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitNonlocal_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNonlocal_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3523,14 +3371,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_assert_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAssert_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAssert_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAssert_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3605,14 +3449,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_compound_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterCompound_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitCompound_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCompound_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3719,14 +3559,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_async_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAsync_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAsync_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAsync_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3805,14 +3641,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_if_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterIf_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitIf_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIf_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3901,14 +3733,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_while_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterWhile_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitWhile_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitWhile_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -3981,14 +3809,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_for_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterFor_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitFor_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFor_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4065,14 +3889,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_try_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTry_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTry_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTry_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4193,14 +4013,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_with_stmt; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterWith_stmt(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitWith_stmt(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitWith_stmt(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4263,14 +4079,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_with_item; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterWith_item(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitWith_item(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitWith_item(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4322,14 +4134,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_except_clause; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterExcept_clause(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitExcept_clause(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExcept_clause(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4397,14 +4205,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_suite; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterSuite(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitSuite(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSuite(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4513,14 +4317,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_test; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTest(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTest(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTest(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4605,14 +4405,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_test_nocond; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTest_nocond(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTest_nocond(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTest_nocond(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4682,14 +4478,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_lambdef; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterLambdef(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitLambdef(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLambdef(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4745,14 +4537,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_lambdef_nocond; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterLambdef_nocond(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitLambdef_nocond(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLambdef_nocond(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4810,14 +4598,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_or_test; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterOr_test(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitOr_test(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitOr_test(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4877,14 +4661,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_and_test; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAnd_test(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAnd_test(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAnd_test(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -4941,14 +4721,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_not_test; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterNot_test(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitNot_test(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNot_test(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5023,14 +4799,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comparison; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterComparison(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitComparison(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitComparison(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5090,14 +4862,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comp_op; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterComp_op(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitComp_op(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitComp_op(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5214,14 +4982,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_star_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterStar_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitStar_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStar_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5266,14 +5030,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterExpr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitExpr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExpr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5333,14 +5093,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_xor_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterXor_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitXor_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitXor_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5400,14 +5156,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_and_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAnd_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAnd_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAnd_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5471,14 +5223,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_shift_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterShift_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitShift_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitShift_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5549,14 +5297,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_arith_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterArith_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitArith_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArith_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5639,14 +5383,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_term; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTerm(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTerm(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTerm(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5712,14 +5452,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_factor; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterFactor(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitFactor(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFactor(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5796,14 +5532,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_power; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterPower(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitPower(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitPower(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5859,14 +5591,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_atom_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAtom_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAtom_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAtom_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -5949,14 +5677,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_atom; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterAtom(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitAtom(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAtom(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6147,14 +5871,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_testlist_comp; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTestlist_comp(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTestlist_comp(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTestlist_comp(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6310,14 +6030,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_trailer; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTrailer(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTrailer(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTrailer(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6401,14 +6117,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_subscriptlist; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterSubscriptlist(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitSubscriptlist(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSubscriptlist(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6481,14 +6193,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_subscript_; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterSubscript_(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitSubscript_(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSubscript_(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6569,14 +6277,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_sliceop; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterSliceop(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitSliceop(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSliceop(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6636,14 +6340,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_exprlist; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterExprlist(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitExprlist(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExprlist(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6774,14 +6474,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_testlist; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterTestlist(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitTestlist(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTestlist(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -6877,14 +6573,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_dictorsetmaker; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterDictorsetmaker(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitDictorsetmaker(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDictorsetmaker(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7176,14 +6868,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_classdef; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterClassdef(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitClassdef(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitClassdef(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7255,14 +6943,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_arglist; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterArglist(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitArglist(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArglist(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7337,14 +7021,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_argument; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterArgument(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitArgument(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArgument(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7428,14 +7108,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comp_iter; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterComp_iter(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitComp_iter(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitComp_iter(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7496,14 +7172,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comp_for; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterComp_for(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitComp_for(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitComp_for(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7570,14 +7242,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_comp_if; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterComp_if(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitComp_if(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitComp_if(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7624,14 +7292,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_encoding_decl; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterEncoding_decl(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitEncoding_decl(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitEncoding_decl(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7668,14 +7332,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_yield_expr; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterYield_expr(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitYield_expr(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitYield_expr(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -7726,14 +7386,10 @@ public partial class Python3Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_yield_arg; } }
 		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.EnterYield_arg(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IPython3ParserListener typedListener = listener as IPython3ParserListener;
-			if (typedListener != null) typedListener.ExitYield_arg(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPython3ParserVisitor<TResult> typedVisitor = visitor as IPython3ParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitYield_arg(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
