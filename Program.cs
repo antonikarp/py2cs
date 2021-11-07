@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Tree;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 namespace py2cs
 {
     class Program
@@ -10,14 +11,15 @@ namespace py2cs
         {
             string text = File.ReadAllText(args[0]);
             ICharStream stream = CharStreams.fromString(text);
-            ITokenSource lexer = new LabeledExprLexer(stream);
+            ITokenSource lexer = new Python3Lexer(stream);
             ITokenStream tokens = new CommonTokenStream(lexer);
-            LabeledExprParser parser = new LabeledExprParser(tokens);
+            Python3Parser parser = new Python3Parser(tokens);
             parser.BuildParseTree = true;
-            IParseTree tree = parser.prog();
+            IParseTree tree = parser.file_input();
             ParseTreeWalker walker = new ParseTreeWalker();
-            EvalVisitor eval = new EvalVisitor();
-            eval.Visit(tree);
+            Python3Translator translator = new Python3Translator();
+            walker.Walk(translator, tree);
+            File.WriteAllText("out.cs", translator.output.ToString());
         }
     }
 }
