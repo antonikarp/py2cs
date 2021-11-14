@@ -9,4 +9,11 @@
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="output/**" />
+    <Compile Remove="output/**" />
+    <EmbeddedResource Remove="output/**" />
+    <None Remove="output/**" />
+  </ItemGroup>
+
 </Project>
