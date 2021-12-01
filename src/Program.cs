@@ -9,7 +9,7 @@ namespace py2cs
     {
         static void Main(string[] args)
         {
-            string text = File.ReadAllText("input/example.py");
+            string text = File.ReadAllText("../../../input/example.py");
             ICharStream stream = CharStreams.fromString(text);
             ITokenSource lexer = new Python3Lexer(stream);
             ITokenStream tokens = new CommonTokenStream(lexer);
@@ -18,7 +18,7 @@ namespace py2cs
             IParseTree tree = parser.file_input();
             OutputVisitor outputVisitor = new OutputVisitor();
             outputVisitor.Visit(tree);
-            File.WriteAllText("output/example.cs", outputVisitor.output.ToString());
+            File.WriteAllText("../../../output/example.cs", outputVisitor.output.ToString());
         }
     }
 }

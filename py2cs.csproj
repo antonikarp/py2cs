@@ -14,6 +14,7 @@
     <Compile Remove="output/**" />
     <EmbeddedResource Remove="output/**" />
     <None Remove="output/**" />
+    <Compile Remove="output\example.cs" />
   </ItemGroup>
 
 </Project>
