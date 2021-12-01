@@ -132,6 +132,8 @@ $RECYCLE.BIN/
 
 _NCrunch*
 
+.vs/*
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
