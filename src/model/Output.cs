@@ -1,7 +1,7 @@
 using System.Text;
 public class Output {
 
-    public AtomExpr atomExpr;
+    public ArithExpr arithExpr;
     public int indentationLevel = 0;
     
     public string getIndentedLine(string str) {
@@ -24,7 +24,7 @@ public class Output {
         sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
         sb.AppendLine(getIndentedLine("{"));
         ++indentationLevel;
-        sb.AppendLine(getIndentedLine(atomExpr.ToString()));
+        sb.AppendLine(getIndentedLine(arithExpr.ToString()));
         --indentationLevel;
         sb.AppendLine(getIndentedLine("}"));
         --indentationLevel;

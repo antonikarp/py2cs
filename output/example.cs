@@ -3,6 +3,6 @@ class Program
 {
 	static void Main(string[] args)
 	{
-		Console.WriteLine("Hello world!");
+		2+2*5/3-5*6
 	}
 }

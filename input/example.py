@@ -1,1 +1,1 @@
-print("Hello world!")
+2+2*5/3-5*6
