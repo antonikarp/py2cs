@@ -6,28 +6,34 @@ using System.Text;
 // "print(<expr>)".
 public class FuncCallVisitor : Python3ParserBaseVisitor<FuncCall>
 {
-    public FuncCall atomExpr; 
+    public FuncCall result; 
     public override FuncCall VisitAtom_expr(Python3Parser.Atom_exprContext context)
     {
-        atomExpr = new FuncCall();
+        result = new FuncCall();
         if (context.atom().NAME() != null)
         {
             if (context.atom().NAME().ToString() == "print")
             {
-                atomExpr.functionName = "Console.WriteLine";
+                result.functionName = "Console.WriteLine";
                 if (context.ChildCount > 1)
                 {
                     FuncCallVisitor newVisitor = new FuncCallVisitor();
                     context.GetChild(1).Accept(newVisitor);
-                    atomExpr.argument = newVisitor.atomExpr.argument;
+                    result.argument = newVisitor.result.argument;
                 }
+            }
+            // We have encountered an expression.
+            else
+            {
+                result.argument = context.atom().NAME().ToString();
             }
             
         }
+        // We have encountered a string literal.
         if (context.atom().STRING().Length > 0)
         {
-            atomExpr.argument = context.atom().STRING().GetValue(0).ToString();
+            result.argument = context.atom().STRING().GetValue(0).ToString();
         }
-        return atomExpr;
+        return result;
     }
 }
