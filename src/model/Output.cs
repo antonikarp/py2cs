@@ -13,7 +13,7 @@ public class Output
         string result = "";
         for (int i = 0; i < indentationLevel; ++i)
         {
-            result += "\t";
+            result += "    ";
         }
         result += str;
         return result;
