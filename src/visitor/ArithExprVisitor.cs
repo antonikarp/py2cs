@@ -1,6 +1,8 @@
 ﻿using System;
 using Antlr4.Runtime.Misc;
 
+// This is a visitor to be used to compute an arithmetic expression.
+// It traverses the parse tree from the node 'arith_expr'.
 public class ArithExprVisitor : Python3ParserBaseVisitor<ArithExpr>
 {
     public ArithExpr result;
@@ -17,7 +19,7 @@ public class ArithExprVisitor : Python3ParserBaseVisitor<ArithExpr>
             {
                 result.tokens.Add("-");
             }
-            else
+            else // We have encountered a term.
             {
                 TermVisitor newVisitor = new TermVisitor();
                 context.GetChild(i).Accept(newVisitor);

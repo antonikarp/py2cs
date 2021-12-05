@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 
+// This class is a model for an arithmetic expression.
 public class ArithExpr
 { 
     public List<string> tokens;
