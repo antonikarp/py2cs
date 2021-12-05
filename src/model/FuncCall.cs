@@ -1,5 +1,8 @@
+// This class is a model for a function call.
+// For now, it handles the expression: "print(<expr>)".
 using System.Text;
-public class AtomExpr {
+public class FuncCall
+{
     public string functionName = "";
     public string argument = "";
 

@@ -1,5 +1,8 @@
 ﻿using Antlr4.Runtime.Misc;
 
+// This is a visitor for a term, which can be composed of different
+// factors and operators. For now, only the four basic arithmetic expressions are used:
+// +, -, *, /
 public class TermVisitor : Python3ParserBaseVisitor<Term>
 {
     public Term result;
@@ -16,7 +19,7 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
             {
                 result.tokens.Add("/");
             }
-            else
+            else // We have encountered a term.
             {
                 TermVisitor newVisitor = new TermVisitor();
                 context.GetChild(i).Accept(newVisitor);
@@ -34,7 +37,8 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
         if (context.atom().ChildCount == 1)
         {
             result.tokens.Add(context.atom().NUMBER().ToString());
-        } else if (context.atom().ChildCount == 3 &&
+        }
+        else if (context.atom().ChildCount == 3 &&
             context.atom().GetChild(0).ToString() == "(" &&
             context.atom().GetChild(2).ToString() == ")")
         {

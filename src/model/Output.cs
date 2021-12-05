@@ -1,12 +1,18 @@
 using System.Text;
-public class Output {
 
-    public ArithExpr arithExpr;
+// This class is a model for the entire program.
+// For now, it translates expressions to the Main method in the Program class.
+public class Output
+{
+
+    public VariableDecl variableDecl;
     public int indentationLevel = 0;
     
-    public string getIndentedLine(string str) {
+    public string getIndentedLine(string str)
+    {
         string result = "";
-        for (int i = 0; i < indentationLevel; ++i) {
+        for (int i = 0; i < indentationLevel; ++i)
+        {
             result += "\t";
         }
         result += str;
@@ -24,7 +30,7 @@ public class Output {
         sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
         sb.AppendLine(getIndentedLine("{"));
         ++indentationLevel;
-        sb.AppendLine(getIndentedLine(arithExpr.ToString()));
+        sb.AppendLine(getIndentedLine(variableDecl.ToString()));
         --indentationLevel;
         sb.AppendLine(getIndentedLine("}"));
         --indentationLevel;

@@ -15,8 +15,10 @@ namespace py2cs
             ITokenStream tokens = new CommonTokenStream(lexer);
             Python3Parser parser = new Python3Parser(tokens);
             parser.BuildParseTree = true;
+            // Start at the root, which is a node 'file_input'
             IParseTree tree = parser.file_input();
             OutputVisitor outputVisitor = new OutputVisitor();
+            // Translate the program.
             outputVisitor.Visit(tree);
             File.WriteAllText("../../../output/example.cs", outputVisitor.output.ToString());
         }
