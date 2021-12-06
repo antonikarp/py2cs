@@ -6,7 +6,7 @@
 public class VariableDecl
 {
     public string name;
-    public NotTest value;
+    public AndTest value;
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder();
