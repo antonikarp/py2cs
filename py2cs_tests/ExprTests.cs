@@ -167,6 +167,32 @@ class Program
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void Test7_ChainComp()
+        {
+            // Arrange
+            string input =
+@"a = (2 < 3 < 4)
+b = (2 > 3 < 4 > 5 <= 6)
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = ((2<3)&&(3<4));
+        dynamic b = ((2>3)&&(3<4)&&(4>5)&&(5<=6));
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
 
     }
 }
