@@ -54,5 +54,32 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
+        [Fact]
+        public void Test3_UnaryOps()
+        {
+            // Arrange
+            string input =
+@"var = +3
+var2 = -(-(var))
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic var = +3;
+        dynamic var2 = -(-(var));
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+
     }
 }
