@@ -6,7 +6,7 @@
 public class VariableDecl
 {
     public string name;
-    public ShiftExpr value;
+    public NotTest value;
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder();

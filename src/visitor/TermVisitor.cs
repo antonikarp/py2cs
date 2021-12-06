@@ -87,7 +87,7 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
             context.atom().GetChild(2).ToString() == ")")
         {
             result.tokens.Add("(");
-            ComparisonVisitor internalVisitor = new ComparisonVisitor();
+            NotTestVisitor internalVisitor = new NotTestVisitor();
             context.Accept(internalVisitor);
             for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
             {

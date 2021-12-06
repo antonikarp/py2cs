@@ -14,11 +14,9 @@ public class VariableDeclVisitor : Python3ParserBaseVisitor<VariableDecl>
         VariableDeclVisitor newVisitor = new VariableDeclVisitor();
         context.GetChild(0).Accept(newVisitor);
         result.name = newVisitor.result.name;
-        // The third child can be a shift expression, which can be reduced to
-        // an arithmetic expression.
-        ShiftExprVisitor shiftVisitor = new ShiftExprVisitor();
-        context.GetChild(2).Accept(shiftVisitor);
-        result.value = shiftVisitor.result;
+        NotTestVisitor notVisitor = new NotTestVisitor();
+        context.GetChild(2).Accept(notVisitor);
+        result.value = notVisitor.result;
         return result;
     }
     // A method for obtaining the variable name.
