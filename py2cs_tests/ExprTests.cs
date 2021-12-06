@@ -106,5 +106,31 @@ class Program
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void Test5_Shift()
+        {
+            // Arrange
+            string input =
+@"var1 = (1 >> 2) + (3 << 4)
+var2 = var1 >> 1
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic var1 = (1>>2)+(3<<4);
+        dynamic var2 = var1>>1;
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
     }
 }
