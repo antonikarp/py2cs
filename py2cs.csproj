@@ -125,6 +125,19 @@
     <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.pdb" />
     <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.CopyComplete" />
     <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.genruntimeconfig.cache" />
+    <Compile Remove="py2cs_tests\UnitTest1.cs" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\zh-Hans\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\ru\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\ru\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\pt-BR\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\pt-BR\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\tr\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\tr\Microsoft.TestPlatform.CoreUtilities.resources.dll" />
+    <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
+    <None Remove="py2cs_tests\obj\py2cs_tests.csproj.nuget.g.props" />
+    <None Remove="py2cs_tests\obj\project.nuget.cache" />
+    <None Remove="py2cs_tests\obj\py2cs_tests.csproj.nuget.dgspec.json" />
+    <Compile Remove="py2cs_tests\ExprTests.cs" />
   </ItemGroup>
 
 </Project>

@@ -6,6 +6,22 @@
 public class TermVisitor : Python3ParserBaseVisitor<Term>
 {
     public Term result;
+
+    public void TranslateFloorDivision()
+    {
+        for (int i = 0; i < result.tokens.Count; ++i)
+        {
+            if (result.tokens[i] == "//" && i - 1 >= 0 && i + 1 < result.tokens.Count)
+            {
+                string leftValue = result.tokens[i - 1];
+                result.tokens[i - 1] = "";
+                string rightValue = result.tokens[i + 1];
+                result.tokens[i + 1] = "";
+                result.tokens[i] = "Math.Floor(" + leftValue + "/" + rightValue + ")";
+            }
+        }
+    }
+
     public override Term VisitTerm([NotNull] Python3Parser.TermContext context)
     {
         result = new Term();
@@ -19,6 +35,14 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
             else if (curChild.ToString() == "/")
             {
                 result.tokens.Add("/");
+            }
+            else if (curChild.ToString() == "%")
+            {
+                result.tokens.Add("%");
+            }
+            else if (curChild.ToString() == "//")
+            {
+                result.tokens.Add("//");
             }
             else // We have encountered a factor.
             {
@@ -40,6 +64,7 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
                 }
             }
         }
+        TranslateFloorDivision();
         return result;
     }
     public override Term VisitAtom_expr([NotNull] Python3Parser.Atom_exprContext context)
