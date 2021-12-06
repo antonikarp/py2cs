@@ -14,9 +14,9 @@ public class VariableDeclVisitor : Python3ParserBaseVisitor<VariableDecl>
         VariableDeclVisitor newVisitor = new VariableDeclVisitor();
         context.GetChild(0).Accept(newVisitor);
         result.name = newVisitor.result.name;
-        AndTestVisitor andVisitor = new AndTestVisitor();
-        context.GetChild(2).Accept(andVisitor);
-        result.value = andVisitor.result;
+        OrTestVisitor orVisitor = new OrTestVisitor();
+        context.GetChild(2).Accept(orVisitor);
+        result.value = orVisitor.result;
         return result;
     }
     // A method for obtaining the variable name.
