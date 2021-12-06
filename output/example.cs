@@ -3,6 +3,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        dynamic var = (Math.Floor(3/5))+(Math.Floor(2/4))+(5%2);
+        dynamic var1 = (1>>2)+(3<<4);
+        dynamic var2 = var1>>1;
     }
 }
