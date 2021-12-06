@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
 
 // This is a visitor used to compute a "shift" expression composed with operators
@@ -37,6 +38,47 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(rightVisitor.result.tokens[i]);
+            }
+        }
+        // If there are more than 3 children then we have a chained comparison
+        // For instance: a < b < c
+        else
+        {
+            int numberOfExpr = context.ChildCount / 2 + 1;
+            List<ShiftExprVisitor> visitors = new List<ShiftExprVisitor>();
+            List<CompOpVisitor> opVisitors = new List<CompOpVisitor>();
+            // Invoke visitors on all of the child expressions.
+            for (int i = 0; i < numberOfExpr; ++i)
+            {
+                ShiftExprVisitor newVisitor = new ShiftExprVisitor();
+                context.GetChild(i * 2).Accept(newVisitor);
+                visitors.Add(newVisitor);
+                if (i != numberOfExpr - 1)
+                {
+                    CompOpVisitor newOpVisitor = new CompOpVisitor();
+                    context.GetChild(i * 2 + 1).Accept(newOpVisitor);
+                    opVisitors.Add(newOpVisitor);
+                }
+            }
+            // Build the conjuction of pairs of statements. For instance:
+            // a < b < c -> (a < b) && (b < c)
+            for (int i = 0; i < numberOfExpr - 1; ++i)
+            {
+                result.tokens.Add("(");
+                for (int j = 0; j < visitors[i].result.tokens.Count; ++j)
+                {
+                    result.tokens.Add(visitors[i].result.tokens[j]);
+                }
+                result.tokens.Add(opVisitors[i].result.value);
+                for (int j = 0; j < visitors[i + 1].result.tokens.Count; ++j)
+                {
+                    result.tokens.Add(visitors[i + 1].result.tokens[j]);
+                }
+                result.tokens.Add(")");
+                if (i != numberOfExpr - 2)
+                {
+                    result.tokens.Add("&&");
+                }
             }
         }
         return result;
