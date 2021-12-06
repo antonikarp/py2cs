@@ -167,6 +167,42 @@ class Program
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void Test7_LogicalOp()
+        {
+            // Arrange
+            string input =
+@"a = 1
+b = 2
+c = 3
+d = (a > b) or (b < c)
+e = (a >= b) and (b <= c)
+f = (not(a > b)) and (not(b != c))
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = 1;
+        dynamic b = 2;
+        dynamic c = 3;
+        dynamic d = (a>b)||(b<c);
+        dynamic e = (a>=b)&&(b<=c);
+        dynamic f = (!(a>b))&&(!(b!=c));
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
 
     }
+
+
 }

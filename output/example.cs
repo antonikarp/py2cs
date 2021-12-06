@@ -3,11 +3,11 @@ class Program
 {
     static void Main(string[] args)
     {
-        dynamic a = (3!=5);
-        dynamic b = (4<2);
-        dynamic c = (1>0);
-        dynamic d = (0==0);
-        dynamic e = (1>=2);
-        dynamic f = (0<=1);
+        dynamic a = 1;
+        dynamic b = 2;
+        dynamic c = 3;
+        dynamic d = (a>b)||(b<c);
+        dynamic e = (a>=b)&&(b<=c);
+        dynamic f = (!(a>b))&&(!(b!=c));
     }
 }
