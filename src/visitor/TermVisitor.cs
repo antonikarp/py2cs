@@ -11,18 +11,29 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
         result = new Term();
         for (int i = 0; i < context.ChildCount; ++i)
         {
-            if (context.GetChild(i).ToString() == "*")
+            var curChild = context.GetChild(i);
+            if (curChild.ToString() == "*")
             {
                 result.tokens.Add("*");
             }
-            else if (context.GetChild(i).ToString() == "/")
+            else if (curChild.ToString() == "/")
             {
                 result.tokens.Add("/");
             }
-            else // We have encountered a term.
+            else // We have encountered a factor.
             {
                 TermVisitor newVisitor = new TermVisitor();
-                context.GetChild(i).Accept(newVisitor);
+                // Case of the unary '+' or '-'
+                if (curChild.ChildCount == 2)
+                {
+                    result.tokens.Add(curChild.GetChild(0).ToString());
+                    curChild.GetChild(1).Accept(newVisitor);
+                }
+                // Without unary '+' or '-' - just one child.
+                else
+                {
+                    curChild.Accept(newVisitor);
+                }
                 for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                 {
                     result.tokens.Add(newVisitor.result.tokens[j]);
@@ -36,7 +47,15 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
         result = new Term();
         if (context.atom().ChildCount == 1)
         {
-            result.tokens.Add(context.atom().NUMBER().ToString());
+            // Case of numeric literal
+            if (context.atom().NUMBER() != null)
+            {
+                result.tokens.Add(context.atom().NUMBER().ToString());
+            }
+            else if (context.atom().NAME() != null)
+            {
+                result.tokens.Add(context.atom().NAME().ToString());
+            }
         }
         else if (context.atom().ChildCount == 3 &&
             context.atom().GetChild(0).ToString() == "(" &&
