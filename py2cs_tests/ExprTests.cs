@@ -132,5 +132,41 @@ class Program
             Assert.Equal(expected, actual);
         }
 
+
+        [Fact]
+        public void Test6_CompOp()
+        {
+            // Arrange
+            string input =
+@"a = (3 != 5)
+b = (4 < 2)
+c = (1 > 0)
+d = (0 == 0)
+e = (1 >= 2)
+f = (0 <= 1)
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = (3!=5);
+        dynamic b = (4<2);
+        dynamic c = (1>0);
+        dynamic d = (0==0);
+        dynamic e = (1>=2);
+        dynamic f = (0<=1);
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+
     }
 }
