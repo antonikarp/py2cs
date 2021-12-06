@@ -4,7 +4,7 @@ using py2cs;
 
 namespace py2cs_tests
 {
-    public class UnitTest1
+    public class ExprTests
     {
         [Fact]
         public void Test1_HelloWorld()
@@ -29,6 +29,7 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
+
         [Fact]
         public void Test2_VarDeclAndPrint()
         {
@@ -54,6 +55,7 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
+
         [Fact]
         public void Test3_UnaryOps()
         {
@@ -79,7 +81,30 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
-
+       
+        [Fact]
+        public void Test4_ModAndFloor()
+        {
+            // Arrange
+            string input =
+@"var = (3 // 5) + (2 // 4) + (5 % 2)
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic var = (Math.Floor(3/5))+(Math.Floor(2/4))+(5%2);
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
     }
 }
