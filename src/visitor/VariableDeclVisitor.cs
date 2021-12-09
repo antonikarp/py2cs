@@ -1,5 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
-// This is a visitor f
+
 public class VariableDeclVisitor : Python3ParserBaseVisitor<VariableDecl>
 {
     public VariableDecl result;
