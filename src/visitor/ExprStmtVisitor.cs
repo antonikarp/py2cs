@@ -8,15 +8,25 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<ExprStmt>
     public override ExprStmt VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
     {
         result = new ExprStmt();
+        // This case handles variable declaration and initializtion.
+        // Todo: handle assignment.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
         {
-            VariableDeclVisitor newVisitor = new VariableDeclVisitor();
-            context.Accept(newVisitor);
-            List<string> tokens = newVisitor.result.getTokens();
-            for (int i = 0; i < tokens.Count; ++i)
+            OrTestVisitor leftVisitor = new OrTestVisitor();
+            OrTestVisitor rightVisitor = new OrTestVisitor();
+            context.GetChild(0).Accept(leftVisitor);
+            context.GetChild(2).Accept(rightVisitor);
+            result.tokens.Add("dynamic ");
+            for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add(tokens[i]);
+                result.tokens.Add(leftVisitor.result.tokens[i]);
             }
+            result.tokens.Add(" = ");
+            for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(rightVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(";");
             return result;
 
         }
