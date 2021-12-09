@@ -7,7 +7,5 @@ class Program
         dynamic b = 2;
         dynamic c = 3;
         dynamic d = (a>b)||(b<c);
-        dynamic e = (a>=b)&&(b<=c);
-        dynamic f = (!(a>b))&&(!(b!=c));
     }
 }
