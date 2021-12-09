@@ -25,20 +25,4 @@ public class OutputVisitor : Python3ParserBaseVisitor<Output> {
         output.internalLines.Add(sb.ToString());
         return output;
     }
-    /*public override Output VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
-    {
-        if (context.ChildCount == 3)
-        {
-            VariableDeclVisitor declVisitor = new VariableDeclVisitor();
-            declVisitor.Visit(context);
-            output.internalLines.Add(declVisitor.result.ToString());
-        }
-        else if (context.ChildCount == 1)
-        {
-            FuncCallVisitor callVisitor = new FuncCallVisitor();
-            callVisitor.Visit(context);
-            output.internalLines.Add(callVisitor.result.ToString());
-        }
-        return output;
-    }*/
 }

@@ -15,6 +15,11 @@ public class StmtVisitor : Python3ParserBaseVisitor<Stmt>
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
         }
+        if (context.compound_stmt() != null)
+        {
+            IfStmtVisitor newVisitor = new IfStmtVisitor();
+            context.Accept(newVisitor);
+        }
         return result;
     }
 
