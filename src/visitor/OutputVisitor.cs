@@ -10,19 +10,17 @@ public class OutputVisitor : Python3ParserBaseVisitor<Output> {
     public override Output VisitFile_input([NotNull] Python3Parser.File_inputContext context)
     {
         output = new Output();
-        output.internalLines = new List<string>();
+        output.internalLines = new List<IndentedLine>();
         return VisitChildren(context);
     }
     public override Output VisitStmt([NotNull] Python3Parser.StmtContext context)
     {
         StmtVisitor newVisitor = new StmtVisitor();
         context.Accept(newVisitor);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+        for (int i = 0; i < newVisitor.result.lines.Count; ++i)
         {
-            sb.Append(newVisitor.result.tokens[i]);
+            output.internalLines.Add(newVisitor.result.lines[i]);
         }
-        output.internalLines.Add(sb.ToString());
         return output;
     }
 }

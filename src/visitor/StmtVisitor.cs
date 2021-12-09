@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Antlr4.Runtime.Misc;
 public class StmtVisitor : Python3ParserBaseVisitor<Stmt>
 {
@@ -10,15 +11,23 @@ public class StmtVisitor : Python3ParserBaseVisitor<Stmt>
         {
             ExprStmtVisitor newVisitor = new ExprStmtVisitor();
             context.Accept(newVisitor);
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add(newVisitor.result.tokens[i]);
+                sb.Append(newVisitor.result.tokens[i]);
             }
+            string line = sb.ToString();
+            IndentedLine onlyLine = new IndentedLine(line, 0);
+            result.lines.Add(onlyLine);
         }
         if (context.compound_stmt() != null)
         {
             IfStmtVisitor newVisitor = new IfStmtVisitor();
             context.Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.lines.Count; ++i)
+            {
+                result.lines.Add(newVisitor.result.lines[i]);
+            }
         }
         return result;
     }

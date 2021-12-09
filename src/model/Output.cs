@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // For now, it translates expressions to the Main method in the Program class.
 public class Output
 {
-    public List<string> internalLines;
+    public List<IndentedLine> internalLines;
     public int indentationLevel = 0;
     
     public string getIndentedLine(string str)
@@ -30,9 +30,17 @@ public class Output
         sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
         sb.AppendLine(getIndentedLine("{"));
         ++indentationLevel;
-        foreach (var line in internalLines)
+        foreach (var indentedLine in internalLines)
         {
-            sb.AppendLine(getIndentedLine(line));
+            sb.AppendLine(getIndentedLine(indentedLine.line));
+            if (indentedLine.increment == 1)
+            {
+                ++indentationLevel;
+            }
+            else if (indentedLine.increment == -1)
+            {
+                --indentationLevel;
+            }
         }
         --indentationLevel;
         sb.AppendLine(getIndentedLine("}"));

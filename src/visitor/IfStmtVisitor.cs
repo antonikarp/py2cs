@@ -10,8 +10,11 @@ public class IfStmtVisitor : Python3ParserBaseVisitor<IfStmt>
         result = new IfStmt();
         OrTestVisitor conditionVisitor = new OrTestVisitor();
         context.GetChild(1).Accept(conditionVisitor);
-        result.lines.Add("if (" + conditionVisitor.result.ToString() + ")");
-        result.lines.Add("{");
+        string line = "if (" + conditionVisitor.result.ToString() + ")";
+        IndentedLine conditionLine = new IndentedLine(line, 0);
+        string line2 = "{";
+        IndentedLine openingBraceLine = new IndentedLine(line2, 1);
+
         // if () { }
         if (context.ChildCount == 4)
         {
