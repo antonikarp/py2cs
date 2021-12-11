@@ -44,6 +44,21 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
             result.tokens.Add(")");
         }
 
+        // List
+        else if (context.atom().ChildCount == 3 &&
+            context.atom().GetChild(0).ToString() == "[" &&
+            context.atom().GetChild(2).ToString() == "]")
+        {
+            result.tokens.Add("new System.Collections.Generic.List<object> {");
+            TestListCompVisitor newVisitor = new TestListCompVisitor();
+            context.atom().GetChild(1).Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(newVisitor.result.tokens[i]);
+            }
+            result.tokens.Add("}");
+        }
+
         // Function call
         if (context.ChildCount == 2 && context.trailer() != null)
         {
