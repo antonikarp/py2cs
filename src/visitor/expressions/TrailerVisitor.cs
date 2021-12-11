@@ -3,6 +3,11 @@
 public class TrailerVisitor : Python3ParserBaseVisitor<Trailer>
 {
     public Trailer result;
+    public ClassState classState;
+    public TrailerVisitor(ClassState _classState)
+    {
+        classState = _classState;
+    }
     // Right now only 1 argument is handled
     public override Trailer VisitTrailer([NotNull] Python3Parser.TrailerContext context)
     {
@@ -10,7 +15,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<Trailer>
         if (context.ChildCount == 3)
         {
             result.tokens.Add("(");
-            OrTestVisitor newVisitor = new OrTestVisitor();
+            OrTestVisitor newVisitor = new OrTestVisitor(classState);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {

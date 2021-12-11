@@ -15,7 +15,7 @@ public class OutputVisitor : Python3ParserBaseVisitor<Output> {
     }
     public override Output VisitStmt([NotNull] Python3Parser.StmtContext context)
     {
-        StmtVisitor newVisitor = new StmtVisitor();
+        StmtVisitor newVisitor = new StmtVisitor(output.classState);
         context.Accept(newVisitor);
         for (int i = 0; i < newVisitor.result.lines.Count; ++i)
         {

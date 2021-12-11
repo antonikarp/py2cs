@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 class Program
 {
     static void Main(string[] args)
     {
-        dynamic a = new System.Collections.Generic.List<object> {3, 4, 5};
+        dynamic a = new List<object> {3, 4, 5};
     }
 }
