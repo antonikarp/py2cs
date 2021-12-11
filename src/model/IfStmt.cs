@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 
-// This class is a model for a statement
-public class Stmt
+// This class is a model for an if statement
+public class IfStmt
 {
     public List<IndentedLine> lines;
-    public Stmt()
+    public IfStmt()
     {
         lines = new List<IndentedLine>();
     }
@@ -18,5 +18,4 @@ public class Stmt
         }
         return sb.ToString();
     }
-
 }

@@ -3,9 +3,25 @@ class Program
 {
     static void Main(string[] args)
     {
-        dynamic a = 1;
-        dynamic b = 2;
-        dynamic c = 3;
-        dynamic d = (a>b)||(b<c);
+        if (3>5)
+        {
+            Console.WriteLine("a");
+            if (3>4)
+            {
+                Console.WriteLine("aa");
+            }
+            else
+            {
+                Console.WriteLine("ab");
+            }
+        }
+        else if (4>5)
+        {
+            Console.WriteLine("b");
+        }
+        else
+        {
+            Console.WriteLine("c");
+        }
     }
 }
