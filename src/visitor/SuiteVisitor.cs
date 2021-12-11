@@ -5,6 +5,11 @@ using Antlr4.Runtime.Misc;
 public class SuiteVisitor : Python3ParserBaseVisitor<Suite>
 {
     public Suite result;
+    public ClassState classState;
+    public SuiteVisitor(ClassState _classState)
+    {
+        classState = _classState;
+    }
     public override Suite VisitSuite([NotNull] Python3Parser.SuiteContext context)
     {
         result = new Suite();
@@ -13,7 +18,7 @@ public class SuiteVisitor : Python3ParserBaseVisitor<Suite>
             if (context.GetChild(i).GetType().ToString() == "Python3Parser+StmtContext")
              {
                 // This means that the i-th child is a stmt node
-                StmtVisitor newVisitor = new StmtVisitor();
+                StmtVisitor newVisitor = new StmtVisitor(classState);
                 context.GetChild(i).Accept(newVisitor);
                 for (int j = 0; j < newVisitor.result.lines.Count; ++j)
                 {

@@ -6,13 +6,18 @@ using Antlr4.Runtime.Misc;
 public class ShiftExprVisitor : Python3ParserBaseVisitor<ShiftExpr>
 {
     public ShiftExpr result;
+    public ClassState classState;
+    public ShiftExprVisitor(ClassState _classState)
+    {
+        classState = _classState;
+    }
     public override ShiftExpr VisitShift_expr([NotNull] Python3Parser.Shift_exprContext context)
     {
         result = new ShiftExpr();
         // If there is one child then it is an arithmetic expression.
         if (context.ChildCount == 1)
         {
-            ArithExprVisitor newVisitor = new ArithExprVisitor();
+            ArithExprVisitor newVisitor = new ArithExprVisitor(classState);
             context.GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -24,8 +29,8 @@ public class ShiftExprVisitor : Python3ParserBaseVisitor<ShiftExpr>
         // or "<expr_1> >> <expr_2>"
         else if (context.ChildCount == 3)
         {
-            ArithExprVisitor leftVisitor = new ArithExprVisitor();
-            ArithExprVisitor rightVisitor = new ArithExprVisitor();
+            ArithExprVisitor leftVisitor = new ArithExprVisitor(classState);
+            ArithExprVisitor rightVisitor = new ArithExprVisitor(classState);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)

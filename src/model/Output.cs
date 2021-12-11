@@ -5,9 +5,16 @@ using System.Collections.Generic;
 // For now, it translates expressions to the Main method in the Program class.
 public class Output
 {
+    public ClassState classState;
     public List<IndentedLine> internalLines;
     public int indentationLevel = 0;
-    
+
+    public Output()
+    {
+        classState = new ClassState();
+        internalLines = new List<IndentedLine>();
+    }
+
     public string getIndentedLine(string str)
     {
         string result = "";
@@ -23,7 +30,10 @@ public class Output
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine(getIndentedLine("using System;"));
+        foreach (var dir in classState.usingDirs)
+        {
+            sb.AppendLine(getIndentedLine("using " + dir + ";"));
+        }
         sb.AppendLine(getIndentedLine("class Program"));
         sb.AppendLine(getIndentedLine("{"));
         ++indentationLevel;

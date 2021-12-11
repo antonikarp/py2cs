@@ -2,6 +2,11 @@
 public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
 {
     public AtomExpr result;
+    public ClassState classState;
+    public AtomExprVisitor(ClassState _classState)
+    {
+        classState = _classState;
+    }
     public override AtomExpr VisitAtom_expr([NotNull] Python3Parser.Atom_exprContext context)
     {
         result = new AtomExpr();
@@ -35,7 +40,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
             context.atom().GetChild(2).ToString() == ")")
         {
             result.tokens.Add("(");
-            OrTestVisitor internalVisitor = new OrTestVisitor();
+            OrTestVisitor internalVisitor = new OrTestVisitor(classState);
             context.Accept(internalVisitor);
             for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
             {
@@ -44,10 +49,27 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
             result.tokens.Add(")");
         }
 
+        // List
+        else if (context.atom().ChildCount == 3 &&
+            context.atom().GetChild(0).ToString() == "[" &&
+            context.atom().GetChild(2).ToString() == "]")
+        {
+            // We use List from System.Collections.Generic
+            classState.usingDirs.Add("System.Collections.Generic");
+            result.tokens.Add("new List<object> {");
+            TestListCompVisitor newVisitor = new TestListCompVisitor(classState);
+            context.atom().GetChild(1).Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(newVisitor.result.tokens[i]);
+            }
+            result.tokens.Add("}");
+        }
+
         // Function call
         if (context.ChildCount == 2 && context.trailer() != null)
         {
-            TrailerVisitor newVisitor = new TrailerVisitor();
+            TrailerVisitor newVisitor = new TrailerVisitor(classState);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {

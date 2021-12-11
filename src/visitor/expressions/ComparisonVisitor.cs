@@ -7,13 +7,18 @@ using Antlr4.Runtime.Misc;
 public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
 {
     public Comparison result;
+    public ClassState classState;
+    public ComparisonVisitor(ClassState _classState)
+    {
+        classState = _classState;
+    }
     public override Comparison VisitComparison([NotNull] Python3Parser.ComparisonContext context)
     {
         result = new Comparison();
         // If there is one child then it is shift expression.
         if (context.ChildCount == 1)
         {
-            ShiftExprVisitor newVisitor = new ShiftExprVisitor();
+            ShiftExprVisitor newVisitor = new ShiftExprVisitor(classState);
             context.GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -24,15 +29,15 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
         // a comparison operator (<, >, <=, >=, ==, !=)
         else if (context.ChildCount == 3)
         {
-            ShiftExprVisitor leftVisitor = new ShiftExprVisitor();
-            ShiftExprVisitor rightVisitor = new ShiftExprVisitor();
+            ShiftExprVisitor leftVisitor = new ShiftExprVisitor(classState);
+            ShiftExprVisitor rightVisitor = new ShiftExprVisitor(classState);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(leftVisitor.result.tokens[i]);
             }
-            CompOpVisitor opVisitor = new CompOpVisitor();
+            CompOpVisitor opVisitor = new CompOpVisitor(classState);
             context.GetChild(1).Accept(opVisitor);
             result.tokens.Add(opVisitor.result.value);
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
@@ -50,12 +55,12 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
             // Invoke visitors on all of the child expressions.
             for (int i = 0; i < numberOfExpr; ++i)
             {
-                ShiftExprVisitor newVisitor = new ShiftExprVisitor();
+                ShiftExprVisitor newVisitor = new ShiftExprVisitor(classState);
                 context.GetChild(i * 2).Accept(newVisitor);
                 visitors.Add(newVisitor);
                 if (i != numberOfExpr - 1)
                 {
-                    CompOpVisitor newOpVisitor = new CompOpVisitor();
+                    CompOpVisitor newOpVisitor = new CompOpVisitor(classState);
                     context.GetChild(i * 2 + 1).Accept(newOpVisitor);
                     opVisitors.Add(newOpVisitor);
                 }

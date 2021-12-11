@@ -5,6 +5,11 @@ using System.Collections.Generic;
 public class ExprStmtVisitor : Python3ParserBaseVisitor<ExprStmt>
 {
     public ExprStmt result;
+    public ClassState classState;
+    public ExprStmtVisitor(ClassState _classState)
+    {
+        classState = _classState;
+    }
     public override ExprStmt VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
     {
         result = new ExprStmt();
@@ -12,8 +17,8 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<ExprStmt>
         // Todo: handle assignment.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
         {
-            OrTestVisitor leftVisitor = new OrTestVisitor();
-            OrTestVisitor rightVisitor = new OrTestVisitor();
+            OrTestVisitor leftVisitor = new OrTestVisitor(classState);
+            OrTestVisitor rightVisitor = new OrTestVisitor(classState);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             result.tokens.Add("dynamic ");
@@ -32,7 +37,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<ExprStmt>
         }
         else if (context.ChildCount == 1)
         {
-            OrTestVisitor newVisitor = new OrTestVisitor();
+            OrTestVisitor newVisitor = new OrTestVisitor(classState);
             context.Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
