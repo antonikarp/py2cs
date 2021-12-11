@@ -1,4 +1,10 @@
-a = 1
-b = 2
-c = 3
-d = (a > b) or (b < c)
+if 3 > 5:
+	print("a")
+	if 3 > 4:
+		print("aa")
+	else:
+		print("ab")
+elif 4 > 5:
+	print("b")
+else:
+	print("c")

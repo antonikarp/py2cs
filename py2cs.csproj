@@ -352,6 +352,9 @@
     <None Remove="py2cs_tests\obj\Release\net5.0\py2cs_tests.csproj.CopyComplete" />
     <None Remove="py2cs_tests\obj\Release\net5.0\py2cs_tests.genruntimeconfig.cache" />
     <None Remove="py2cs_tests\obj\Release\net5.0\py2cs_tests.csproj.FileListAbsolute.txt" />
+    <Compile Remove="py2cs_tests\ExprTests.cs" />
+    <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
+    <Compile Remove="py2cs_tests\StmtTests.cs" />
   </ItemGroup>
 
 </Project>

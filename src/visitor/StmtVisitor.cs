@@ -20,7 +20,7 @@ public class StmtVisitor : Python3ParserBaseVisitor<Stmt>
             IndentedLine onlyLine = new IndentedLine(line, 0);
             result.lines.Add(onlyLine);
         }
-        if (context.compound_stmt() != null)
+        else if (context.compound_stmt() != null)
         {
             IfStmtVisitor newVisitor = new IfStmtVisitor();
             context.Accept(newVisitor);

@@ -9,13 +9,16 @@ public class SuiteVisitor : Python3ParserBaseVisitor<Suite>
     {
         result = new Suite();
         for (int i = 0; i < context.ChildCount; ++i)
-        {   
-            if (context.GetChild(i).ToString() != "\t" &&
-                context.GetChild(i).ToString() != "\n") {
+        {
+            if (context.GetChild(i).GetType().ToString() == "Python3Parser+StmtContext")
+             {
                 // This means that the i-th child is a stmt node
                 StmtVisitor newVisitor = new StmtVisitor();
                 context.GetChild(i).Accept(newVisitor);
-                result.lines.Add(newVisitor.result.ToString());
+                for (int j = 0; j < newVisitor.result.lines.Count; ++j)
+                {
+                    result.lines.Add(newVisitor.result.lines[j]);
+                }
             }
 
         }
