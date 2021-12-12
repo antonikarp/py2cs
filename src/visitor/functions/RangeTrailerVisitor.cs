@@ -1,0 +1,119 @@
+﻿using Antlr4.Runtime.Misc;
+public class RangeTrailerVisitor : Python3ParserBaseVisitor<RangeTrailer>
+{
+    public RangeTrailer result;
+    public ClassState classState;
+    public RangeTrailerVisitor(ClassState _classState)
+    {
+        classState = _classState;
+    }
+    public override RangeTrailer VisitTrailer([NotNull] Python3Parser.TrailerContext context)
+    {
+        result = new RangeTrailer();
+        // We have a form: range(a)
+        // 0 - start value, a - stop value, 1 - step value
+        // This is translated to Enumerable.Range(0, 3);
+        if (context.arglist().ChildCount == 1)
+        {
+            result.tokens.Add("(");
+            result.tokens.Add("0");
+            result.tokens.Add(",");
+            OrTestVisitor newVisitor = new OrTestVisitor(classState);
+            context.arglist().GetChild(0).Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(newVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(")");
+        }
+        // We have a form: range(a, b)
+        // a - start value, b - stop value, 1 - step value
+        // This is translated to Enumerable.Range(a, (b)-(a));
+        if (context.arglist().ChildCount == 3)
+        {
+            result.tokens.Add("(");
+            OrTestVisitor firstArgVisitor = new OrTestVisitor(classState);
+            context.arglist().GetChild(0).Accept(firstArgVisitor);
+            OrTestVisitor secondArgVisitor = new OrTestVisitor(classState);
+            context.arglist().GetChild(2).Accept(secondArgVisitor);
+            for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(firstArgVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(",");
+            result.tokens.Add("(");
+            for (int j = 0; j < secondArgVisitor.result.tokens.Count; ++j)
+            {
+                result.tokens.Add(secondArgVisitor.result.tokens[j]);
+            }
+            result.tokens.Add(")");
+            result.tokens.Add("-");
+            result.tokens.Add("(");
+            for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(firstArgVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(")");
+            result.tokens.Add(")");
+        }
+        // We have a form: range(a, b, c)
+        // a - start value, b - stop value, c - step value
+        // This is translated to Enumerable.Range(a, ((b)-(a))/(c)).Select(x => x * (c))
+        // We need to add System.Linq to the using directives in ClassState
+        if (context.arglist().ChildCount == 5)
+        {
+            result.tokens.Add("(");
+            OrTestVisitor firstArgVisitor = new OrTestVisitor(classState);
+            context.arglist().GetChild(0).Accept(firstArgVisitor);
+            OrTestVisitor secondArgVisitor = new OrTestVisitor(classState);
+            context.arglist().GetChild(2).Accept(secondArgVisitor);
+            OrTestVisitor thirdArgVisitor = new OrTestVisitor(classState);
+            context.arglist().GetChild(4).Accept(thirdArgVisitor);
+            classState.usingDirs.Add("System.Linq");
+            for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(firstArgVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(",");
+            result.tokens.Add("(");
+            result.tokens.Add("(");
+            for (int j = 0; j < secondArgVisitor.result.tokens.Count; ++j)
+            {
+                result.tokens.Add(secondArgVisitor.result.tokens[j]);
+            }
+            result.tokens.Add(")");
+            result.tokens.Add("-");
+            result.tokens.Add("(");
+            for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(firstArgVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(")");
+            result.tokens.Add(")");
+            result.tokens.Add("/");
+            result.tokens.Add("(");
+            for (int k = 0; k < thirdArgVisitor.result.tokens.Count; ++k)
+            {
+                result.tokens.Add(thirdArgVisitor.result.tokens[k]);
+            }
+            result.tokens.Add(")");
+            result.tokens.Add(")");
+            result.tokens.Add(".");
+            result.tokens.Add("Select(x => x*");
+            result.tokens.Add("(");
+            for (int k = 0; k < thirdArgVisitor.result.tokens.Count; ++k)
+            {
+                result.tokens.Add(thirdArgVisitor.result.tokens[k]);
+            }
+            result.tokens.Add(")");
+            result.tokens.Add(")");
+
+        }
+        
+        return base.VisitTrailer(context);
+    }
+
+
+
+
+}

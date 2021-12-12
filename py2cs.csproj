@@ -359,6 +359,12 @@
     <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
     <Compile Remove="py2cs_tests\VarTests.cs" />
     <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
+    <None Remove="src\visitor\functions\" />
+    <None Remove="src\model\functions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="src\visitor\functions\" />
+    <Folder Include="src\model\functions\" />
+  </ItemGroup>
 </Project>
