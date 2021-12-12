@@ -23,6 +23,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
             }
             else if (context.atom().NAME() != null)
             {
+                // In this case (print) the arguments are not changing, we can use the standard
+                // TrailerVisitor for arguments.
                 if (context.atom().NAME().ToString() == "print")
                 {
                     result.tokens.Add("Console.WriteLine");
