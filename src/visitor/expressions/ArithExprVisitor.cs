@@ -6,10 +6,10 @@ using Antlr4.Runtime.Misc;
 public class ArithExprVisitor : Python3ParserBaseVisitor<ArithExpr>
 {
     public ArithExpr result;
-    public ClassState classState;
-    public ArithExprVisitor(ClassState _classState)
+    public State state;
+    public ArithExprVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override ArithExpr VisitArith_expr([NotNull] Python3Parser.Arith_exprContext context)
     {
@@ -26,7 +26,7 @@ public class ArithExprVisitor : Python3ParserBaseVisitor<ArithExpr>
             }
             else // We have encountered a term.
             {
-                TermVisitor newVisitor = new TermVisitor(classState);
+                TermVisitor newVisitor = new TermVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                 {

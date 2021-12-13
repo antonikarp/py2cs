@@ -7,10 +7,10 @@ using Antlr4.Runtime.Misc;
 public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
 {
     public Comparison result;
-    public ClassState classState;
-    public ComparisonVisitor(ClassState _classState)
+    public State state;
+    public ComparisonVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override Comparison VisitComparison([NotNull] Python3Parser.ComparisonContext context)
     {
@@ -18,7 +18,7 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
         // If there is one child then it is shift expression.
         if (context.ChildCount == 1)
         {
-            ShiftExprVisitor newVisitor = new ShiftExprVisitor(classState);
+            ShiftExprVisitor newVisitor = new ShiftExprVisitor(state);
             context.GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -29,15 +29,15 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
         // a comparison operator (<, >, <=, >=, ==, !=)
         else if (context.ChildCount == 3)
         {
-            ShiftExprVisitor leftVisitor = new ShiftExprVisitor(classState);
-            ShiftExprVisitor rightVisitor = new ShiftExprVisitor(classState);
+            ShiftExprVisitor leftVisitor = new ShiftExprVisitor(state);
+            ShiftExprVisitor rightVisitor = new ShiftExprVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(leftVisitor.result.tokens[i]);
             }
-            CompOpVisitor opVisitor = new CompOpVisitor(classState);
+            CompOpVisitor opVisitor = new CompOpVisitor(state);
             context.GetChild(1).Accept(opVisitor);
             result.tokens.Add(opVisitor.result.value);
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
@@ -55,12 +55,12 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<Comparison>
             // Invoke visitors on all of the child expressions.
             for (int i = 0; i < numberOfExpr; ++i)
             {
-                ShiftExprVisitor newVisitor = new ShiftExprVisitor(classState);
+                ShiftExprVisitor newVisitor = new ShiftExprVisitor(state);
                 context.GetChild(i * 2).Accept(newVisitor);
                 visitors.Add(newVisitor);
                 if (i != numberOfExpr - 1)
                 {
-                    CompOpVisitor newOpVisitor = new CompOpVisitor(classState);
+                    CompOpVisitor newOpVisitor = new CompOpVisitor(state);
                     context.GetChild(i * 2 + 1).Accept(newOpVisitor);
                     opVisitors.Add(newOpVisitor);
                 }

@@ -3,10 +3,10 @@
 public class FactorVisitor : Python3ParserBaseVisitor<Factor>
 {
     public Factor result;
-    public ClassState classState;
-    public FactorVisitor(ClassState _classState)
+    public State state;
+    public FactorVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override Factor VisitFactor([NotNull] Python3Parser.FactorContext context)
     {
@@ -16,7 +16,7 @@ public class FactorVisitor : Python3ParserBaseVisitor<Factor>
         if (context.ChildCount == 2)
         {
             result.tokens.Add(context.GetChild(0).ToString());
-            FactorVisitor newVisitor = new FactorVisitor(classState);
+            FactorVisitor newVisitor = new FactorVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
             {
@@ -25,7 +25,7 @@ public class FactorVisitor : Python3ParserBaseVisitor<Factor>
         }
         else
         {
-            AtomExprVisitor newVisitor = new AtomExprVisitor(classState);
+            AtomExprVisitor newVisitor = new AtomExprVisitor(state);
             context.GetChild(0).Accept(newVisitor);
             for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
             {

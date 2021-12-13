@@ -7,10 +7,10 @@ using Antlr4.Runtime.Misc;
 public class OrTestVisitor : Python3ParserBaseVisitor<OrTest>
 {
     public OrTest result;
-    public ClassState classState;
-    public OrTestVisitor(ClassState _classState)
+    public State state;
+    public OrTestVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override OrTest VisitOr_test([NotNull] Python3Parser.Or_testContext context)
     {
@@ -18,7 +18,7 @@ public class OrTestVisitor : Python3ParserBaseVisitor<OrTest>
         // If there is one child then it is a 'and_test' node.
         if (context.ChildCount == 1)
         {
-            AndTestVisitor newVisitor = new AndTestVisitor(classState);
+            AndTestVisitor newVisitor = new AndTestVisitor(state);
             context.GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -30,8 +30,8 @@ public class OrTestVisitor : Python3ParserBaseVisitor<OrTest>
         // <expr2> is the third child.
         else if (context.ChildCount == 3)
         {
-            AndTestVisitor leftVisitor = new AndTestVisitor(classState);
-            AndTestVisitor rightVisitor = new AndTestVisitor(classState);
+            AndTestVisitor leftVisitor = new AndTestVisitor(state);
+            AndTestVisitor rightVisitor = new AndTestVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)

@@ -3,10 +3,10 @@
 public class CompOpVisitor : Python3ParserBaseVisitor<CompOp>
 {
     public CompOp result;
-    public ClassState classState;
-    public CompOpVisitor(ClassState _classState)
+    public State state;
+    public CompOpVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override CompOp VisitComp_op([NotNull] Python3Parser.Comp_opContext context)
     {

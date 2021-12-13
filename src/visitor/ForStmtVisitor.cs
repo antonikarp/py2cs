@@ -5,10 +5,10 @@ using Antlr4.Runtime.Misc;
 public class ForStmtVisitor : Python3ParserBaseVisitor<ForStmt>
 {
     public ForStmt result;
-    public ClassState classState;
-    public ForStmtVisitor(ClassState _classState)
+    public State state;
+    public ForStmtVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override ForStmt VisitFor_stmt([NotNull] Python3Parser.For_stmtContext context)
     {
@@ -27,9 +27,9 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<ForStmt>
         // (single expr and single test). We also do not currently consider an
         // "else" block.
 
-        ShiftExprVisitor iteratorVisitor = new ShiftExprVisitor(classState);
+        ShiftExprVisitor iteratorVisitor = new ShiftExprVisitor(state);
         context.GetChild(1).Accept(iteratorVisitor);
-        OrTestVisitor collectionVisitor = new OrTestVisitor(classState);
+        OrTestVisitor collectionVisitor = new OrTestVisitor(state);
         context.GetChild(3).Accept(collectionVisitor);
         string line = "foreach (dynamic " + iteratorVisitor.result.ToString() + " in " +
             collectionVisitor.result.ToString() + ")";
@@ -37,7 +37,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<ForStmt>
         result.lines.Add(newLine);
         IndentedLine openingBraceLine = new IndentedLine("{", 1);
         result.lines.Add(openingBraceLine);
-        SuiteVisitor suiteVisitor = new SuiteVisitor(classState);
+        SuiteVisitor suiteVisitor = new SuiteVisitor(state);
         context.GetChild(5).Accept(suiteVisitor);
         int n = suiteVisitor.result.lines.Count;
         for (int j = 0; j < n - 1; ++j)

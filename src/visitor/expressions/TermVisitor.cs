@@ -6,10 +6,10 @@
 public class TermVisitor : Python3ParserBaseVisitor<Term>
 {
     public Term result;
-    public ClassState classState;
-    public TermVisitor(ClassState _classState)
+    public State state;
+    public TermVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public void TranslateFloorDivision()
     {
@@ -50,7 +50,7 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
             }
             else // We have encountered a factor.
             {
-                FactorVisitor newVisitor = new FactorVisitor(classState);
+                FactorVisitor newVisitor = new FactorVisitor(state);
                 curChild.Accept(newVisitor); 
                 for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                 {
