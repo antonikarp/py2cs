@@ -1,11 +1,12 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 
-// This class is a model for a expression composed with the logical operator "or".
-public class OrTest
+// This class is a model for a list of tokens comprising some part of a single
+// line of code.
+public class LineModel
 {
     public List<string> tokens;
-    public OrTest()
+    public LineModel()
     {
         tokens = new List<string>();
     }

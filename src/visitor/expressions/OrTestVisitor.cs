@@ -4,17 +4,17 @@ using Antlr4.Runtime.Misc;
 // This is a visitor used to compute an expression created with a logical operator "or".
 // It traverses the parse tree from the node "or_test".
 
-public class OrTestVisitor : Python3ParserBaseVisitor<OrTest>
+public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public OrTest result;
+    public LineModel result;
     public State state;
     public OrTestVisitor(State _state)
     {
         state = _state;
     }
-    public override OrTest VisitOr_test([NotNull] Python3Parser.Or_testContext context)
+    public override LineModel VisitOr_test([NotNull] Python3Parser.Or_testContext context)
     {
-        result = new OrTest();
+        result = new LineModel();
         // If there is one child then it is a 'and_test' node.
         if (context.ChildCount == 1)
         {

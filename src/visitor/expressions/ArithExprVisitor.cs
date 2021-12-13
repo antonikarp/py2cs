@@ -3,17 +3,17 @@ using Antlr4.Runtime.Misc;
 
 // This is a visitor to be used to compute an arithmetic expression.
 // It traverses the parse tree from the node 'arith_expr'.
-public class ArithExprVisitor : Python3ParserBaseVisitor<ArithExpr>
+public class ArithExprVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public ArithExpr result;
+    public LineModel result;
     public State state;
     public ArithExprVisitor(State _state)
     {
         state = _state;
     }
-    public override ArithExpr VisitArith_expr([NotNull] Python3Parser.Arith_exprContext context)
+    public override LineModel VisitArith_expr([NotNull] Python3Parser.Arith_exprContext context)
     {
-        result = new ArithExpr();
+        result = new LineModel();
         for (int i = 0; i < context.ChildCount; ++i)
         {
             if (context.GetChild(i).ToString() == "+")

@@ -3,17 +3,17 @@ using Antlr4.Runtime.Misc;
 
 // This is a visitor used to compute an expression created with a logical operator "not".
 // It traverses the parse tree from the node "not_test".
-public class NotTestVisitor : Python3ParserBaseVisitor<NotTest>
+public class NotTestVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public NotTest result;
+    public LineModel result;
     public State state;
     public NotTestVisitor(State _state)
     {
         state = _state;
     }
-    public override NotTest VisitNot_test([NotNull] Python3Parser.Not_testContext context)
+    public override LineModel VisitNot_test([NotNull] Python3Parser.Not_testContext context)
     {
-        result = new NotTest();
+        result = new LineModel();
         // If there is one child then it is a 'comparison' node.
         if (context.ChildCount == 1)
         {

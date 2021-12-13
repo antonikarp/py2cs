@@ -1,4 +1,4 @@
-﻿public class CompOp
+﻿public class TokenModel
 {
     public string value;
 }

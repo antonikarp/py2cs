@@ -1,17 +1,18 @@
 ﻿using Antlr4.Runtime.Misc;
 
-public class TrailerVisitor : Python3ParserBaseVisitor<Trailer>
+// This visitor is used in translating function calls.
+public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public Trailer result;
+    public LineModel result;
     public State state;
     public TrailerVisitor(State _state)
     {
         state = _state;
     }
     // Right now only 1 argument is handled
-    public override Trailer VisitTrailer([NotNull] Python3Parser.TrailerContext context)
+    public override LineModel VisitTrailer([NotNull] Python3Parser.TrailerContext context)
     {
-        result = new Trailer();
+        result = new LineModel();
         if (context.ChildCount == 3)
         {
             result.tokens.Add("(");

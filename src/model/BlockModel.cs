@@ -1,11 +1,12 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 
-// This class is a model for a statement
-public class Stmt
+// This class is a model for a list of indented lines comprising some part
+// of a block of code.
+public class BlockModel
 {
     public List<IndentedLine> lines;
-    public Stmt()
+    public BlockModel()
     {
         lines = new List<IndentedLine>();
     }
@@ -18,5 +19,4 @@ public class Stmt
         }
         return sb.ToString();
     }
-
 }

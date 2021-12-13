@@ -2,17 +2,17 @@
 using Antlr4.Runtime.Misc;
 
 // This is a visitor to be used to compute a "while" loop
-public class WhileStmtVisitor : Python3ParserBaseVisitor<WhileStmt>
+public class WhileStmtVisitor : Python3ParserBaseVisitor<BlockModel>
 {
-    public WhileStmt result;
+    public BlockModel result;
     public State state;
     public WhileStmtVisitor(State _state)
     {
         state = _state;
     }
-    public override WhileStmt VisitWhile_stmt([NotNull] Python3Parser.While_stmtContext context)
+    public override BlockModel VisitWhile_stmt([NotNull] Python3Parser.While_stmtContext context)
     {
-        result = new WhileStmt();
+        result = new BlockModel();
         // We assume that we have the following children:
 
         // Child 0: "while"

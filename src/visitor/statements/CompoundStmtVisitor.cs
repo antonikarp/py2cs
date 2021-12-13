@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Text;
 using Antlr4.Runtime.Misc;
-public class CompoundStmtVisitor : Python3ParserBaseVisitor<CompoundStmt>
+public class CompoundStmtVisitor : Python3ParserBaseVisitor<BlockModel>
 {
-    public CompoundStmt result;
+    public BlockModel result;
     public State state;
     public CompoundStmtVisitor(State _state)
     {
         state = _state;
     }
-    public override CompoundStmt VisitCompound_stmt([NotNull] Python3Parser.Compound_stmtContext context)
+    public override BlockModel VisitCompound_stmt([NotNull] Python3Parser.Compound_stmtContext context)
     {
-        result = new CompoundStmt();
+        result = new BlockModel();
         if (context.if_stmt() != null)
         {
             IfStmtVisitor newVisitor = new IfStmtVisitor(state);

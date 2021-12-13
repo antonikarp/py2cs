@@ -2,17 +2,17 @@
 using Antlr4.Runtime.Misc;
 
 // This is a visitor to be used to compute an if statement
-public class IfStmtVisitor : Python3ParserBaseVisitor<IfStmt>
+public class IfStmtVisitor : Python3ParserBaseVisitor<BlockModel>
 {
-    public IfStmt result;
+    public BlockModel result;
     public State state;
     public IfStmtVisitor(State _state)
     {
         state = _state;
     }
-    public override IfStmt VisitIf_stmt([NotNull] Python3Parser.If_stmtContext context)
+    public override BlockModel VisitIf_stmt([NotNull] Python3Parser.If_stmtContext context)
     {
-        result = new IfStmt();
+        result = new BlockModel();
         int n = context.ChildCount;
         int i = 0;
         while (i < n)

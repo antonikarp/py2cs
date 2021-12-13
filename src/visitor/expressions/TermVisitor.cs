@@ -3,9 +3,9 @@
 // This is a visitor for a term, which can be composed of different
 // factors and operators. For now, only the four basic arithmetic expressions are used:
 // +, -, *, /
-public class TermVisitor : Python3ParserBaseVisitor<Term>
+public class TermVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public Term result;
+    public LineModel result;
     public State state;
     public TermVisitor(State _state)
     {
@@ -26,9 +26,9 @@ public class TermVisitor : Python3ParserBaseVisitor<Term>
         }
     }
 
-    public override Term VisitTerm([NotNull] Python3Parser.TermContext context)
+    public override LineModel VisitTerm([NotNull] Python3Parser.TermContext context)
     {
-        result = new Term();
+        result = new LineModel();
         for (int i = 0; i < context.ChildCount; ++i)
         {
             var curChild = context.GetChild(i);

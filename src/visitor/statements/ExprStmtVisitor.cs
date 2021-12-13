@@ -2,17 +2,17 @@
 using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
 
-public class ExprStmtVisitor : Python3ParserBaseVisitor<ExprStmt>
+public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public ExprStmt result;
+    public LineModel result;
     public State state;
     public ExprStmtVisitor(State _state)
     {
         state = _state;
     }
-    public override ExprStmt VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
+    public override LineModel VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
     {
-        result = new ExprStmt();
+        result = new LineModel();
         // This case handles variable declaration and initializtion.
         // Todo: handle assignment.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
