@@ -225,6 +225,31 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
+        [Fact]
+        public void Test9_Assignment()
+        {
+            // Arrange
+            string input =
+@"a = 3
+a = 5
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = 3;
+        a = 5;
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
 
     }

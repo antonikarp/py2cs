@@ -4,17 +4,17 @@ using Antlr4.Runtime.Misc;
 public class CompoundStmtVisitor : Python3ParserBaseVisitor<CompoundStmt>
 {
     public CompoundStmt result;
-    public ClassState classState;
-    public CompoundStmtVisitor(ClassState _classState)
+    public State state;
+    public CompoundStmtVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override CompoundStmt VisitCompound_stmt([NotNull] Python3Parser.Compound_stmtContext context)
     {
         result = new CompoundStmt();
         if (context.if_stmt() != null)
         {
-            IfStmtVisitor newVisitor = new IfStmtVisitor(classState);
+            IfStmtVisitor newVisitor = new IfStmtVisitor(state);
             context.if_stmt().Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.lines.Count; ++i)
             {
@@ -23,7 +23,7 @@ public class CompoundStmtVisitor : Python3ParserBaseVisitor<CompoundStmt>
         }
         if (context.for_stmt() != null)
         {
-            ForStmtVisitor newVisitor = new ForStmtVisitor(classState);
+            ForStmtVisitor newVisitor = new ForStmtVisitor(state);
             context.for_stmt().Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.lines.Count; ++i)
             {

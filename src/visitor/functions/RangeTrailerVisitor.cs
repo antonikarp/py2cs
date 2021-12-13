@@ -2,10 +2,10 @@
 public class RangeTrailerVisitor : Python3ParserBaseVisitor<RangeTrailer>
 {
     public RangeTrailer result;
-    public ClassState classState;
-    public RangeTrailerVisitor(ClassState _classState)
+    public State state;
+    public RangeTrailerVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override RangeTrailer VisitTrailer([NotNull] Python3Parser.TrailerContext context)
     {
@@ -18,7 +18,7 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<RangeTrailer>
             result.tokens.Add("(");
             result.tokens.Add("0");
             result.tokens.Add(",");
-            OrTestVisitor newVisitor = new OrTestVisitor(classState);
+            OrTestVisitor newVisitor = new OrTestVisitor(state);
             context.arglist().GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -32,9 +32,9 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<RangeTrailer>
         if (context.arglist().ChildCount == 3)
         {
             result.tokens.Add("(");
-            OrTestVisitor firstArgVisitor = new OrTestVisitor(classState);
+            OrTestVisitor firstArgVisitor = new OrTestVisitor(state);
             context.arglist().GetChild(0).Accept(firstArgVisitor);
-            OrTestVisitor secondArgVisitor = new OrTestVisitor(classState);
+            OrTestVisitor secondArgVisitor = new OrTestVisitor(state);
             context.arglist().GetChild(2).Accept(secondArgVisitor);
             for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
             {
@@ -59,17 +59,17 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<RangeTrailer>
         // We have a form: range(a, b, c)
         // a - start value, b - stop value, c - step value
         // This is translated to Enumerable.Range(a, ((b)-(a))/(c)).Select(x => x * (c))
-        // We need to add System.Linq to the using directives in ClassState
+        // We need to add System.Linq to the using directives in State
         if (context.arglist().ChildCount == 5)
         {
             result.tokens.Add("(");
-            OrTestVisitor firstArgVisitor = new OrTestVisitor(classState);
+            OrTestVisitor firstArgVisitor = new OrTestVisitor(state);
             context.arglist().GetChild(0).Accept(firstArgVisitor);
-            OrTestVisitor secondArgVisitor = new OrTestVisitor(classState);
+            OrTestVisitor secondArgVisitor = new OrTestVisitor(state);
             context.arglist().GetChild(2).Accept(secondArgVisitor);
-            OrTestVisitor thirdArgVisitor = new OrTestVisitor(classState);
+            OrTestVisitor thirdArgVisitor = new OrTestVisitor(state);
             context.arglist().GetChild(4).Accept(thirdArgVisitor);
-            classState.usingDirs.Add("System.Linq");
+            state.classState.usingDirs.Add("System.Linq");
             for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(firstArgVisitor.result.tokens[i]);

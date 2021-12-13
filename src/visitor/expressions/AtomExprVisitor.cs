@@ -2,10 +2,10 @@
 public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
 {
     public AtomExpr result;
-    public ClassState classState;
-    public AtomExprVisitor(ClassState _classState)
+    public State state;
+    public AtomExprVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override AtomExpr VisitAtom_expr([NotNull] Python3Parser.Atom_exprContext context)
     {
@@ -34,7 +34,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
                     if (context.trailer() != null)
                     {
                         result.tokens.Add("Enumerable.Range");
-                        RangeTrailerVisitor newVisitor = new RangeTrailerVisitor(classState);
+                        RangeTrailerVisitor newVisitor = new RangeTrailerVisitor(state);
                         context.GetChild(1).Accept(newVisitor);
                         for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                         {
@@ -56,7 +56,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
             context.atom().GetChild(2).ToString() == ")")
         {
             result.tokens.Add("(");
-            OrTestVisitor internalVisitor = new OrTestVisitor(classState);
+            OrTestVisitor internalVisitor = new OrTestVisitor(state);
             context.Accept(internalVisitor);
             for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
             {
@@ -71,9 +71,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
             context.atom().GetChild(2).ToString() == "]")
         {
             // We use List from System.Collections.Generic
-            classState.usingDirs.Add("System.Collections.Generic");
+            state.classState.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new List<object> {");
-            TestListCompVisitor newVisitor = new TestListCompVisitor(classState);
+            TestListCompVisitor newVisitor = new TestListCompVisitor(state);
             context.atom().GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -85,7 +85,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
         // Function call
         if (context.ChildCount == 2 && context.trailer() != null)
         {
-            TrailerVisitor newVisitor = new TrailerVisitor(classState);
+            TrailerVisitor newVisitor = new TrailerVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {

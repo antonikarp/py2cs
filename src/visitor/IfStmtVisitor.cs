@@ -5,10 +5,10 @@ using Antlr4.Runtime.Misc;
 public class IfStmtVisitor : Python3ParserBaseVisitor<IfStmt>
 {
     public IfStmt result;
-    public ClassState classState;
-    public IfStmtVisitor(ClassState _classState)
+    public State state;
+    public IfStmtVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override IfStmt VisitIf_stmt([NotNull] Python3Parser.If_stmtContext context)
     {
@@ -20,7 +20,7 @@ public class IfStmtVisitor : Python3ParserBaseVisitor<IfStmt>
             if (context.GetChild(i).ToString() == "if")
             {
                 ++i;
-                OrTestVisitor conditionVisitor = new OrTestVisitor(classState);
+                OrTestVisitor conditionVisitor = new OrTestVisitor(state);
                 context.GetChild(i).Accept(conditionVisitor);
                 string line = "if (" + conditionVisitor.result.ToString() + ")";
                 IndentedLine newLine = new IndentedLine(line, 0);
@@ -31,7 +31,7 @@ public class IfStmtVisitor : Python3ParserBaseVisitor<IfStmt>
             else if (context.GetChild(i).ToString() == "elif")
             {
                 ++i;
-                OrTestVisitor conditionVisitor = new OrTestVisitor(classState);
+                OrTestVisitor conditionVisitor = new OrTestVisitor(state);
                 context.GetChild(i).Accept(conditionVisitor);
                 string line = "else if (" + conditionVisitor.result.ToString() + ")";
                 IndentedLine newLine = new IndentedLine(line, 0);
@@ -50,7 +50,7 @@ public class IfStmtVisitor : Python3ParserBaseVisitor<IfStmt>
             else if (context.GetChild(i).ToString() == ":")
             {
                 ++i;
-                SuiteVisitor newVisitor = new SuiteVisitor(classState);
+                SuiteVisitor newVisitor = new SuiteVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 int m = newVisitor.result.lines.Count;
                 for (int j = 0; j < m - 1; ++j)

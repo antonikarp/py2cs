@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
 using System.Text;
@@ -15,7 +15,7 @@ public class OutputVisitor : Python3ParserBaseVisitor<Output> {
     }
     public override Output VisitStmt([NotNull] Python3Parser.StmtContext context)
     {
-        StmtVisitor newVisitor = new StmtVisitor(output.classState);
+        StmtVisitor newVisitor = new StmtVisitor(output.state);
         context.Accept(newVisitor);
         for (int i = 0; i < newVisitor.result.lines.Count; ++i)
         {

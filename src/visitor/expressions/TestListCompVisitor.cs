@@ -3,10 +3,10 @@
 public class TestListCompVisitor : Python3ParserBaseVisitor<TestListComp>
 {
     public TestListComp result;
-    public ClassState classState;
-    public TestListCompVisitor(ClassState _classState)
+    public State state;
+    public TestListCompVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override TestListComp VisitTestlist_comp([NotNull] Python3Parser.Testlist_compContext context)
     {
@@ -19,7 +19,7 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<TestListComp>
             }
             else
             {
-                OrTestVisitor newVisitor = new OrTestVisitor(classState);
+                OrTestVisitor newVisitor = new OrTestVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                 {

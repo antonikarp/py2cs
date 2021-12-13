@@ -6,10 +6,10 @@ using Antlr4.Runtime.Misc;
 public class NotTestVisitor : Python3ParserBaseVisitor<NotTest>
 {
     public NotTest result;
-    public ClassState classState;
-    public NotTestVisitor(ClassState _classState)
+    public State state;
+    public NotTestVisitor(State _state)
     {
-        classState = _classState;
+        state = _state;
     }
     public override NotTest VisitNot_test([NotNull] Python3Parser.Not_testContext context)
     {
@@ -17,7 +17,7 @@ public class NotTestVisitor : Python3ParserBaseVisitor<NotTest>
         // If there is one child then it is a 'comparison' node.
         if (context.ChildCount == 1)
         {
-            ComparisonVisitor newVisitor = new ComparisonVisitor(classState);
+            ComparisonVisitor newVisitor = new ComparisonVisitor(state);
             context.GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -29,7 +29,7 @@ public class NotTestVisitor : Python3ParserBaseVisitor<NotTest>
         else if (context.ChildCount == 2)
         {
             result.tokens.Add("!");
-            NotTestVisitor newVisitor = new NotTestVisitor(classState);
+            NotTestVisitor newVisitor = new NotTestVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
