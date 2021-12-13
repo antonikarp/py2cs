@@ -15,12 +15,22 @@ public class CompoundStmtVisitor : Python3ParserBaseVisitor<CompoundStmt>
         if (context.if_stmt() != null)
         {
             IfStmtVisitor newVisitor = new IfStmtVisitor(classState);
-            context.Accept(newVisitor);
+            context.if_stmt().Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.lines.Count; ++i)
             {
                 result.lines.Add(newVisitor.result.lines[i]);
             }
         }
+        if (context.for_stmt() != null)
+        {
+            ForStmtVisitor newVisitor = new ForStmtVisitor(classState);
+            context.for_stmt().Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.lines.Count; ++i)
+            {
+                result.lines.Add(newVisitor.result.lines[i]);
+            }
+        }
+            
         return result;
     }
 
