@@ -21,7 +21,15 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<ExprStmt>
             OrTestVisitor rightVisitor = new OrTestVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
-            result.tokens.Add("dynamic ");
+            // Check if the variable has been already declared.
+            if (!state.funcState.declVarNames.Contains(leftVisitor.result.ToString()))
+            {
+                // This is a case of declaration with initialization.
+                result.tokens.Add("dynamic ");
+                state.funcState.declVarNames.Add(leftVisitor.result.ToString());
+            }
+            // The following instructions are common for both cases (declaration
+            // with initialization, assignment)
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(leftVisitor.result.tokens[i]);
