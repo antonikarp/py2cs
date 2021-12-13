@@ -95,7 +95,48 @@ class Program
             Assert.Equal(expected, actual);
 
         }
+        [Fact]
+        public void Test3_WhileLoop()
+        {
+            // Arrange
+            string input =
+@"a = 5
+while a > 0:
+	if a == 2:
+		print(a)
+	else:
+		print(a + 1)
+	a = a - 1
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = 5;
+        while (a>0)
+        {
+            if (a==2)
+            {
+                Console.WriteLine(a);
+            }
+            else
+            {
+                Console.WriteLine(a+1);
+            }
+            a = a-1;
+        }
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
 
+        }
 
     }
 }

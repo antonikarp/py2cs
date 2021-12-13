@@ -14,7 +14,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<ForStmt>
     {
         result = new ForStmt();
 
-        // We assume that we have a following children:
+        // We assume that we have the following children:
 
         // Child 0: "for"
         // Child 1: exprlist
@@ -44,7 +44,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<ForStmt>
         {
             result.lines.Add(suiteVisitor.result.lines[j]);
         }
-        // Indent back after the last line
+        // Indent back after the last line.
         IndentedLine lastLine = new IndentedLine(suiteVisitor.result.lines[n - 1].line, -1);
         result.lines.Add(lastLine);
         // End the block with a closing brace.

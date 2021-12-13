@@ -15,7 +15,7 @@ public class StmtVisitor : Python3ParserBaseVisitor<Stmt>
         if (context.simple_stmt() != null)
         {
             ExprStmtVisitor newVisitor = new ExprStmtVisitor(state);
-            context.Accept(newVisitor);
+            context.simple_stmt().Accept(newVisitor);
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -28,7 +28,7 @@ public class StmtVisitor : Python3ParserBaseVisitor<Stmt>
         else if (context.compound_stmt() != null)
         {
             CompoundStmtVisitor newVisitor = new CompoundStmtVisitor(state);
-            context.Accept(newVisitor);
+            context.compound_stmt().Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.lines.Count; ++i)
             {
                 result.lines.Add(newVisitor.result.lines[i]);
