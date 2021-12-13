@@ -21,7 +21,7 @@ public class CompoundStmtVisitor : Python3ParserBaseVisitor<CompoundStmt>
                 result.lines.Add(newVisitor.result.lines[i]);
             }
         }
-        if (context.for_stmt() != null)
+        else if (context.for_stmt() != null)
         {
             ForStmtVisitor newVisitor = new ForStmtVisitor(state);
             context.for_stmt().Accept(newVisitor);
@@ -30,7 +30,15 @@ public class CompoundStmtVisitor : Python3ParserBaseVisitor<CompoundStmt>
                 result.lines.Add(newVisitor.result.lines[i]);
             }
         }
-            
+        else if (context.while_stmt() != null)
+        {
+            WhileStmtVisitor newVisitor = new WhileStmtVisitor(state);
+            context.while_stmt().Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.lines.Count; ++i)
+            {
+                result.lines.Add(newVisitor.result.lines[i]);
+            }
+        }    
         return result;
     }
 
