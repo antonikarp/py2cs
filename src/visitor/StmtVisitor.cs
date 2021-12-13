@@ -27,7 +27,7 @@ public class StmtVisitor : Python3ParserBaseVisitor<Stmt>
         }
         else if (context.compound_stmt() != null)
         {
-            IfStmtVisitor newVisitor = new IfStmtVisitor(classState);
+            CompoundStmtVisitor newVisitor = new CompoundStmtVisitor(classState);
             context.Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.lines.Count; ++i)
             {
