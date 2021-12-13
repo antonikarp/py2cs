@@ -1,16 +1,20 @@
 ﻿using Antlr4.Runtime.Misc;
 
-public class TestListCompVisitor : Python3ParserBaseVisitor<TestListComp>
+// This is a visitor for used for getting individual expressions used
+// in initializing a list.
+// Example:
+// "a = [3, 4, 5]" produces 3, 4 and 5
+public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public TestListComp result;
+    public LineModel result;
     public State state;
     public TestListCompVisitor(State _state)
     {
         state = _state;
     }
-    public override TestListComp VisitTestlist_comp([NotNull] Python3Parser.Testlist_compContext context)
+    public override LineModel VisitTestlist_comp([NotNull] Python3Parser.Testlist_compContext context)
     {
-        result = new TestListComp();
+        result = new LineModel();
         for (int i = 0; i < context.ChildCount; ++i)
         {
             if (context.GetChild(i).ToString() == ",")

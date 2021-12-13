@@ -1,16 +1,16 @@
 ﻿using Antlr4.Runtime.Misc;
 
-public class FactorVisitor : Python3ParserBaseVisitor<Factor>
+public class FactorVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public Factor result;
+    public LineModel result;
     public State state;
     public FactorVisitor(State _state)
     {
         state = _state;
     }
-    public override Factor VisitFactor([NotNull] Python3Parser.FactorContext context)
+    public override LineModel VisitFactor([NotNull] Python3Parser.FactorContext context)
     {
-        result = new Factor();
+        result = new LineModel();
         
         // Case of the unary '+' or '-'
         if (context.ChildCount == 2)

@@ -4,17 +4,17 @@ using Antlr4.Runtime.Misc;
 // This is a visitor used to compute an expression created with a logical operator "and".
 // It traverses the parse tree from the node "and_test".
 
-public class AndTestVisitor : Python3ParserBaseVisitor<AndTest>
+public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public AndTest result;
+    public LineModel result;
     public State state;
     public AndTestVisitor(State _state)
     {
         state = _state;
     }
-    public override AndTest VisitAnd_test([NotNull] Python3Parser.And_testContext context)
+    public override LineModel VisitAnd_test([NotNull] Python3Parser.And_testContext context)
     {
-        result = new AndTest();
+        result = new LineModel();
         // If there is one child then it is a 'not_test' node.
         if (context.ChildCount == 1)
         {

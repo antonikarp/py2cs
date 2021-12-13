@@ -2,17 +2,17 @@
 using Antlr4.Runtime.Misc;
 
 // This is a visitor to be used to compute a "for" loop
-public class ForStmtVisitor : Python3ParserBaseVisitor<ForStmt>
+public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
 {
-    public ForStmt result;
+    public BlockModel result;
     public State state;
     public ForStmtVisitor(State _state)
     {
         state = _state;
     }
-    public override ForStmt VisitFor_stmt([NotNull] Python3Parser.For_stmtContext context)
+    public override BlockModel VisitFor_stmt([NotNull] Python3Parser.For_stmtContext context)
     {
-        result = new ForStmt();
+        result = new BlockModel();
 
         // We assume that we have the following children:
 

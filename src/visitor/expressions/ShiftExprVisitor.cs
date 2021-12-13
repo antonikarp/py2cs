@@ -3,17 +3,17 @@ using Antlr4.Runtime.Misc;
 
 // This is a visitor used to compute a "shift" expression composed with operators
 // "<<" and ">>". It traverses the parse tree from the node "shift_expr".
-public class ShiftExprVisitor : Python3ParserBaseVisitor<ShiftExpr>
+public class ShiftExprVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public ShiftExpr result;
+    public LineModel result;
     public State state;
     public ShiftExprVisitor(State _state)
     {
         state = _state;
     }
-    public override ShiftExpr VisitShift_expr([NotNull] Python3Parser.Shift_exprContext context)
+    public override LineModel VisitShift_expr([NotNull] Python3Parser.Shift_exprContext context)
     {
-        result = new ShiftExpr();
+        result = new LineModel();
         // If there is one child then it is an arithmetic expression.
         if (context.ChildCount == 1)
         {

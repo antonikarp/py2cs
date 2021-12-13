@@ -1,15 +1,18 @@
 ﻿using Antlr4.Runtime.Misc;
-public class RangeTrailerVisitor : Python3ParserBaseVisitor<RangeTrailer>
+
+// This is a visitor used for translating function "range()" in Python.
+// There can be 1, 2 or 3 arguments supplied.
+public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public RangeTrailer result;
+    public LineModel result;
     public State state;
     public RangeTrailerVisitor(State _state)
     {
         state = _state;
     }
-    public override RangeTrailer VisitTrailer([NotNull] Python3Parser.TrailerContext context)
+    public override LineModel VisitTrailer([NotNull] Python3Parser.TrailerContext context)
     {
-        result = new RangeTrailer();
+        result = new LineModel();
         // We have a form: range(a)
         // 0 - start value, a - stop value, 1 - step value
         // This is translated to Enumerable.Range(0, 3);

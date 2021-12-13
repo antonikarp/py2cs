@@ -1,15 +1,15 @@
 ﻿using Antlr4.Runtime.Misc;
-public class AtomExprVisitor : Python3ParserBaseVisitor<AtomExpr>
+public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 {
-    public AtomExpr result;
+    public LineModel result;
     public State state;
     public AtomExprVisitor(State _state)
     {
         state = _state;
     }
-    public override AtomExpr VisitAtom_expr([NotNull] Python3Parser.Atom_exprContext context)
+    public override LineModel VisitAtom_expr([NotNull] Python3Parser.Atom_exprContext context)
     {
-        result = new AtomExpr();
+        result = new LineModel();
         if (context.atom().ChildCount == 1)
         {
             // Case of numeric literal
