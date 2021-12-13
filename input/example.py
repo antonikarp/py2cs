@@ -1,3 +1,5 @@
-a = range(5 + 3)
-b = range(1 + (5 * 2), 3 * 4)
-c = range(1 * 4, 7 - (3 + 5), 2 + 1);
+a = [3, 4, 5]
+b = [1, 2]
+for x in a:
+	for y in b:
+		print(x + y)
