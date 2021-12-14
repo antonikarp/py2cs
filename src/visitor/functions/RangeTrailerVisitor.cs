@@ -21,7 +21,7 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
             result.tokens.Add("(");
             result.tokens.Add("0");
             result.tokens.Add(",");
-            OrTestVisitor newVisitor = new OrTestVisitor(state);
+            TestVisitor newVisitor = new TestVisitor(state);
             context.arglist().GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -35,9 +35,9 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
         if (context.arglist().ChildCount == 3)
         {
             result.tokens.Add("(");
-            OrTestVisitor firstArgVisitor = new OrTestVisitor(state);
+            TestVisitor firstArgVisitor = new TestVisitor(state);
             context.arglist().GetChild(0).Accept(firstArgVisitor);
-            OrTestVisitor secondArgVisitor = new OrTestVisitor(state);
+            TestVisitor secondArgVisitor = new TestVisitor(state);
             context.arglist().GetChild(2).Accept(secondArgVisitor);
             for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
             {
@@ -66,11 +66,11 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
         if (context.arglist().ChildCount == 5)
         {
             result.tokens.Add("(");
-            OrTestVisitor firstArgVisitor = new OrTestVisitor(state);
+            TestVisitor firstArgVisitor = new TestVisitor(state);
             context.arglist().GetChild(0).Accept(firstArgVisitor);
-            OrTestVisitor secondArgVisitor = new OrTestVisitor(state);
+            TestVisitor secondArgVisitor = new TestVisitor(state);
             context.arglist().GetChild(2).Accept(secondArgVisitor);
-            OrTestVisitor thirdArgVisitor = new OrTestVisitor(state);
+            TestVisitor thirdArgVisitor = new TestVisitor(state);
             context.arglist().GetChild(4).Accept(thirdArgVisitor);
             state.classState.usingDirs.Add("System.Linq");
             for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)

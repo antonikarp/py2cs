@@ -48,6 +48,14 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                     result.tokens.Add(context.atom().NAME().ToString());
                 }
             }
+            else if (context.atom().TRUE() != null)
+            {
+                result.tokens.Add("true");
+            }
+            else if (context.atom().FALSE() != null)
+            {
+                result.tokens.Add("false");
+            }
         }
 
         // Expression sorrounded by parenthesis.
@@ -56,7 +64,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             context.atom().GetChild(2).ToString() == ")")
         {
             result.tokens.Add("(");
-            OrTestVisitor internalVisitor = new OrTestVisitor(state);
+            TestVisitor internalVisitor = new TestVisitor(state);
             context.Accept(internalVisitor);
             for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
             {

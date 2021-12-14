@@ -40,10 +40,10 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
 
             while (j < n)
             {
-                OrTestVisitor keyVisitor = new OrTestVisitor(state);
+                TestVisitor keyVisitor = new TestVisitor(state);
                 context.GetChild(j).Accept(keyVisitor);
                 j += 2;
-                OrTestVisitor valVisitor = new OrTestVisitor(state);
+                TestVisitor valVisitor = new TestVisitor(state);
                 context.GetChild(j).Accept(valVisitor);
                 j += 2;
                 // Add a preceding comma to every item except to the first one.
@@ -71,7 +71,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
 
             while (j < n)
             {
-                OrTestVisitor valVisitor = new OrTestVisitor(state);
+                TestVisitor valVisitor = new TestVisitor(state);
                 context.GetChild(j).Accept(valVisitor);
                 j += 2;
                 // Add a preceding comma to every item except for the first one.

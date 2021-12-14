@@ -23,7 +23,7 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
             }
             else
             {
-                OrTestVisitor newVisitor = new OrTestVisitor(state);
+                TestVisitor newVisitor = new TestVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                 {

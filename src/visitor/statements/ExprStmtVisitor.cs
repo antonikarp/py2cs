@@ -17,8 +17,8 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
         // Todo: handle assignment.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
         {
-            OrTestVisitor leftVisitor = new OrTestVisitor(state);
-            OrTestVisitor rightVisitor = new OrTestVisitor(state);
+            TestVisitor leftVisitor = new TestVisitor(state);
+            TestVisitor rightVisitor = new TestVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             // Check if the variable has been already declared.
@@ -45,7 +45,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
         }
         else if (context.ChildCount == 1)
         {
-            OrTestVisitor newVisitor = new OrTestVisitor(state);
+            TestVisitor newVisitor = new TestVisitor(state);
             context.Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
