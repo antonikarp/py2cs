@@ -23,6 +23,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
                 isDict = true;
             }
         }
+        // Case of a dictionary.
         if (isDict)
         {
             state.classState.usingDirs.Add("System.Collections.Generic");
@@ -45,7 +46,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
                 OrTestVisitor valVisitor = new OrTestVisitor(state);
                 context.GetChild(j).Accept(valVisitor);
                 j += 2;
-                // Add preceding comma to every item except to the first one.
+                // Add a preceding comma to every item except to the first one.
                 if (j != 4)
                 {
                     result.tokens.Add(", ");
@@ -54,6 +55,33 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
                     valVisitor.result.ToString() + "}");
             }
             result.tokens.Add("}");
+        }
+        // Case of a set.
+        else
+        {
+            state.classState.usingDirs.Add("System.Collections");
+            result.tokens.Add("new HashSet(");
+            int j = 0;
+            // We assume that we have the following children:
+
+            // Child 0: val_1
+            // Child 1: ","
+            // Child 2: val_2
+            // ...
+
+            while (j < n)
+            {
+                OrTestVisitor valVisitor = new OrTestVisitor(state);
+                context.GetChild(j).Accept(valVisitor);
+                j += 2;
+                // Add a preceding comma to every item except for the first one.
+                if (j != 2)
+                {
+                    result.tokens.Add(", ");
+                }
+                result.tokens.Add("{" + valVisitor.result.ToString() + "}");
+            }
+            result.tokens.Add(")");
         }
         return result;
     }
