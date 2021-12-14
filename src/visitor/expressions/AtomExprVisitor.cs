@@ -81,6 +81,19 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
             result.tokens.Add("}");
         }
+        // Dictionary or set
+        else if (context.atom().ChildCount == 3 &&
+            context.atom().GetChild(0).ToString() == "{" &&
+            context.atom().GetChild(2).ToString() == "}")
+        {
+            DictOrSetMakerVisitor newVisitor = new DictOrSetMakerVisitor(state);
+            context.atom().GetChild(1).Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(newVisitor.result.tokens[i]);
+            }
+        }
+
 
         // Function call
         if (context.ChildCount == 2 && context.trailer() != null)
