@@ -143,3 +143,7 @@ _NCrunch*
 
 # Local History for Visual Studio Code
 .history/
+
+# Project specific files.
+input/
+output/
