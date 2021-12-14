@@ -21,7 +21,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
         {
             result.tokens.Add("(");
             // Right now only 1 argument is handled.
-            OrTestVisitor newVisitor = new OrTestVisitor(state);
+            TestVisitor newVisitor = new TestVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -36,7 +36,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
         {
             result.tokens.Add("[");
             // Right now only 1 argument is handled.
-            OrTestVisitor newVisitor = new OrTestVisitor(state);
+            TestVisitor newVisitor = new TestVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {

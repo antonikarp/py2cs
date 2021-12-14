@@ -21,7 +21,7 @@ public class WhileStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // Child 3: suite
 
         // We currently do not consider an "else" block.
-        OrTestVisitor conditionVisitor = new OrTestVisitor(state);
+        TestVisitor conditionVisitor = new TestVisitor(state);
         context.GetChild(1).Accept(conditionVisitor);
         string line = "while (" + conditionVisitor.result.ToString() + ")";
         IndentedLine newLine = new IndentedLine(line, 0);

@@ -20,7 +20,7 @@ public class IfStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             if (context.GetChild(i).ToString() == "if")
             {
                 ++i;
-                OrTestVisitor conditionVisitor = new OrTestVisitor(state);
+                TestVisitor conditionVisitor = new TestVisitor(state);
                 context.GetChild(i).Accept(conditionVisitor);
                 string line = "if (" + conditionVisitor.result.ToString() + ")";
                 IndentedLine newLine = new IndentedLine(line, 0);
@@ -31,7 +31,7 @@ public class IfStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             else if (context.GetChild(i).ToString() == "elif")
             {
                 ++i;
-                OrTestVisitor conditionVisitor = new OrTestVisitor(state);
+                TestVisitor conditionVisitor = new TestVisitor(state);
                 context.GetChild(i).Accept(conditionVisitor);
                 string line = "else if (" + conditionVisitor.result.ToString() + ")";
                 IndentedLine newLine = new IndentedLine(line, 0);

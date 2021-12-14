@@ -250,6 +250,31 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
+        [Fact]
+        public void Test10_TernaryOperator()
+        {
+            // Arrange
+            string input =
+@"x = 2 if True else 3
+x = 3 if False else 4
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic x = true ? 2 : 3;
+        x = false ? 3 : 4;
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
 
     }
