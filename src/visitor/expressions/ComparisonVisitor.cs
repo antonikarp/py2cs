@@ -29,21 +29,41 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
         // a comparison operator (<, >, <=, >=, ==, !=)
         else if (context.ChildCount == 3)
         {
+            CompOpVisitor opVisitor = new CompOpVisitor(state);
             ShiftExprVisitor leftVisitor = new ShiftExprVisitor(state);
             ShiftExprVisitor rightVisitor = new ShiftExprVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
-            context.GetChild(2).Accept(rightVisitor);
-            for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
-            {
-                result.tokens.Add(leftVisitor.result.tokens[i]);
-            }
-            CompOpVisitor opVisitor = new CompOpVisitor(state);
             context.GetChild(1).Accept(opVisitor);
-            result.tokens.Add(opVisitor.result.value);
-            for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+            context.GetChild(2).Accept(rightVisitor);
+            if (opVisitor.result.value == "in")
             {
-                result.tokens.Add(rightVisitor.result.tokens[i]);
+                // Membership test for a set.
+                // Todo: Handle dictionaries with ContainsKey method
+                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(rightVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(".Contains(");
+                for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(leftVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(")");
             }
+            else
+            {
+                for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(leftVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(opVisitor.result.value);
+                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(rightVisitor.result.tokens[i]);
+                }
+            }
+
+            
         }
         // If there are more than 3 children then we have a chained comparison
         // For instance: a < b < c
