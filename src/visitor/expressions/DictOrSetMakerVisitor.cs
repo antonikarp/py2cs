@@ -60,7 +60,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         else
         {
             state.classState.usingDirs.Add("System.Collections");
-            result.tokens.Add("new HashSet(");
+            result.tokens.Add("new HashSet<object>{");
             int j = 0;
             // We assume that we have the following children:
 
@@ -81,7 +81,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
                 }
                 result.tokens.Add("{" + valVisitor.result.ToString() + "}");
             }
-            result.tokens.Add(")");
+            result.tokens.Add("}");
         }
         return result;
     }

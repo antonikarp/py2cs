@@ -81,6 +81,31 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
+        [Fact]
+        public void Test4_Set()
+        {
+            // Arrange
+            string input =
+@"new_set = {""a"", ""b""}
+is_a = ""a"" in new_set";
+            string expected =
+@"using System;
+using System.Collections;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic new_set = new HashSet<object>{{""a""}, {""b""}};
+        dynamic is_a = new_set.Contains(""a"");
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
     }
 }
