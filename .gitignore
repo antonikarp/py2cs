@@ -145,5 +145,5 @@ _NCrunch*
 .history/
 
 # Project specific files.
-input/**
-output/**
+input/
+output/
