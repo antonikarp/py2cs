@@ -309,6 +309,31 @@ class Program
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void Test12_PowerOperator()
+        {
+            // Arrange
+            string input =
+@"a = 2
+b = a ** (a ** 2)
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = 2;
+        dynamic b = Math.Pow(a, (Math.Pow(a, 2)));
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
 
 
