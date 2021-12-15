@@ -37,23 +37,61 @@ public class Output
         sb.AppendLine(getIndentedLine("class Program"));
         sb.AppendLine(getIndentedLine("{"));
         ++indentationLevel;
-        sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
-        sb.AppendLine(getIndentedLine("{"));
-        ++indentationLevel;
-        foreach (var indentedLine in internalLines)
+
+        foreach (var func in state.classState.functions)
         {
-            sb.AppendLine(getIndentedLine(indentedLine.line));
-            if (indentedLine.increment == 1)
+            string firstLine = "public ";
+            if (func.isVoid)
             {
-                ++indentationLevel;
+                firstLine += "void ";
             }
-            else if (indentedLine.increment == -1)
+            else
             {
-                --indentationLevel;
+                firstLine += "object ";
             }
+            firstLine += func.name;
+            firstLine += "()";
+            sb.AppendLine(getIndentedLine(firstLine));
+            sb.AppendLine(getIndentedLine("{"));
+            ++indentationLevel;
+            foreach (var indentedLine in func.statements.lines)
+            {
+                sb.AppendLine(getIndentedLine(indentedLine.line));
+                if (indentedLine.increment == 1)
+                {
+                    ++indentationLevel;
+                }
+                else if (indentedLine.increment == -1)
+                {
+                    --indentationLevel;
+                }
+            }
+            --indentationLevel;
+            sb.AppendLine(getIndentedLine("}"));
         }
-        --indentationLevel;
-        sb.AppendLine(getIndentedLine("}"));
+
+        if (internalLines.Count > 0)
+        {
+            sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
+            sb.AppendLine(getIndentedLine("{"));
+            ++indentationLevel;
+            foreach (var indentedLine in internalLines)
+            {
+                sb.AppendLine(getIndentedLine(indentedLine.line));
+                if (indentedLine.increment == 1)
+                {
+                    ++indentationLevel;
+                }
+                else if (indentedLine.increment == -1)
+                {
+                    --indentationLevel;
+                }
+            }
+            --indentationLevel;
+            sb.AppendLine(getIndentedLine("}"));
+        }
+
+
         --indentationLevel;
         sb.AppendLine(getIndentedLine("}"));
         return sb.ToString();

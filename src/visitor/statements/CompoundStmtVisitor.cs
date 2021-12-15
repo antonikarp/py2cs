@@ -38,7 +38,13 @@ public class CompoundStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             {
                 result.lines.Add(newVisitor.result.lines[i]);
             }
-        }    
+        }
+        else if (context.funcdef() != null)
+        {
+            FuncdefVisitor newVisitor = new FuncdefVisitor(state);
+            context.funcdef().Accept(newVisitor);
+            // Do not add to result.lines, the statements are in different function.
+        }
         return result;
     }
 
