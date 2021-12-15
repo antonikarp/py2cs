@@ -41,6 +41,10 @@ public class Output
         foreach (var func in state.classState.functions)
         {
             string firstLine = "public ";
+            if (func.isStatic)
+            {
+                firstLine += "static ";
+            }
             if (func.isVoid)
             {
                 firstLine += "void ";
@@ -50,7 +54,20 @@ public class Output
                 firstLine += "object ";
             }
             firstLine += func.name;
-            firstLine += "()";
+            firstLine += "(";
+            for (int i = 0; i < func.parameters.Count - 1; ++i)
+            {
+                firstLine += "dynamic ";
+                firstLine += func.parameters[i];
+                firstLine += ", ";
+            }
+            // Handle the last parameter separately (without a successive comma)
+            if (func.parameters.Count - 1 >= 0)
+            {
+                firstLine += "dynamic ";
+                firstLine += func.parameters[func.parameters.Count - 1];
+            }
+            firstLine += ")";
             sb.AppendLine(getIndentedLine(firstLine));
             sb.AppendLine(getIndentedLine("{"));
             ++indentationLevel;

@@ -21,11 +21,18 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         // Child 3: ":"
         // Child 4: suite
 
+        TypedargslistVisitor parameterVisitor = new TypedargslistVisitor(state);
+        context.GetChild(2).Accept(parameterVisitor);
+
+        SuiteVisitor suiteVisitor = new SuiteVisitor(state);
+        context.GetChild(4).Accept(suiteVisitor);
+
+        // Commit a new function to the list of functions in the class state.
         result.name = context.GetChild(1).ToString();
-        SuiteVisitor newVisitor = new SuiteVisitor(state);
-        context.GetChild(4).Accept(newVisitor);
-        result.statements.lines = newVisitor.result.lines;
+        result.statements.lines = suiteVisitor.result.lines;
         result.isVoid = state.funcState.isVoid;
+        result.parameters = state.funcState.parameters;
+        result.isStatic = state.funcState.isStatic;
         state.classState.functions.Add(result);
         return result;
     }
