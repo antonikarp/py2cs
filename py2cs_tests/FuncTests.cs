@@ -18,7 +18,7 @@ namespace py2cs_tests
 @"using System;
 class Program
 {
-    public void foo()
+    public static void foo()
     {
         Console.WriteLine(""Hello"");
     }
@@ -43,7 +43,7 @@ class Program
 @"using System;
 class Program
 {
-    public object foo()
+    public static object foo()
     {
         dynamic a = 2;
         return a;
