@@ -7,7 +7,7 @@ namespace py2cs_tests
     public class FuncTests
     {
         [Fact]
-        public void Test1_VoidFunction()
+        public void Test1_VoidParameterless()
         {
             // Arrange
             string input =
@@ -31,7 +31,7 @@ class Program
             Assert.Equal(expected, actual);
         }
         [Fact]
-        public void Test2_NonVoidFunction()
+        public void Test2_NonVoidParameterless()
         {
             // Arrange
             string input =
@@ -47,6 +47,30 @@ class Program
     {
         dynamic a = 2;
         return a;
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+        [Fact]
+        public void Test3_Parameters()
+        {
+            // Arrange
+            string input =
+@"def add(a, b):
+    print(a + b)
+";
+            string expected =
+@"using System;
+class Program
+{
+    public static void add(dynamic a, dynamic b)
+    {
+        Console.WriteLine(a+b);
     }
 }
 ";
