@@ -80,6 +80,44 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
-
+        [Fact]
+        public void Test3_Calls()
+        {
+            // Arrange
+            string input =
+@"def add(a, b):
+	c = a + b
+	print(c)
+def hello():
+	print(""Hello"")
+add(3, 5)
+hello()
+";
+            string expected =
+@"using System;
+class Program
+{
+    public static void add(dynamic a, dynamic b)
+    {
+        dynamic c = a+b;
+        Console.WriteLine(c);
+    }
+    public static void hello()
+    {
+        Console.WriteLine(""Hello"");
+    }
+    static void Main(string[] args)
+    {
+        add(3, 5);
+        hello();
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
     }
 }
