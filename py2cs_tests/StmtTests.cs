@@ -137,6 +137,50 @@ class Program
             Assert.Equal(expected, actual);
 
         }
+        [Fact]
+        public void Test4_BreakContinue()
+        {
+            // Arrange
+            string input =
+@"a = [2, 3, 4, 5]
+for x in a:
+	print(x)
+	if x == 2:
+		continue
+	if x == 3:
+		break
+";
+            string expected =
+@"using System;
+using System.Collections.Generic;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = new List<object> {2, 3, 4, 5};
+        foreach (dynamic x in a)
+        {
+            Console.WriteLine(x);
+            if (x==2)
+            {
+                continue;
+            }
+            if (x==3)
+            {
+                break;
+            }
+        }
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+
+        }
+
 
     }
 }
