@@ -43,6 +43,28 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             return result;
 
         }
+        // Augmented assignment
+        else if (context.ChildCount == 3 &&
+            context.GetChild(1).GetType().ToString() == "Python3Parser+AugassignContext")
+        {
+            TestVisitor leftVisitor = new TestVisitor(state);
+            AugAssignVisitor opVisitor = new AugAssignVisitor(state);
+            TestVisitor rightVisitor = new TestVisitor(state);      
+            context.GetChild(0).Accept(leftVisitor);
+            context.GetChild(1).Accept(opVisitor);
+            context.GetChild(2).Accept(rightVisitor);
+            for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(leftVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(" " + opVisitor.result.value + " ");
+            for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(rightVisitor.result.tokens[i]);
+            }
+            result.tokens.Add(";");
+            return result;
+        }
         else if (context.ChildCount == 1)
         {
             TestVisitor newVisitor = new TestVisitor(state);

@@ -275,6 +275,41 @@ class Program
             // Assert
             Assert.Equal(expected, actual);
         }
+        [Fact]
+        public void Test11_AugAssign()
+        {
+            // Arrange
+            string input =
+@"a = 1
+a += 2
+a -= 3
+a *= 4
+a /= 5
+a %= 6
+";
+            string expected =
+@"using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        dynamic a = 1;
+        a += 2;
+        a -= 3;
+        a *= 4;
+        a /= 5;
+        a %= 6;
+    }
+}
+";
+            Translator translator = new Translator();
+            // Act
+            string actual = translator.Translate(input);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+
 
 
     }
