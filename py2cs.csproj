@@ -785,9 +785,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\visitor\functions\" />
+    <Folder Include="src\visitor\other\" />
     <Folder Include="src\state\" />
     <Folder Include="src\visitor\statements\" />
     <Folder Include="src\other\" />
+    <Folder Include="src\visitor\functions\" />
   </ItemGroup>
 </Project>

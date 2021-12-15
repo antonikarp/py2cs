@@ -20,6 +20,25 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
         {
             result.tokens.Add("continue;");
         }
+        else if (context.return_stmt() != null)
+        {
+            result.tokens.Add("return");
+            // We have a case: "return expr";
+            if (context.return_stmt().ChildCount == 2)
+            {
+                state.funcState.isVoid = false;
+                TestVisitor newVisitor = new TestVisitor(state);
+                context.return_stmt().GetChild(1).Accept(newVisitor);
+                result.tokens.Add(" ");
+                for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(newVisitor.result.tokens[i]);
+                }
+            }
+            result.tokens.Add(";");
+            
+
+        }
         return result;
     }
 
