@@ -60,6 +60,12 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             }
             result.tokens.Add("]");
         }
+        // Function call - no parameters
+        else if (context.ChildCount == 2 && context.GetChild(0).ToString() == "(" &&
+            context.GetChild(1).ToString() == ")")
+        {
+            result.tokens.Add("();");
+        }
         return result;
     }
 
