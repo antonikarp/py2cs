@@ -14,7 +14,8 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
         result = new BlockModel();
         if (context.simple_stmt() != null)
         {
-            ExprStmtVisitor newVisitor = new ExprStmtVisitor(state);
+            SmallStmtVisitor newVisitor = new SmallStmtVisitor(state);
+            // For now we assume that simple_stmt has one child: small_stmt
             context.simple_stmt().Accept(newVisitor);
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
