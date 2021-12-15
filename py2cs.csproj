@@ -782,6 +782,13 @@
     <None Remove="py2cs_tests\bin\Debug\net5.0\py2cs.pdb" />
     <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.CopyComplete" />
     <None Remove="py2cs_tests\bin\Debug\net5.0\py2cs.deps.json" />
+    <Compile Remove="py2cs_tests\ExprTests.cs" />
+    <Compile Remove="py2cs_tests\FuncTest.cs" />
+    <Compile Remove="py2cs_tests\VarTests.cs" />
+    <Compile Remove="py2cs_tests\StmtTests.cs" />
+    <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
+    <Compile Remove="py2cs_tests\FuncTests.cs" />
+    <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
   </ItemGroup>
 
   <ItemGroup>
