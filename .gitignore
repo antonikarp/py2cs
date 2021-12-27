@@ -144,6 +144,9 @@ _NCrunch*
 # Local History for Visual Studio Code
 .history/
 
-# Project specific files.
+# Project specific directories/files.
 input/
 output/
+tests/generated/*
+tests/generated_output/*
+tests/scripts_output/*
