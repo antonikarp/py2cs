@@ -21,7 +21,9 @@ public class TermVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens[i - 1] = "";
                 string rightValue = result.tokens[i + 1];
                 result.tokens[i + 1] = "";
-                result.tokens[i] = "Math.Floor(" + leftValue + "/" + rightValue + ")";
+                // Cast to double to avoid ambiguity between Math.Floor(decimal) and
+                // Math.Floor(double).
+                result.tokens[i] = "Math.Floor(" + "(double)" + leftValue + "/" + rightValue + ")";
             }
         }
     }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-names=(test1 test2)
+names=(test1 test2 test3)
 
 # Clean the test directories first. We need only the Python scripts/
 rm generated/*
