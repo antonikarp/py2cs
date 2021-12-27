@@ -1,6 +1,11 @@
 #!/bin/bash
 
-names=(test1)
+names=(test1 test2)
+
+# Clean the test directories first. We need only the Python scripts/
+rm generated/*
+rm generated_output/*
+rm scripts_output/*
 
 for name in "${names[@]}"
 do
@@ -9,7 +14,7 @@ do
 
 	# Perform translation.
 	cd ..
-	dotnet test > /dev/null 2>&1
+	dotnet test
 	cd tests
 
 	# Compile the obtained .cs file.

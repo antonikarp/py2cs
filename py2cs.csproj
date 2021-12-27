@@ -934,6 +934,33 @@
     <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.assets.cache" />
     <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.csproj.FileListAbsolute.txt" />
     <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.csproj.AssemblyReference.cache" />
+    <Compile Remove="tests\generated\test1.cs" />
+    <None Remove="tests\compare_results.py" />
+    <Compile Remove="tests\generated\test2.cs" />
+    <None Remove="tests\run_tests.sh" />
+    <None Remove="tests\scripts_output\test1.txt" />
+    <None Remove="tests\scripts\test2.py" />
+    <None Remove="tests\generated_output\test1.txt" />
+    <None Remove="tests\scripts_output\test2.txt" />
+    <None Remove="tests\generated_output\test2.txt" />
+    <None Remove="tests\generated\test1.exe" />
+    <None Remove="tests\generated\test2.exe" />
+    <Compile Remove="tests\generated\test1.cs" />
+    <Compile Remove="tests\generated\test2.cs" />
+    <None Remove="tests\scripts_output\test1.txt" />
+    <None Remove="tests\generated\test1.exe" />
+    <None Remove="tests\generated_output\test1.txt" />
+    <None Remove="tests\scripts_output\test2.txt" />
+    <None Remove="tests\generated\test2.exe" />
+    <None Remove="tests\generated_output\test2.txt" />
+    <None Remove="tests\scripts\test3.py" />
+    <Compile Remove="tests\generated\test3.cs" />
+    <None Remove="tests\generated\test1.exe" />
+    <None Remove="tests\generated\test2.exe" />
+    <None Remove="tests\scripts_output\test1.txt" />
+    <None Remove="tests\generated_output\test1.txt" />
+    <None Remove="tests\scripts_output\test2.txt" />
+    <None Remove="tests\generated_output\test2.txt" />
   </ItemGroup>
 
   <ItemGroup>

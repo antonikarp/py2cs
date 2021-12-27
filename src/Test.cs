@@ -5,9 +5,9 @@ using System.IO;
 using System.Threading.Tasks;
 namespace py2cs
 {
-    public class Test
+    public class Translator
     {
-        public void RunTest(string input_path, string output_path)
+        public void Translate(string input_path, string output_path)
         {
             string text = File.ReadAllText(input_path);
             ICharStream stream = CharStreams.fromString(text);
