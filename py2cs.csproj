@@ -912,6 +912,28 @@
     <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
     <None Remove="py2cs_tests\obj\project.nuget.cache" />
     <None Remove="py2cs_tests\obj\py2cs_tests.csproj.nuget.dgspec.json" />
+    <Compile Remove="tests\generated\test1.cs" />
+    <None Remove="tests\.DS_Store" />
+    <None Remove="tests\generated\test1.exe" />
+    <None Remove="tests\generated_output\test1.txt" />
+    <None Remove="tests\scripts\.DS_Store" />
+    <None Remove="tests\scripts\test1.py" />
+    <None Remove="tests\scripts_output\test1.txt" />
+    <None Remove="py2cs_tests\obj\project.nuget.cache" />
+    <None Remove="py2cs_tests\obj\py2cs_tests.csproj.nuget.dgspec.json" />
+    <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
+    <Compile Remove="py2cs_tests\AutoTests.cs" />
+    <None Remove="py2cs_tests\bin\Debug\net5.0\py2cs" />
+    <Compile Remove="py2cs_tests\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" />
+    <None Remove="py2cs_tests\obj\py2cs_tests.csproj.nuget.g.props" />
+    <None Remove="py2cs_tests\obj\py2cs_tests.csproj.nuget.g.targets" />
+    <None Remove="py2cs_tests\obj\project.assets.json" />
+    <None Remove="py2cs_tests\obj\project.nuget.cache" />
+    <None Remove="py2cs_tests\obj\py2cs_tests.csproj.nuget.dgspec.json" />
+    <None Remove="py2cs_tests\obj\Debug\net5.0\py2cs_tests.csproj.AssemblyReference.cache" />
+    <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.assets.cache" />
+    <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.csproj.FileListAbsolute.txt" />
+    <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.csproj.AssemblyReference.cache" />
   </ItemGroup>
 
   <ItemGroup>
