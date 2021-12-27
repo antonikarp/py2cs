@@ -33,6 +33,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     if (context.trailer() != null)
                     {
+                        state.classState.usingDirs.Add("System.Linq");
                         result.tokens.Add("Enumerable.Range");
                         RangeTrailerVisitor newVisitor = new RangeTrailerVisitor(state);
                         context.GetChild(1).Accept(newVisitor);

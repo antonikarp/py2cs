@@ -59,7 +59,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         // Case of a set.
         else
         {
-            state.classState.usingDirs.Add("System.Collections");
+            state.classState.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new HashSet<object>{");
             int j = 0;
             // We assume that we have the following children:

@@ -61,7 +61,7 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
         }
         // We have a form: range(a, b, c)
         // a - start value, b - stop value, c - step value
-        // This is translated to Enumerable.Range(a, ((b)-(a))/(c)).Select(x => x * (c))
+        // This is translated to Enumerable.Range(((a)/(c)), ((b)-(a))/(c) + 1).Select(x => x * (c))
         // We need to add System.Linq to the using directives in State
         if (context.arglist().ChildCount == 5)
         {
@@ -73,10 +73,21 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
             TestVisitor thirdArgVisitor = new TestVisitor(state);
             context.arglist().GetChild(4).Accept(thirdArgVisitor);
             state.classState.usingDirs.Add("System.Linq");
+            result.tokens.Add("(");
+            result.tokens.Add("(");
             for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(firstArgVisitor.result.tokens[i]);
             }
+            result.tokens.Add(")");
+            result.tokens.Add("/");
+            result.tokens.Add("(");
+            for (int k = 0; k < thirdArgVisitor.result.tokens.Count; ++k)
+            {
+                result.tokens.Add(thirdArgVisitor.result.tokens[k]);
+            }
+            result.tokens.Add(")");
+            result.tokens.Add(")");
             result.tokens.Add(",");
             result.tokens.Add("(");
             result.tokens.Add("(");
@@ -100,6 +111,7 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(thirdArgVisitor.result.tokens[k]);
             }
             result.tokens.Add(")");
+            result.tokens.Add("+1");
             result.tokens.Add(")");
             result.tokens.Add(".");
             result.tokens.Add("Select(x => x*");

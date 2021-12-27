@@ -25,23 +25,28 @@ public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
         }
-        // If there are 3 children then we have an expression:
-        // "<expr1> and <expr2>" where <expr1> is the first child and
-        // <expr2> is the third child.
-        else if (context.ChildCount == 3)
+        // If there are more than one child then we have the following children:
+        // Child #0: <expr1>
+        // Child #1: or
+        // Child #2: <expr2>
+        // Child #3: ...
+        else if (context.ChildCount > 1)
         {
-            NotTestVisitor leftVisitor = new NotTestVisitor(state);
-            NotTestVisitor rightVisitor = new NotTestVisitor(state);
-            context.GetChild(0).Accept(leftVisitor);
-            context.GetChild(2).Accept(rightVisitor);
-            for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
+            int n = context.ChildCount;
+            int i = 0;
+            while (i < n)
             {
-                result.tokens.Add(leftVisitor.result.tokens[i]);
-            }
-            result.tokens.Add("&&");
-            for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
-            {
-                result.tokens.Add(rightVisitor.result.tokens[i]);
+                if (i != 0)
+                {
+                    result.tokens.Add("&&");
+                }
+                NotTestVisitor newVisitor = new NotTestVisitor(state);
+                context.GetChild(i).Accept(newVisitor);
+                for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
+                {
+                    result.tokens.Add(newVisitor.result.tokens[j]);
+                }
+                i += 2;
             }
         }
         return result;
