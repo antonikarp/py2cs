@@ -29,6 +29,7 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
         // Child #0: <expr1>
         // Child #1: or
         // Child #2: <expr2>
+        // Child #3: ...
         else if (context.ChildCount > 1)
         {
             int n = context.ChildCount;
