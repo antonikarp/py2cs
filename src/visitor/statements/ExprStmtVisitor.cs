@@ -17,7 +17,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
         // Todo: handle assignment.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
         {
-            state.varState = new VarState();
             TestVisitor leftVisitor = new TestVisitor(state);
             TestVisitor rightVisitor = new TestVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
