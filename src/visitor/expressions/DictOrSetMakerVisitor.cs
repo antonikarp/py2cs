@@ -28,6 +28,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         {
             state.classState.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new Dictionary<object, object> {");
+            state.varState.type = VarState.Types.Dictionary;
             int j = 0;
             // We assume that we have the following children:
 
@@ -60,7 +61,8 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         else
         {
             state.classState.usingDirs.Add("System.Collections.Generic");
-            result.tokens.Add("new HashSet<object>{");
+            result.tokens.Add("new HashSet<object> {");
+            state.varState.type = VarState.Types.HashSet;
             int j = 0;
             // We assume that we have the following children:
 

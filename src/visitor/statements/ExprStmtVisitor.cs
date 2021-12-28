@@ -22,11 +22,27 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             // Check if the variable has been already declared.
-            if (!state.funcState.declVarNames.Contains(leftVisitor.result.ToString()))
+            if (!state.funcState.variables.ContainsKey(leftVisitor.result.ToString()))
             {
                 // This is a case of declaration with initialization.
-                result.tokens.Add("dynamic ");
-                state.funcState.declVarNames.Add(leftVisitor.result.ToString());
+                switch (state.varState.type)
+                {
+                    case VarState.Types.List:
+                        result.tokens.Add("List<object> ");
+                        break;
+                    case VarState.Types.Dictionary:
+                        result.tokens.Add("Dictionary<object, object> ");
+                        break;
+                    case VarState.Types.HashSet:
+                        result.tokens.Add("HashSet<object>");
+                        break;
+                    // Type not recognized or numeric:
+                    case VarState.Types.Other:
+                        result.tokens.Add("dynamic ");
+                        break;
+
+                }
+                state.funcState.variables.Add(leftVisitor.result.ToString(), state.varState.type);
             }
             // The following instructions are common for both cases (declaration
             // with initialization, assignment)

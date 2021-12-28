@@ -32,7 +32,19 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         TestVisitor collectionVisitor = new TestVisitor(state);
         context.GetChild(3).Accept(collectionVisitor);
         string line = "foreach (dynamic " + iteratorVisitor.result.ToString() + " in " +
-            collectionVisitor.result.ToString() + ")";
+            collectionVisitor.result.ToString();
+
+        // Check type of the collection. If it is Dictionary then add the property Keys
+        if (state.funcState.variables.ContainsKey(collectionVisitor.result.ToString()))
+        {
+            VarState.Types type = state.funcState.variables[collectionVisitor.result.ToString()];
+            if (type == VarState.Types.Dictionary)
+            {
+                line += ".Keys";
+            }
+        }
+        line += ")";
+        
         IndentedLine newLine = new IndentedLine(line, 0);
         result.lines.Add(newLine);
         IndentedLine openingBraceLine = new IndentedLine("{", 1);

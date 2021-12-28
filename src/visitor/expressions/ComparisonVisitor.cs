@@ -43,7 +43,19 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(rightVisitor.result.tokens[i]);
                 }
-                result.tokens.Add(".Contains(");
+                if (state.funcState.variables.ContainsKey(rightVisitor.result.ToString()))
+                {
+                    VarState.Types type = state.funcState.variables[rightVisitor.result.ToString()];
+                    if (type == VarState.Types.Dictionary)
+                    {
+                        result.tokens.Add(".ContainsKey");
+                    }
+                    else if (type == VarState.Types.HashSet)
+                    {
+                        result.tokens.Add(".Contains");
+                    }
+                }
+                result.tokens.Add("(");
                 for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
                 {
                     result.tokens.Add(leftVisitor.result.tokens[i]);
