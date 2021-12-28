@@ -39,7 +39,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(rightVisitor.result.tokens[i]);
             }
-            result.tokens.Add(";");
             return result;
 
         }
@@ -62,7 +61,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(rightVisitor.result.tokens[i]);
             }
-            result.tokens.Add(";");
             return result;
         }
         else if (context.ChildCount == 1)

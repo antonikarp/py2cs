@@ -23,7 +23,8 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 sb.Append(newVisitor.result.tokens[i]);
             }
             string line = sb.ToString();
-            IndentedLine onlyLine = new IndentedLine(line, 0);
+            // Add a semicolon at the end of each line.
+            IndentedLine onlyLine = new IndentedLine(line + ";", 0);
             result.lines.Add(onlyLine);
         }
         else if (context.compound_stmt() != null)
