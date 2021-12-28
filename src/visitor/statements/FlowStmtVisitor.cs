@@ -14,11 +14,11 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
         result = new LineModel();
         if (context.break_stmt() != null)
         {
-            result.tokens.Add("break;");
+            result.tokens.Add("break");
         }
         else if (context.continue_stmt() != null)
         {
-            result.tokens.Add("continue;");
+            result.tokens.Add("continue");
         }
         else if (context.return_stmt() != null)
         {
@@ -35,9 +35,6 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
                     result.tokens.Add(newVisitor.result.tokens[i]);
                 }
             }
-            result.tokens.Add(";");
-            
-
         }
         return result;
     }

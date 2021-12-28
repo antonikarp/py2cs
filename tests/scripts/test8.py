@@ -1,11 +1,10 @@
-# Void functions
+# Functions
 def add(a, b):
-	print(a + b)
+	return a + b
 def mult(a, b, c):
-	print(a * b * c)
+	return a * b * c
 def hello():
 	print("Hello")
 
-add(1, 2)
-mult(3, 4, 5)
+print(add(mult(1, 2, 1), mult(0, 1, 1)))
 hello()

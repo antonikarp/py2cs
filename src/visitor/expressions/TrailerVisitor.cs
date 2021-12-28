@@ -44,7 +44,6 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                 i += 2;
             }
             result.tokens.Add(")");
-            result.tokens.Add(";");
         }
         // Subscription
         else if (context.ChildCount == 3 && context.GetChild(0).ToString() == "[" &&
@@ -64,7 +63,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
         else if (context.ChildCount == 2 && context.GetChild(0).ToString() == "(" &&
             context.GetChild(1).ToString() == ")")
         {
-            result.tokens.Add("();");
+            result.tokens.Add("()");
         }
         return result;
     }
