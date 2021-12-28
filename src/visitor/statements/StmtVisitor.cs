@@ -14,6 +14,8 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
         result = new BlockModel();
         if (context.simple_stmt() != null)
         {
+            // Clear the variable state for a potential new declaration.
+            state.varState = new VarState();
             SmallStmtVisitor newVisitor = new SmallStmtVisitor(state);
             // For now we assume that simple_stmt has one child: small_stmt
             context.simple_stmt().Accept(newVisitor);

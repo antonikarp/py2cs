@@ -82,6 +82,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // We use List from System.Collections.Generic
             state.classState.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new List<object> {");
+            state.varState.type = VarState.Types.List;
             TestListCompVisitor newVisitor = new TestListCompVisitor(state);
             context.atom().GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
