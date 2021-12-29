@@ -9,112 +9,91 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
     }
     public override LineModel VisitAtom_expr([NotNull] Python3Parser.Atom_exprContext context)
     {
+
         result = new LineModel();
-        if (context.atom().ChildCount == 1)
+
+        // Method call
+        // We have the following children:
+        // Child #0: atom
+        // Child #1: trailer
+        // Child #2: trailer
+        if (context.ChildCount == 3 &&
+            context.GetChild(0).GetType().ToString() == "Python3Parser+AtomContext" &&
+            context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext" &&
+            context.GetChild(2).GetType().ToString() == "Python3Parser+TrailerContext")
         {
-            // Case of numeric literal
-            if (context.atom().NUMBER() != null)
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+            MethodNameTrailerVisitor methodNameTrailerVisitor = new MethodNameTrailerVisitor(state);
+            MethodArglistTrailerVisitor methodArglistTrailerVisitor = new MethodArglistTrailerVisitor(state);
+            context.GetChild(0).Accept(atomVisitor);
+            context.GetChild(1).Accept(methodNameTrailerVisitor);
+            context.GetChild(2).Accept(methodArglistTrailerVisitor);
+            string varName = atomVisitor.result.ToString();
+
+            // Method "append" on a list.
+            if (state.funcState.variables.ContainsKey(varName) &&
+                state.funcState.variables[varName] == VarState.Types.List &&
+                methodNameTrailerVisitor.result.ToString() == ".append")
             {
-                result.tokens.Add(context.atom().NUMBER().ToString());
+                methodNameTrailerVisitor.result.tokens.Clear();
+                methodNameTrailerVisitor.result.tokens.Add(".Add");
             }
-            if (context.atom().STRING().Length > 0)
+
+            for (int i = 0; i < atomVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add(context.atom().STRING().GetValue(0).ToString());
+                result.tokens.Add(atomVisitor.result.tokens[i]);
             }
-            else if (context.atom().NAME() != null)
+            for (int i = 0; i < methodNameTrailerVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(methodNameTrailerVisitor.result.tokens[i]);
+            }
+            for (int i = 0; i < methodArglistTrailerVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(methodArglistTrailerVisitor.result.tokens[i]);
+            }
+        }
+
+        else if (context.atom() != null && context.atom().ChildCount == 1 && context.atom().NAME() != null)
+        {
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+            context.atom().Accept(atomVisitor);
+            string name = atomVisitor.result.ToString();
+            // Function call.         
+            if (name == "print")
             {
                 // In this case (print) the arguments are not changing, we can use the standard
-                // TrailerVisitor for arguments.
-                if (context.atom().NAME().ToString() == "print")
+                // TrailerVisitor for arguments. See one of the cases in this file.
+                name = "Console.WriteLine";
+            }
+            else if (name == "range")
+            {
+                if (context.trailer() != null)
                 {
-                    result.tokens.Add("Console.WriteLine");
-                }
-                else if (context.atom().NAME().ToString() == "range")
-                {
-                    if (context.trailer() != null)
+                    // Here there are few cases so use a custom RangeTrailerVisitor.
+                    state.classState.usingDirs.Add("System.Linq");
+                    result.tokens.Add("Enumerable.Range");
+                    RangeTrailerVisitor newVisitor = new RangeTrailerVisitor(state);
+                    context.GetChild(1).Accept(newVisitor);
+                    for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                     {
-                        state.classState.usingDirs.Add("System.Linq");
-                        result.tokens.Add("Enumerable.Range");
-                        RangeTrailerVisitor newVisitor = new RangeTrailerVisitor(state);
-                        context.GetChild(1).Accept(newVisitor);
-                        for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
-                        {
-                            result.tokens.Add(newVisitor.result.tokens[j]);
-                        }
-                        return result;
+                        result.tokens.Add(newVisitor.result.tokens[j]);
                     }
-                }
-                else
-                {
-                    result.tokens.Add(context.atom().NAME().ToString());
+                    // We don't consider the trailer anymore. End here.
+                    return result;
                 }
             }
-            else if (context.atom().TRUE() != null)
-            {
-                result.tokens.Add("true");
-            }
-            else if (context.atom().FALSE() != null)
-            {
-                result.tokens.Add("false");
-            }
+            result.tokens.Add(name);
         }
-
-        // Expression sorrounded by parenthesis.
-        else if (context.atom().ChildCount == 3 &&
-            context.atom().GetChild(0).ToString() == "(" &&
-            context.atom().GetChild(2).ToString() == ")")
+        else if (context.atom() != null)
         {
-            result.tokens.Add("(");
-            // This case handles also tuples.
-            TestListCompVisitor newVisitor = new TestListCompVisitor(state);
-            context.atom().GetChild(1).Accept(newVisitor);
-            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+            context.atom().Accept(atomVisitor);
+            for (int i = 0; i < atomVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add(newVisitor.result.tokens[i]);
+                result.tokens.Add(atomVisitor.result.tokens[i]);
             }
-            result.tokens.Add(")");
 
-
-            //TestVisitor newVisit = new TestVisitor(state);
-            //context.Accept(internalVisitor);
-            //for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
-            //{
-            //    result.tokens.Add(internalVisitor.result.tokens[i]);
-            //}
-            //result.tokens.Add(")");
         }
-
-        // List
-        else if (context.atom().ChildCount == 3 &&
-            context.atom().GetChild(0).ToString() == "[" &&
-            context.atom().GetChild(2).ToString() == "]")
-        {
-            // We use List from System.Collections.Generic
-            state.classState.usingDirs.Add("System.Collections.Generic");
-            result.tokens.Add("new List<object> {");
-            // We assign the type List before visiting the child.
-            state.varState.type = VarState.Types.List;
-            TestListCompVisitor newVisitor = new TestListCompVisitor(state);
-            context.atom().GetChild(1).Accept(newVisitor);
-            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
-            {
-                result.tokens.Add(newVisitor.result.tokens[i]);
-            }
-            result.tokens.Add("}");
-        }
-        // Dictionary or set
-        else if (context.atom().ChildCount == 3 &&
-            context.atom().GetChild(0).ToString() == "{" &&
-            context.atom().GetChild(2).ToString() == "}")
-        {
-            DictOrSetMakerVisitor newVisitor = new DictOrSetMakerVisitor(state);
-            context.atom().GetChild(1).Accept(newVisitor);
-            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
-            {
-                result.tokens.Add(newVisitor.result.tokens[i]);
-            }
-        }
-
 
         // Function call
         if (context.ChildCount == 2 && context.trailer() != null)
@@ -125,8 +104,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
-
         }
+
         return result;
     }
 }

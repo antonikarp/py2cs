@@ -961,6 +961,7 @@
     <None Remove="tests\generated_output\test1.txt" />
     <None Remove="tests\scripts_output\test2.txt" />
     <None Remove="tests\generated_output\test2.txt" />
+    <None Remove="src\visitor\method\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -969,5 +970,6 @@
     <Folder Include="src\visitor\statements\" />
     <Folder Include="src\other\" />
     <Folder Include="src\visitor\functions\" />
+    <Folder Include="src\visitor\method\" />
   </ItemGroup>
 </Project>
