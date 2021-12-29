@@ -58,18 +58,46 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).ToString() == "[" &&
             context.GetChild(2).ToString() == "]")
         {
+            // If it exists, get a list comprehension.
+            CompForVisitor compForVisitor = new CompForVisitor(state);
+            context.GetChild(1).Accept(compForVisitor);
+
             // We use List from System.Collections.Generic
             state.classState.usingDirs.Add("System.Collections.Generic");
-            result.tokens.Add("new List<object> {");
-            // We assign the type List before visiting the child.
-            state.varState.type = VarState.Types.List;
-            TestListCompVisitor newVisitor = new TestListCompVisitor(state);
-            context.GetChild(1).Accept(newVisitor);
-            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+
+            // List comprehension not found.
+            if (compForVisitor.visited == false)
             {
-                result.tokens.Add(newVisitor.result.tokens[i]);
+                result.tokens.Add("new List<object> {");
+                // We assign the type List before visiting the child.
+                state.varState.type = VarState.Types.List;
+                TestListCompVisitor newVisitor = new TestListCompVisitor(state);
+                context.GetChild(1).Accept(newVisitor);
+                for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(newVisitor.result.tokens[i]);
+                }
+                result.tokens.Add("}");
             }
-            result.tokens.Add("}");
+            else
+            {
+                // We use Linq for list comprehension
+                state.classState.usingDirs.Add("System.Linq");
+                for (int i = 0; i < compForVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(compForVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(" select ");
+                TestVisitor exprVisitor = new TestVisitor(state);
+                // Force the collection of tokens only in the leftmost child where
+                // the expression in the list comprehension is located.
+                context.GetChild(1).GetChild(0).Accept(exprVisitor);
+                for (int i = 0; i < exprVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(exprVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(").ToList()");   
+            }
         }
         // Dictionary or set
         else if (context.ChildCount == 3 &&
