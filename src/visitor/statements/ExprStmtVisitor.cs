@@ -28,13 +28,13 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 switch (state.varState.type)
                 {
                     case VarState.Types.List:
-                        result.tokens.Add("List<object> ");
+                        result.tokens.Add("List<dynamic> ");
                         break;
                     case VarState.Types.Dictionary:
-                        result.tokens.Add("Dictionary<object, object> ");
+                        result.tokens.Add("Dictionary<dynamic, dynamic> ");
                         break;
                     case VarState.Types.HashSet:
-                        result.tokens.Add("HashSet<object>");
+                        result.tokens.Add("HashSet<dynamic>");
                         break;
                     // Type other (numeric) or tuple. Tuple is here, because
                     // it is inconvenient to explicity state the type like:

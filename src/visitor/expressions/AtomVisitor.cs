@@ -68,7 +68,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // List comprehension not found.
             if (compForVisitor.visited == false)
             {
-                result.tokens.Add("new List<object> {");
+                result.tokens.Add("new List<dynamic> {");
                 // We assign the type List before visiting the child.
                 state.varState.type = VarState.Types.List;
                 TestListCompVisitor newVisitor = new TestListCompVisitor(state);
