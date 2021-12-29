@@ -55,17 +55,19 @@ public class Output
             }
             firstLine += func.name;
             firstLine += "(";
-            for (int i = 0; i < func.parameters.Count - 1; ++i)
+            for (int i = 0; i < func.parameters.Count; ++i)
             {
+                if (i != 0)
+                {
+                    firstLine += ", ";
+                }
                 firstLine += "dynamic ";
                 firstLine += func.parameters[i];
-                firstLine += ", ";
-            }
-            // Handle the last parameter separately (without a successive comma)
-            if (func.parameters.Count - 1 >= 0)
-            {
-                firstLine += "dynamic ";
-                firstLine += func.parameters[func.parameters.Count - 1];
+                if (func.defaultParameters.ContainsKey(func.parameters[i]))
+                {
+                    firstLine += " = ";
+                    firstLine += func.defaultParameters[func.parameters[i]];
+                }
             }
             firstLine += ")";
             sb.AppendLine(getIndentedLine(firstLine));

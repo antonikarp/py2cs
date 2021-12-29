@@ -9,6 +9,7 @@ public class Function
     public bool isVoid;
     public bool isStatic;
     public List<string> parameters;
+    public Dictionary<string, string> defaultParameters;
     public Function()
     {
         // By default this value is true, however when the visitor encounters
