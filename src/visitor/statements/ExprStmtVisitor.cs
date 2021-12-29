@@ -36,7 +36,10 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                     case VarState.Types.HashSet:
                         result.tokens.Add("HashSet<object>");
                         break;
-                    // Type not recognized or numeric:
+                    // Type other (numeric) or tuple. Tuple is here, because
+                    // it is inconvenient to explicity state the type like:
+                    // (int, int) or (int, int, int) ...
+                    case VarState.Types.Tuple:
                     case VarState.Types.Other:
                         result.tokens.Add("dynamic ");
                         break;

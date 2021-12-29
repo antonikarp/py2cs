@@ -1,11 +1,9 @@
 #!/bin/bash
 
-names=(test1 test2 test3 test4 test5 test6 test7 test8 test9)
+names=(test1 test2 test3 test4 test5 test6 test7 test8 test9 test10)
 
-# Clean the test directories first. We need only the Python scripts/
-rm generated/*
-rm generated_output/*
-rm scripts_output/*
+# First delete the previous generated files.
+bash ./clean_dirs.sh
 
 # Perform translation.
 cd ..
