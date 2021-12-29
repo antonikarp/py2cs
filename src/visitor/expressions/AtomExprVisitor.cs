@@ -9,8 +9,23 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
     }
     public override LineModel VisitAtom_expr([NotNull] Python3Parser.Atom_exprContext context)
     {
+
         result = new LineModel();
-        if (context.atom().ChildCount == 1)
+
+        // Method call
+        // We have the following children:
+        // Child #0: atom
+        // Child #1: trailer
+        // Child #2: trailer
+        if (context.ChildCount == 3 &&
+            context.GetChild(0).GetType().ToString() == "Python3Parser+AtomContext" &&
+            context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext" &&
+            context.GetChild(2).GetType().ToString() == "Python3Parser+TrailerContext")
+        {
+            AtomExprVisitor atomVisitor = new AtomExprVisitor(state);
+        }
+
+        else if (context.atom().ChildCount == 1)
         {
             // Case of numeric literal
             if (context.atom().NUMBER() != null)
@@ -73,16 +88,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
             result.tokens.Add(")");
-
-
-            //TestVisitor newVisit = new TestVisitor(state);
-            //context.Accept(internalVisitor);
-            //for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
-            //{
-            //    result.tokens.Add(internalVisitor.result.tokens[i]);
-            //}
-            //result.tokens.Add(")");
         }
+
 
         // List
         else if (context.atom().ChildCount == 3 &&
@@ -115,9 +122,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
         }
 
-
         // Function call
-        if (context.ChildCount == 2 && context.trailer() != null)
+        else if (context.ChildCount == 2 && context.trailer() != null)
         {
             TrailerVisitor newVisitor = new TrailerVisitor(state);
             context.GetChild(1).Accept(newVisitor);
@@ -127,6 +133,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
 
         }
+
+        
+
         return result;
     }
 }
