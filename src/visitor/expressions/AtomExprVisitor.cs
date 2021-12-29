@@ -22,7 +22,32 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext" &&
             context.GetChild(2).GetType().ToString() == "Python3Parser+TrailerContext")
         {
-            AtomExprVisitor atomVisitor = new AtomExprVisitor(state);
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+            MethodNameTrailerVisitor methodNameTrailerVisitor = new MethodNameTrailerVisitor(state);
+            MethodArglistTrailerVisitor methodArglistTrailerVisitor = new MethodArglistTrailerVisitor(state);
+            context.GetChild(0).Accept(atomVisitor);
+            context.GetChild(1).Accept(methodNameTrailerVisitor);
+            context.GetChild(2).Accept(methodArglistTrailerVisitor);
+            string varName = atomVisitor.result.value;
+
+            // Method "append" on a list.
+            if (state.funcState.variables.ContainsKey(varName) &&
+                state.funcState.variables[varName] == VarState.Types.List &&
+                methodNameTrailerVisitor.result.ToString() == ".append")
+            {
+                methodNameTrailerVisitor.result.tokens.Clear();
+                methodNameTrailerVisitor.result.tokens.Add(".Add");
+            }
+
+            result.tokens.Add(atomVisitor.result.value);
+            for (int i = 0; i < methodNameTrailerVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(methodNameTrailerVisitor.result.tokens[i]);
+            }
+            for (int i = 0; i < methodArglistTrailerVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(methodArglistTrailerVisitor.result.tokens[i]);
+            }
         }
 
         else if (context.atom().ChildCount == 1)
@@ -74,7 +99,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
         }
 
-        // Expression sorrounded by parenthesis.
+        // Expression surrounded by parenthesis.
         else if (context.atom().ChildCount == 3 &&
             context.atom().GetChild(0).ToString() == "(" &&
             context.atom().GetChild(2).ToString() == ")")
@@ -123,7 +148,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
         }
 
         // Function call
-        else if (context.ChildCount == 2 && context.trailer() != null)
+        if (context.ChildCount == 2 && context.trailer() != null)
         {
             TrailerVisitor newVisitor = new TrailerVisitor(state);
             context.GetChild(1).Accept(newVisitor);
@@ -131,10 +156,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
-
         }
-
-        
 
         return result;
     }

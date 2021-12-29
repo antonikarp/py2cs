@@ -15,6 +15,7 @@ public class MethodNameTrailerVisitor : Python3ParserBaseVisitor<LineModel>
         // We have the following children:
         // Child #0: "."
         // Child #1: name of the method
+        result.tokens.Add(".");
         result.tokens.Add(context.NAME().ToString());
         return result;
     }
