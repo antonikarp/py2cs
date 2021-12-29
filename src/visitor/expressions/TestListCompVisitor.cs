@@ -17,8 +17,15 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
         result = new LineModel();
         for (int i = 0; i < context.ChildCount; ++i)
         {
+            // Case of lists or tuples. 
             if (context.GetChild(i).ToString() == ",")
             {
+                // The type of list would have been assigned already.
+                // The other case is Tuple.
+                if (state.varState.type != VarState.Types.List)
+                {
+                    state.varState.type = VarState.Types.Tuple;
+                }
                 result.tokens.Add(", ");
             }
             else

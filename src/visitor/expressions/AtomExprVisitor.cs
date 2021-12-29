@@ -65,13 +65,23 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             context.atom().GetChild(2).ToString() == ")")
         {
             result.tokens.Add("(");
-            TestVisitor internalVisitor = new TestVisitor(state);
-            context.Accept(internalVisitor);
-            for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
+            // This case handles also tuples.
+            TestListCompVisitor newVisitor = new TestListCompVisitor(state);
+            context.atom().GetChild(1).Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add(internalVisitor.result.tokens[i]);
+                result.tokens.Add(newVisitor.result.tokens[i]);
             }
             result.tokens.Add(")");
+
+
+            //TestVisitor newVisit = new TestVisitor(state);
+            //context.Accept(internalVisitor);
+            //for (int i = 0; i < internalVisitor.result.tokens.Count; ++i)
+            //{
+            //    result.tokens.Add(internalVisitor.result.tokens[i]);
+            //}
+            //result.tokens.Add(")");
         }
 
         // List
@@ -82,6 +92,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // We use List from System.Collections.Generic
             state.classState.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new List<object> {");
+            // We assign the type List before visiting the child.
             state.varState.type = VarState.Types.List;
             TestListCompVisitor newVisitor = new TestListCompVisitor(state);
             context.atom().GetChild(1).Accept(newVisitor);
