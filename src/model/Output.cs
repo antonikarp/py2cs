@@ -61,12 +61,35 @@ public class Output
                 {
                     firstLine += ", ";
                 }
-                firstLine += "dynamic ";
-                firstLine += func.parameters[i];
-                if (func.defaultParameters.ContainsKey(func.parameters[i]))
+                
+                // Case of a default parameter.
+                if (func.defaultParameters.ContainsKey(func.parameters[i]) &&
+                    func.defaultParameterTypes.ContainsKey(func.parameters[i]))
                 {
+                    switch (func.defaultParameterTypes[func.parameters[i]])
+                    {
+                        case VarState.Types.Int:
+                            firstLine += "int ";
+                            break;
+                        case VarState.Types.Double:
+                            firstLine += "double ";
+                            break;
+                        case VarState.Types.String:
+                            firstLine += "string ";
+                            break;
+                        default:
+                            firstLine += "dynamic ";
+                            break;
+                    }
+                    firstLine += func.parameters[i];
                     firstLine += " = ";
                     firstLine += func.defaultParameters[func.parameters[i]];
+                }
+                // Case of a positional (usual) parameter
+                else
+                {
+                    firstLine += "dynamic ";
+                    firstLine += func.parameters[i];
                 }
             }
             firstLine += ")";

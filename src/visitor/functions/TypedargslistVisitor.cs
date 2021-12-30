@@ -41,7 +41,9 @@ public class TypedargslistVisitor : Python3ParserBaseVisitor<Empty>
             {
                 TestVisitor defaultValueVisitor = new TestVisitor(state);
                 context.GetChild(i + 2).Accept(defaultValueVisitor);
-                state.funcState.defaultParameters[newParameter] = defaultValueVisitor.result.ToString();
+                string value = defaultValueVisitor.result.ToString();
+                state.funcState.defaultParameters[newParameter] = value;
+                state.funcState.defaultParameterTypes[newParameter] = ParamTypeDeduction.Deduce(value);
                 i += 4;
             }
             // We have a positional parameter.

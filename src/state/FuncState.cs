@@ -6,6 +6,7 @@ public class FuncState
     public bool isStatic;
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
+    public Dictionary<string, VarState.Types> defaultParameterTypes;
     public Dictionary<string, VarState.Types> variables;
     public FuncState()
     {
@@ -14,5 +15,6 @@ public class FuncState
         parameters = new List<string>();
         variables = new Dictionary<string, VarState.Types>();
         defaultParameters = new Dictionary<string, string>();
+        defaultParameterTypes = new Dictionary<string, VarState.Types>();
     }
 }

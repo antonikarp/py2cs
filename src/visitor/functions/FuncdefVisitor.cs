@@ -34,6 +34,8 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         result.parameters = state.funcState.parameters;
         result.isStatic = state.funcState.isStatic;
         result.defaultParameters = state.funcState.defaultParameters;
+        result.defaultParameterTypes = state.funcState.defaultParameterTypes;
+
         state.classState.functions.Add(result);
         return result;
     }
