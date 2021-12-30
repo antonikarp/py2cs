@@ -16,6 +16,10 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
         {
             // Clear the variable state for a potential new declaration.
             state.varState = new VarState();
+
+            // Initialize stmt state for checking if there is a standalone expression.
+            state.stmtState = new StmtState();
+
             SmallStmtVisitor newVisitor = new SmallStmtVisitor(state);
             // For now we assume that simple_stmt has one child: small_stmt
             context.simple_stmt().Accept(newVisitor);
@@ -27,7 +31,11 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
             string line = sb.ToString();
             // Add a semicolon at the end of each line.
             IndentedLine onlyLine = new IndentedLine(line + ";", 0);
-            result.lines.Add(onlyLine);
+            // Check if we have a standalone expression to be ignored.
+            if (!state.stmtState.isStandalone)
+            {
+                result.lines.Add(onlyLine);
+            }
         }
         else if (context.compound_stmt() != null)
         {

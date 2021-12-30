@@ -22,6 +22,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext" &&
             context.GetChild(2).GetType().ToString() == "Python3Parser+TrailerContext")
         {
+            // Expression is not standalone.
+            state.stmtState.isStandalone = false;
+
             AtomVisitor atomVisitor = new AtomVisitor(state);
             MethodNameTrailerVisitor methodNameTrailerVisitor = new MethodNameTrailerVisitor(state);
             MethodArglistTrailerVisitor methodArglistTrailerVisitor = new MethodArglistTrailerVisitor(state);
@@ -98,6 +101,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
         // Function call
         if (context.ChildCount == 2 && context.trailer() != null)
         {
+            // Expression is not standalone.
+            state.stmtState.isStandalone = false;
+
             TrailerVisitor newVisitor = new TrailerVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)

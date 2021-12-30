@@ -58,8 +58,11 @@ public class IfStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                     result.lines.Add(newVisitor.result.lines[j]);
                 }
                 // Indent back after the last line
-                IndentedLine lastLine = new IndentedLine(newVisitor.result.lines[m - 1].line, -1);
-                result.lines.Add(lastLine);
+                if (m != 0)
+                {
+                    IndentedLine lastLine = new IndentedLine(newVisitor.result.lines[m - 1].line, -1);
+                    result.lines.Add(lastLine);
+                }
                 // End the block with a closing brace.
                 IndentedLine closingBraceLine = new IndentedLine("}", 0);
                 result.lines.Add(closingBraceLine);

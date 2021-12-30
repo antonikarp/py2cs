@@ -138,6 +138,13 @@ public class Output
             --indentationLevel;
             sb.AppendLine(getIndentedLine("}"));
         }
+        else if (internalLines.Count == 0)
+        // Empty entry point
+        {
+            sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
+            sb.AppendLine(getIndentedLine("{"));
+            sb.AppendLine(getIndentedLine("}"));
+        }
 
 
         --indentationLevel;

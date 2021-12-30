@@ -11,6 +11,9 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
     }
     public override LineModel VisitFlow_stmt([NotNull] Python3Parser.Flow_stmtContext context)
     {
+        // Expression is not standalone.
+        state.stmtState.isStandalone = false;
+
         result = new LineModel();
         if (context.break_stmt() != null)
         {
