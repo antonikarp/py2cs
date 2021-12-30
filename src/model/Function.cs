@@ -9,6 +9,8 @@ public class Function
     public bool isVoid;
     public bool isStatic;
     public List<string> parameters;
+    public Dictionary<string, string> defaultParameters;
+    public Dictionary<string, VarState.Types> defaultParameterTypes;
     public Function()
     {
         // By default this value is true, however when the visitor encounters
@@ -19,5 +21,6 @@ public class Function
         isStatic = true;
         statements = new BlockModel();
         parameters = new List<string>();
-    }
+        defaultParameterTypes = new Dictionary<string, VarState.Types>();
+}
 }

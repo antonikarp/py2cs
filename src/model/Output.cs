@@ -55,17 +55,42 @@ public class Output
             }
             firstLine += func.name;
             firstLine += "(";
-            for (int i = 0; i < func.parameters.Count - 1; ++i)
+            for (int i = 0; i < func.parameters.Count; ++i)
             {
-                firstLine += "dynamic ";
-                firstLine += func.parameters[i];
-                firstLine += ", ";
-            }
-            // Handle the last parameter separately (without a successive comma)
-            if (func.parameters.Count - 1 >= 0)
-            {
-                firstLine += "dynamic ";
-                firstLine += func.parameters[func.parameters.Count - 1];
+                if (i != 0)
+                {
+                    firstLine += ", ";
+                }
+                
+                // Case of a default parameter.
+                if (func.defaultParameters.ContainsKey(func.parameters[i]) &&
+                    func.defaultParameterTypes.ContainsKey(func.parameters[i]))
+                {
+                    switch (func.defaultParameterTypes[func.parameters[i]])
+                    {
+                        case VarState.Types.Int:
+                            firstLine += "int ";
+                            break;
+                        case VarState.Types.Double:
+                            firstLine += "double ";
+                            break;
+                        case VarState.Types.String:
+                            firstLine += "string ";
+                            break;
+                        default:
+                            firstLine += "dynamic ";
+                            break;
+                    }
+                    firstLine += func.parameters[i];
+                    firstLine += " = ";
+                    firstLine += func.defaultParameters[func.parameters[i]];
+                }
+                // Case of a positional (usual) parameter
+                else
+                {
+                    firstLine += "dynamic ";
+                    firstLine += func.parameters[i];
+                }
             }
             firstLine += ")";
             sb.AppendLine(getIndentedLine(firstLine));
