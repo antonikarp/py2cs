@@ -45,14 +45,20 @@ public class Output
             {
                 firstLine += "static ";
             }
+
             if (func.isVoid)
             {
                 firstLine += "void ";
             }
-            else
+            else if (!func.isVoid && !func.isEnumerable)
             {
-                firstLine += "object ";
+                firstLine += "dynamic ";
             }
+            else if (!func.isVoid && func.isEnumerable)
+            {
+                firstLine += "IEnumerable<dynamic> ";
+            }
+
             firstLine += func.name;
             firstLine += "(";
             for (int i = 0; i < func.parameters.Count; ++i)

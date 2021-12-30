@@ -8,6 +8,7 @@ public class Function
     public string name;
     public bool isVoid;
     public bool isStatic;
+    public bool isEnumerable;
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
     public Dictionary<string, VarState.Types> defaultParameterTypes;
@@ -19,6 +20,9 @@ public class Function
         // For now functions are static, so that they can be called from
         // the static Main method in class Program.
         isStatic = true;
+        // After encountering a yield expression the return type becomes:
+        // IEnumerable<dynamic>
+        isEnumerable = false;
         statements = new BlockModel();
         parameters = new List<string>();
         defaultParameterTypes = new Dictionary<string, VarState.Types>();
