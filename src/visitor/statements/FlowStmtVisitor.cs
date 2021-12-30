@@ -36,6 +36,15 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 }
             }
         }
+        else if (context.yield_stmt() != null)
+        {
+            YieldExprVisitor newVisitor = new YieldExprVisitor(state);
+            context.GetChild(0).Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(newVisitor.result.tokens[i]);
+            }
+        }
         return result;
     }
 

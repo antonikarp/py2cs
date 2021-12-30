@@ -4,6 +4,7 @@ public class FuncState
 {
     public bool isVoid;
     public bool isStatic;
+    public bool isEnumerable;
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
     public Dictionary<string, VarState.Types> defaultParameterTypes;
