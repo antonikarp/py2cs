@@ -1,10 +1,9 @@
-# Default parameters.
+# Default parameters. Named parameters.
 
-def add(a, b):
-	return a+b
+def sub(a=0, b=1):
+	return a-b
 
-def add2(a=0, b=1):
-	return a+b
-
-print(add(1, 3))
-print(add2())
+print(sub(1, 3))
+print(sub())
+print(sub(b=2, a=4))
+print(sub(b=2))
