@@ -21,11 +21,17 @@ public class ExceptClauseVisitor : Python3ParserBaseVisitor<LineModel>
             TestVisitor newVisitor = new TestVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             string value = newVisitor.result.ToString();
+            // Since the names of the exceptions are different in C# than in Python,
+            // we need to translate the names on the case to case basis.
             switch (value)
             {
                 case "ZeroDivisionError":
                     result.tokens.Add("DivideByZeroException");
                     break;
+                case "IndexError":
+                    result.tokens.Add("ArgumentOutOfRangeException");
+                    break;
+                // No match. Try the unchanged name.
                 default:
                     result.tokens.Add(value);
                     break;
