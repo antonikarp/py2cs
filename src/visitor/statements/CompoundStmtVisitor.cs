@@ -45,6 +45,15 @@ public class CompoundStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             context.funcdef().Accept(newVisitor);
             // Do not add to result.lines, the statements are in different function.
         }
+        else if (context.try_stmt() != null)
+        {
+            TryStmtVisitor newVisitor = new TryStmtVisitor(state);
+            context.try_stmt().Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.lines.Count; ++i)
+            {
+                result.lines.Add(newVisitor.result.lines[i]);
+            }
+        }
         return result;
     }
 
