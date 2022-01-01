@@ -44,7 +44,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                     // (int, int) or (int, int, int) ...
                     case VarState.Types.Tuple:
                     case VarState.Types.Other:
-                        result.tokens.Add("dynamic ");
+                        result.tokens.Add("var ");
                         break;
 
                 }
