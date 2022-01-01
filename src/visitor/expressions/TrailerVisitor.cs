@@ -45,19 +45,23 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             }
             result.tokens.Add(")");
         }
-        // Subscription
+        // Subscription and slices
         else if (context.ChildCount == 3 && context.GetChild(0).ToString() == "[" &&
             context.GetChild(2).ToString() == "]")
         {
-            result.tokens.Add("[");
-            // Right now only 1 argument is handled.
-            TestVisitor newVisitor = new TestVisitor(state);
+            
+            Subscript_Visitor newVisitor = new Subscript_Visitor(state);
             context.GetChild(1).Accept(newVisitor);
-            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            string value = newVisitor.result.ToString();
+
+            if (!newVisitor.result.ToString().Contains(':'))
             {
-                result.tokens.Add(newVisitor.result.tokens[i]);
+                // We have the case of a subscription: (e.g. a[1])
+                result.tokens.Add("[");
+                result.tokens.Add(value);
+                result.tokens.Add("]");
             }
-            result.tokens.Add("]");
+            
         }
         // Function call - no parameters
         else if (context.ChildCount == 2 && context.GetChild(0).ToString() == "(" &&
