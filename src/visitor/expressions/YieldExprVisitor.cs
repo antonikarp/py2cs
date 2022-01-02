@@ -20,11 +20,11 @@ public class YieldExprVisitor : Python3ParserBaseVisitor<LineModel>
             // Child #0: yield
             // Child #1: <test>
 
-            state.classState.currentFunctions.Peek().isEnumerable = true;
-            state.classState.currentFunctions.Peek().isVoid = false;
+            state.output.currentClasses.Peek().currentFunctions.Peek().isEnumerable = true;
+            state.output.currentClasses.Peek().currentFunctions.Peek().isVoid = false;
 
             // We use IEnumerable from System.Collections.Generic
-            state.classState.usingDirs.Add("System.Collections.Generic");
+            state.output.usingDirs.Add("System.Collections.Generic");
 
             result.tokens.Add("yield return ");
             TestVisitor newVisitor = new TestVisitor(state);

@@ -12,7 +12,7 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
     public override Function VisitFuncdef([NotNull] Python3Parser.FuncdefContext context)
     {
         state.funcState = new FuncState();
-        state.classState.currentFunctions.Push(new Function()); 
+        state.output.currentClasses.Peek().currentFunctions.Push(new Function()); 
 
         // We assume that we have the following children:
 
@@ -28,10 +28,7 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         SuiteVisitor suiteVisitor = new SuiteVisitor(state);
         context.GetChild(4).Accept(suiteVisitor);
 
-        result = state.classState.currentFunctions.Pop();
-
-        // The model of function has been already updated by calling
-        // state.classState.currentFunctions.Peek() ...
+        result = state.output.currentClasses.Peek().currentFunctions.Pop();
 
         result.name = context.GetChild(1).ToString();
         result.statements.lines = suiteVisitor.result.lines;
@@ -40,14 +37,14 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         // in the class state.
         // Otherwise, add it to the list of functions in the current function.
         // Remember that at the bottom there is always a Main function.
-        if (state.classState.currentFunctions.Count > 1)
+        if (state.output.currentClasses.Peek().currentFunctions.Count > 1)
         {
-            Function parentFunction = state.classState.currentFunctions.Peek();
+            Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
             parentFunction.internalFunctions.Add(result);
         }
         else
         {
-            state.classState.functions.Add(result);
+            state.output.currentClasses.Peek().functions.Add(result);
         }
         return result;
     }

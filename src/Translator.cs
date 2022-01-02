@@ -20,7 +20,7 @@ namespace py2cs
             OutputVisitor outputVisitor = new OutputVisitor();
             // Translate the program.
             outputVisitor.Visit(tree);
-            File.WriteAllText(output_path, outputVisitor.output.ToString());
+            File.WriteAllText(output_path, outputVisitor.state.output.ToString());
         }
     }
 }

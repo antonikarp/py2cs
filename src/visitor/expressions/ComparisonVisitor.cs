@@ -43,9 +43,9 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(rightVisitor.result.tokens[i]);
                 }
-                if (state.classState.currentFunctions.Peek().variables.ContainsKey(rightVisitor.result.ToString()))
+                if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(rightVisitor.result.ToString()))
                 {
-                    VarState.Types type = state.classState.currentFunctions.Peek().variables[rightVisitor.result.ToString()];
+                    VarState.Types type = state.output.currentClasses.Peek().currentFunctions.Peek().variables[rightVisitor.result.ToString()];
                     if (type == VarState.Types.Dictionary)
                     {
                         result.tokens.Add(".ContainsKey");

@@ -17,7 +17,7 @@ do
 
 	# Compile the obtained .cs file.
 	cd generated
-	csc "$name".cs > /dev/null 2>&1
+	csc "$name".cs
 	cd ..
 
 	# Run the compiled program and save its output.

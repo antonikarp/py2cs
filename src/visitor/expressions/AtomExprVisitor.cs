@@ -34,8 +34,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             string varName = atomVisitor.result.ToString();
 
             // Method "append" on a list.
-            if (state.classState.currentFunctions.Peek().variables.ContainsKey(varName) &&
-                state.classState.currentFunctions.Peek().variables[varName] == VarState.Types.List &&
+            if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(varName) &&
+                state.output.currentClasses.Peek().currentFunctions.Peek().variables[varName] == VarState.Types.List &&
                 methodNameTrailerVisitor.result.ToString() == ".append")
             {
                 methodNameTrailerVisitor.result.tokens.Clear();
@@ -73,7 +73,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 if (context.trailer() != null)
                 {
                     // Here there are few cases so use a custom RangeTrailerVisitor.
-                    state.classState.usingDirs.Add("System.Linq");
+                    state.output.usingDirs.Add("System.Linq");
                     result.tokens.Add("Enumerable.Range");
                     RangeTrailerVisitor newVisitor = new RangeTrailerVisitor(state);
                     context.GetChild(1).Accept(newVisitor);
