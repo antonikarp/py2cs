@@ -29,14 +29,13 @@ public class Output
 
     public override string ToString()
     {
-        StringBuilder sb = new StringBuilder();
+        OutputBuilder outputBuilder = new OutputBuilder();
         foreach (var dir in state.classState.usingDirs)
         {
-            sb.AppendLine(getIndentedLine("using " + dir + ";"));
+            outputBuilder.commitIndentedLine(new IndentedLine("using " + dir + ";", 0));
         }
-        sb.AppendLine(getIndentedLine("class Program"));
-        sb.AppendLine(getIndentedLine("{"));
-        ++indentationLevel;
+        outputBuilder.commitIndentedLine(new IndentedLine("class Program", 0));
+        outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
 
         foreach (var func in state.classState.functions)
         {
@@ -99,56 +98,37 @@ public class Output
                 }
             }
             firstLine += ")";
-            sb.AppendLine(getIndentedLine(firstLine));
-            sb.AppendLine(getIndentedLine("{"));
-            ++indentationLevel;
+
+            outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
+            outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
             foreach (var indentedLine in func.statements.lines)
             {
-                sb.AppendLine(getIndentedLine(indentedLine.line));
-                if (indentedLine.increment == 1)
-                {
-                    ++indentationLevel;
-                }
-                else if (indentedLine.increment == -1)
-                {
-                    --indentationLevel;
-                }
+                outputBuilder.commitIndentedLine(indentedLine);
             }
-            --indentationLevel;
-            sb.AppendLine(getIndentedLine("}"));
+            outputBuilder.commitIndentedLine(new IndentedLine("", -1));
+            outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
         }
 
         if (internalLines.Count > 0)
         {
-            sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
-            sb.AppendLine(getIndentedLine("{"));
-            ++indentationLevel;
+            outputBuilder.commitIndentedLine(new IndentedLine("static void Main(string[] args)", 0));
+            outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
             foreach (var indentedLine in internalLines)
             {
-                sb.AppendLine(getIndentedLine(indentedLine.line));
-                if (indentedLine.increment == 1)
-                {
-                    ++indentationLevel;
-                }
-                else if (indentedLine.increment == -1)
-                {
-                    --indentationLevel;
-                }
+                outputBuilder.commitIndentedLine(indentedLine);
             }
-            --indentationLevel;
-            sb.AppendLine(getIndentedLine("}"));
+            outputBuilder.commitIndentedLine(new IndentedLine("", -1));
+            outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
         }
         else if (internalLines.Count == 0)
         // Empty entry point
         {
-            sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
-            sb.AppendLine(getIndentedLine("{"));
-            sb.AppendLine(getIndentedLine("}"));
+            outputBuilder.commitIndentedLine(new IndentedLine("static void Main(string[] args)", 0));
+            outputBuilder.commitIndentedLine(new IndentedLine("{", 0));
+            outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
         }
-
-
-        --indentationLevel;
-        sb.AppendLine(getIndentedLine("}"));
-        return sb.ToString();
+        outputBuilder.commitIndentedLine(new IndentedLine("", -1));
+        outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
+        return outputBuilder.output.ToString();
     }
 }

@@ -26,5 +26,5 @@ public class Function
         statements = new BlockModel();
         parameters = new List<string>();
         defaultParameterTypes = new Dictionary<string, VarState.Types>();
-}
+    }
 }
