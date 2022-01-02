@@ -35,15 +35,22 @@ public class TypedargslistVisitor : Python3ParserBaseVisitor<Empty>
             TfpdefVisitor newVisitor = new TfpdefVisitor(state);
             context.GetChild(i).Accept(newVisitor);
             string newParameter = newVisitor.result.value.ToString();
-            state.funcState.parameters.Add(newParameter);
+            state.output.currentClasses.Peek().currentFunctions.Peek().parameters.Add(newParameter);
+            // The parameter is also a valid variable in the function, so we need
+            // to reserve the name.
+            state.output.currentClasses.Peek().currentFunctions.Peek().variables[newParameter] = VarState.Types.Other;
             // We have a default parameter.
             if (i + 2 < n && context.GetChild(i + 1).ToString() == "=")
             {
                 TestVisitor defaultValueVisitor = new TestVisitor(state);
                 context.GetChild(i + 2).Accept(defaultValueVisitor);
                 string value = defaultValueVisitor.result.ToString();
-                state.funcState.defaultParameters[newParameter] = value;
-                state.funcState.defaultParameterTypes[newParameter] = ParamTypeDeduction.Deduce(value);
+                state.output.currentClasses.Peek().currentFunctions.Peek().defaultParameters[newParameter] = value;
+                VarState.Types defaultParameterDeducedType = ParamTypeDeduction.Deduce(value);
+                state.output.currentClasses.Peek().currentFunctions.Peek().defaultParameterTypes[newParameter] = defaultParameterDeducedType;
+                // Update the type of the variable
+                state.output.currentClasses.Peek().currentFunctions.Peek().variables[newParameter] = defaultParameterDeducedType;
+
                 i += 4;
             }
             // We have a positional parameter.

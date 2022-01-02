@@ -72,7 +72,7 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
             context.arglist().GetChild(2).Accept(secondArgVisitor);
             TestVisitor thirdArgVisitor = new TestVisitor(state);
             context.arglist().GetChild(4).Accept(thirdArgVisitor);
-            state.classState.usingDirs.Add("System.Linq");
+            state.output.usingDirs.Add("System.Linq");
             result.tokens.Add("(");
             result.tokens.Add("(");
             for (int i = 0; i < firstArgVisitor.result.tokens.Count; ++i)

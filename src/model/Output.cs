@@ -5,150 +5,40 @@ using System.Collections.Generic;
 // For now, it translates expressions to the Main method in the Program class.
 public class Output
 {
-    public State state;
     public List<IndentedLine> internalLines;
     public int indentationLevel = 0;
-
+    public OutputBuilder outputBuilder;
+    public Stack<Class> currentClasses;
+    public List<Class> classes;
+    public HashSet<string> usingDirs;
     public Output()
     {
-        state = new State();
         internalLines = new List<IndentedLine>();
+        outputBuilder = new OutputBuilder();
+        currentClasses = new Stack<Class>();
+        usingDirs = new HashSet<string>();
+        classes = new List<Class>();
+        // Class Program
+        Class programClass = new Class(outputBuilder);
+        programClass.name = "Program";
+        // For now this is the only class.
+        currentClasses.Push(programClass);
+        classes.Add(programClass);
+        // Add System in using directives.
+        usingDirs.Add("System");
     }
-
-    public string getIndentedLine(string str)
-    {
-        string result = "";
-        for (int i = 0; i < indentationLevel; ++i)
-        {
-            result += "    ";
-        }
-        result += str;
-        return result;
-    }
-
 
     public override string ToString()
     {
-        StringBuilder sb = new StringBuilder();
-        foreach (var dir in state.classState.usingDirs)
+        foreach (var dir in usingDirs)
         {
-            sb.AppendLine(getIndentedLine("using " + dir + ";"));
+            outputBuilder.commitIndentedLine(new IndentedLine("using " + dir + ";", 0));
         }
-        sb.AppendLine(getIndentedLine("class Program"));
-        sb.AppendLine(getIndentedLine("{"));
-        ++indentationLevel;
-
-        foreach (var func in state.classState.functions)
+        foreach (var cls in classes)
         {
-            string firstLine = "public ";
-            if (func.isStatic)
-            {
-                firstLine += "static ";
-            }
-
-            if (func.isVoid)
-            {
-                firstLine += "void ";
-            }
-            else if (!func.isVoid && !func.isEnumerable)
-            {
-                firstLine += "dynamic ";
-            }
-            else if (!func.isVoid && func.isEnumerable)
-            {
-                firstLine += "IEnumerable<dynamic> ";
-            }
-
-            firstLine += func.name;
-            firstLine += "(";
-            for (int i = 0; i < func.parameters.Count; ++i)
-            {
-                if (i != 0)
-                {
-                    firstLine += ", ";
-                }
-                
-                // Case of a default parameter.
-                if (func.defaultParameters.ContainsKey(func.parameters[i]) &&
-                    func.defaultParameterTypes.ContainsKey(func.parameters[i]))
-                {
-                    switch (func.defaultParameterTypes[func.parameters[i]])
-                    {
-                        case VarState.Types.Int:
-                            firstLine += "int ";
-                            break;
-                        case VarState.Types.Double:
-                            firstLine += "double ";
-                            break;
-                        case VarState.Types.String:
-                            firstLine += "string ";
-                            break;
-                        default:
-                            firstLine += "dynamic ";
-                            break;
-                    }
-                    firstLine += func.parameters[i];
-                    firstLine += " = ";
-                    firstLine += func.defaultParameters[func.parameters[i]];
-                }
-                // Case of a positional (usual) parameter
-                else
-                {
-                    firstLine += "dynamic ";
-                    firstLine += func.parameters[i];
-                }
-            }
-            firstLine += ")";
-            sb.AppendLine(getIndentedLine(firstLine));
-            sb.AppendLine(getIndentedLine("{"));
-            ++indentationLevel;
-            foreach (var indentedLine in func.statements.lines)
-            {
-                sb.AppendLine(getIndentedLine(indentedLine.line));
-                if (indentedLine.increment == 1)
-                {
-                    ++indentationLevel;
-                }
-                else if (indentedLine.increment == -1)
-                {
-                    --indentationLevel;
-                }
-            }
-            --indentationLevel;
-            sb.AppendLine(getIndentedLine("}"));
+            cls.outputBuilder = outputBuilder;
+            cls.CommitToOutput();
         }
-
-        if (internalLines.Count > 0)
-        {
-            sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
-            sb.AppendLine(getIndentedLine("{"));
-            ++indentationLevel;
-            foreach (var indentedLine in internalLines)
-            {
-                sb.AppendLine(getIndentedLine(indentedLine.line));
-                if (indentedLine.increment == 1)
-                {
-                    ++indentationLevel;
-                }
-                else if (indentedLine.increment == -1)
-                {
-                    --indentationLevel;
-                }
-            }
-            --indentationLevel;
-            sb.AppendLine(getIndentedLine("}"));
-        }
-        else if (internalLines.Count == 0)
-        // Empty entry point
-        {
-            sb.AppendLine(getIndentedLine("static void Main(string[] args)"));
-            sb.AppendLine(getIndentedLine("{"));
-            sb.AppendLine(getIndentedLine("}"));
-        }
-
-
-        --indentationLevel;
-        sb.AppendLine(getIndentedLine("}"));
-        return sb.ToString();
+        return outputBuilder.output.ToString();
     }
 }

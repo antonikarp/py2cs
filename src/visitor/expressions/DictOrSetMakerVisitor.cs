@@ -26,7 +26,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         // Case of a dictionary.
         if (isDict)
         {
-            state.classState.usingDirs.Add("System.Collections.Generic");
+            state.output.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new Dictionary<dynamic, dynamic> {");
             state.varState.type = VarState.Types.Dictionary;
             int j = 0;
@@ -60,7 +60,7 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         // Case of a set.
         else
         {
-            state.classState.usingDirs.Add("System.Collections.Generic");
+            state.output.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new HashSet<dynamic> {");
             state.varState.type = VarState.Types.HashSet;
             int j = 0;

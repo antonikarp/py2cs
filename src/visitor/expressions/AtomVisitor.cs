@@ -63,7 +63,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(1).Accept(compForVisitor);
 
             // We use List from System.Collections.Generic
-            state.classState.usingDirs.Add("System.Collections.Generic");
+            state.output.usingDirs.Add("System.Collections.Generic");
 
             // List comprehension not found.
             if (compForVisitor.visited == false)
@@ -82,7 +82,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             else
             {
                 // We use Linq for list comprehension
-                state.classState.usingDirs.Add("System.Linq");
+                state.output.usingDirs.Add("System.Linq");
                 for (int i = 0; i < compForVisitor.result.tokens.Count; ++i)
                 {
                     result.tokens.Add(compForVisitor.result.tokens[i]);

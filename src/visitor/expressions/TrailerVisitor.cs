@@ -220,7 +220,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
 
             if (includeLinq)
             {
-                state.classState.usingDirs.Add("System.Linq");
+                state.output.usingDirs.Add("System.Linq");
             }
         }
         // Function call - no parameters
