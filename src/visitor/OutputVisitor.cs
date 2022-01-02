@@ -14,6 +14,7 @@ public class OutputVisitor : Python3ParserBaseVisitor<State> {
     }
     public override State VisitStmt([NotNull] Python3Parser.StmtContext context)
     {
+        // All of these statements belong to the Main function (entry point).
         StmtVisitor newVisitor = new StmtVisitor(state);
         context.Accept(newVisitor);
         for (int i = 0; i < newVisitor.result.lines.Count; ++i)

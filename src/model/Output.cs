@@ -9,6 +9,7 @@ public class Output
     public int indentationLevel = 0;
     public OutputBuilder outputBuilder;
     public Stack<Class> currentClasses;
+    public List<Class> classes;
     public HashSet<string> usingDirs;
     public Output()
     {
@@ -16,10 +17,13 @@ public class Output
         outputBuilder = new OutputBuilder();
         currentClasses = new Stack<Class>();
         usingDirs = new HashSet<string>();
+        classes = new List<Class>();
         // Class Program
         Class programClass = new Class(outputBuilder);
         programClass.name = "Program";
+        // For now this is the only class.
         currentClasses.Push(programClass);
+        classes.Add(programClass);
         // Add System in using directives.
         usingDirs.Add("System");
     }
@@ -30,21 +34,11 @@ public class Output
         {
             outputBuilder.commitIndentedLine(new IndentedLine("using " + dir + ";", 0));
         }
-        outputBuilder.commitIndentedLine(new IndentedLine("class Program", 0));
-        outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
-
-        foreach (var func in currentClasses.Peek().functions)
+        foreach (var cls in classes)
         {
-            func.outputBuilder = outputBuilder;
-            func.CommitToOutput();
+            cls.outputBuilder = outputBuilder;
+            cls.CommitToOutput();
         }
-        // Main function:
-        var mainFunction = currentClasses.Peek().currentFunctions.Peek();
-        mainFunction.outputBuilder = outputBuilder;
-        mainFunction.CommitToOutput();
-
-        outputBuilder.commitIndentedLine(new IndentedLine("", -1));
-        outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
         return outputBuilder.output.ToString();
     }
 }

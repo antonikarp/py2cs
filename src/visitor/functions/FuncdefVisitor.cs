@@ -11,7 +11,6 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
     }
     public override Function VisitFuncdef([NotNull] Python3Parser.FuncdefContext context)
     {
-        state.funcState = new FuncState();
         state.output.currentClasses.Peek().currentFunctions.Push(new Function()); 
 
         // We assume that we have the following children:
