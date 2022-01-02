@@ -18,12 +18,22 @@ public class Output
         currentClasses = new Stack<Class>();
         usingDirs = new HashSet<string>();
         classes = new List<Class>();
-        // Class Program
-        Class programClass = new Class(outputBuilder);
+
+        // Class Program.
+        Class programClass = new Class(this);
         programClass.name = "Program";
-        // For now this is the only class.
+        
+        // Function Main - entry point
+        Function mainFunction = new Function(this);
+        mainFunction.isVoid = true;
+        mainFunction.isStatic = true;
+        mainFunction.name = "Main";
+        programClass.currentFunctions.Push(mainFunction);
+        programClass.functions.Add(mainFunction);
+
         currentClasses.Push(programClass);
         classes.Add(programClass);
+
         // Add System in using directives.
         usingDirs.Add("System");
     }
@@ -36,7 +46,6 @@ public class Output
         }
         foreach (var cls in classes)
         {
-            cls.outputBuilder = outputBuilder;
             cls.CommitToOutput();
         }
         return outputBuilder.output.ToString();

@@ -964,6 +964,7 @@
     <None Remove="src\visitor\method\" />
     <None Remove="src\type\" />
     <None Remove="src\model\visitor\" />
+    <None Remove="src\visitor\classes\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -972,8 +973,9 @@
     <Folder Include="src\visitor\statements\" />
     <Folder Include="src\other\" />
     <Folder Include="src\visitor\functions\" />
-    <Folder Include="src\visitor\method\" />
+    <Folder Include="src\visitor\methods\" />
     <Folder Include="src\type\" />
     <Folder Include="src\model\visitor\" />
+    <Folder Include="src\visitor\classes\" />
   </ItemGroup>
 </Project>

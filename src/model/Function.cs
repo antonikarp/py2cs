@@ -13,10 +13,10 @@ public class Function
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
     public Dictionary<string, VarState.Types> defaultParameterTypes;
-    public OutputBuilder outputBuilder;
     public Dictionary<string, VarState.Types> variables;
     public List<Function> internalFunctions;
-    public Function()
+    public Output output;
+    public Function(Output _output)
     {
         // By default this value is true, however when the visitor encounters
         // a return statement with expression, it becomes false.
@@ -39,6 +39,7 @@ public class Function
         defaultParameterTypes = new Dictionary<string, VarState.Types>();
         internalFunctions = new List<Function>();
         variables = new Dictionary<string, VarState.Types>();
+        output = _output;
     }
     public void CommitToOutput()
     {
@@ -106,22 +107,21 @@ public class Function
         }
         firstLine += ")";
 
-        outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
-        outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
+        output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
         // Commit each internal function.
         foreach (var internalFunc in internalFunctions)
         {
             // Internal functions are not public.
             internalFunc.isPublic = false;
-            internalFunc.outputBuilder = outputBuilder;
             internalFunc.CommitToOutput();
         }
 
         foreach (var indentedLine in statements.lines)
         {
-            outputBuilder.commitIndentedLine(indentedLine);
+            output.outputBuilder.commitIndentedLine(indentedLine);
         }
-        outputBuilder.commitIndentedLine(new IndentedLine("", -1));
-        outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("", -1));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
     }
 }

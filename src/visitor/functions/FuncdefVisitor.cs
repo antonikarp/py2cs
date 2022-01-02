@@ -11,7 +11,7 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
     }
     public override Function VisitFuncdef([NotNull] Python3Parser.FuncdefContext context)
     {
-        state.output.currentClasses.Peek().currentFunctions.Push(new Function()); 
+        state.output.currentClasses.Peek().currentFunctions.Push(new Function(state.output)); 
 
         // We assume that we have the following children:
 
@@ -30,6 +30,12 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         result = state.output.currentClasses.Peek().currentFunctions.Pop();
 
         result.name = context.GetChild(1).ToString();
+        // Special case __init__ - constructor
+        if (result.name == "__init__")
+        {
+            result.name = state.output.currentClasses.Peek().name;
+        }
+
         result.statements.lines = suiteVisitor.result.lines;
 
         // If the function is not internal, add it to the list of functions
