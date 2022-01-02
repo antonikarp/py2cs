@@ -29,7 +29,7 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // We have a case: "return expr";
             if (context.return_stmt().ChildCount == 2)
             {
-                state.funcState.isVoid = false;
+                state.classState.currentFunctions.Peek().isVoid = false;
                 TestVisitor newVisitor = new TestVisitor(state);
                 context.return_stmt().GetChild(1).Accept(newVisitor);
                 result.tokens.Add(" ");

@@ -25,7 +25,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
             // Check if the variable has been already declared.
-            if (!state.funcState.variables.ContainsKey(leftVisitor.result.ToString()))
+            if (!state.classState.currentFunctions.Peek().variables.ContainsKey(leftVisitor.result.ToString()))
             {
                 // This is a case of declaration with initialization.
                 switch (state.varState.type)
@@ -48,7 +48,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         break;
 
                 }
-                state.funcState.variables.Add(leftVisitor.result.ToString(), state.varState.type);
+                state.classState.currentFunctions.Peek().variables.Add(leftVisitor.result.ToString(), state.varState.type);
             }
             // The following instructions are common for both cases (declaration
             // with initialization, assignment)

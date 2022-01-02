@@ -19,7 +19,7 @@ public class OutputVisitor : Python3ParserBaseVisitor<Output> {
         context.Accept(newVisitor);
         for (int i = 0; i < newVisitor.result.lines.Count; ++i)
         {
-            output.internalLines.Add(newVisitor.result.lines[i]);
+            output.state.classState.currentFunctions.Peek().statements.lines.Add(newVisitor.result.lines[i]);
         }
         return output;
     }

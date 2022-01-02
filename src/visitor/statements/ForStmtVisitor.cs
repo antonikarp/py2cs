@@ -35,9 +35,9 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             collectionVisitor.result.ToString();
 
         // Check type of the collection. If it is Dictionary then add the property Keys
-        if (state.funcState.variables.ContainsKey(collectionVisitor.result.ToString()))
+        if (state.classState.currentFunctions.Peek().variables.ContainsKey(collectionVisitor.result.ToString()))
         {
-            VarState.Types type = state.funcState.variables[collectionVisitor.result.ToString()];
+            VarState.Types type = state.classState.currentFunctions.Peek().variables[collectionVisitor.result.ToString()];
             if (type == VarState.Types.Dictionary)
             {
                 line += ".Keys";

@@ -11,8 +11,9 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
     }
     public override Function VisitFuncdef([NotNull] Python3Parser.FuncdefContext context)
     {
-        result = new Function();
         state.funcState = new FuncState();
+        state.classState.currentFunctions.Push(new Function()); 
+
         // We assume that we have the following children:
 
         // Child 0: "def"
@@ -27,17 +28,27 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         SuiteVisitor suiteVisitor = new SuiteVisitor(state);
         context.GetChild(4).Accept(suiteVisitor);
 
-        // Commit a new function to the list of functions in the class state.
+        result = state.classState.currentFunctions.Pop();
+
+        // The model of function has been already updated by calling
+        // state.classState.currentFunctions.Peek() ...
+
         result.name = context.GetChild(1).ToString();
         result.statements.lines = suiteVisitor.result.lines;
-        result.isVoid = state.funcState.isVoid;
-        result.parameters = state.funcState.parameters;
-        result.isStatic = state.funcState.isStatic;
-        result.isEnumerable = state.funcState.isEnumerable;
-        result.defaultParameters = state.funcState.defaultParameters;
-        result.defaultParameterTypes = state.funcState.defaultParameterTypes;
 
-        state.classState.functions.Add(result);
+        // If the function is not internal, add it to the list of functions
+        // in the class state.
+        // Otherwise, add it to the list of functions in the current function.
+        // Remember that at the bottom there is always a Main function.
+        if (state.classState.currentFunctions.Count > 1)
+        {
+            Function parentFunction = state.classState.currentFunctions.Peek();
+            parentFunction.internalFunctions.Add(result);
+        }
+        else
+        {
+            state.classState.functions.Add(result);
+        }
         return result;
     }
 

@@ -8,7 +8,7 @@ public class FuncState
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
     public Dictionary<string, VarState.Types> defaultParameterTypes;
-    public Dictionary<string, VarState.Types> variables;
+    public Dictionary<string, VarState.Types> variables;  
     public FuncState()
     {
         isVoid = true;

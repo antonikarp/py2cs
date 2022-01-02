@@ -34,8 +34,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             string varName = atomVisitor.result.ToString();
 
             // Method "append" on a list.
-            if (state.funcState.variables.ContainsKey(varName) &&
-                state.funcState.variables[varName] == VarState.Types.List &&
+            if (state.classState.currentFunctions.Peek().variables.ContainsKey(varName) &&
+                state.classState.currentFunctions.Peek().variables[varName] == VarState.Types.List &&
                 methodNameTrailerVisitor.result.ToString() == ".append")
             {
                 methodNameTrailerVisitor.result.tokens.Clear();
