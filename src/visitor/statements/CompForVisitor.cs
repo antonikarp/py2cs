@@ -19,7 +19,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
 
         // We have the following children:
         // Child #0: for
-        // Child #1: exprlist (for now assume that it is a single shift_expr)
+        // Child #1: exprlist (for now assume that it is a single expr)
         // Child #2: in
         // Child #3: or_test
 
@@ -28,7 +28,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
         if (context.ChildCount >= 4)
         {
             result.tokens.Add("(from ");
-            ShiftExprVisitor iteratorVisitor = new ShiftExprVisitor(state);
+            ExprVisitor iteratorVisitor = new ExprVisitor(state);
             context.GetChild(1).Accept(iteratorVisitor);
             for (int i = 0; i < iteratorVisitor.result.tokens.Count; ++i)
             {
