@@ -5,10 +5,12 @@ using System.Collections.Generic;
 public class Function
 {
     public BlockModel statements;
+    public Class parentClass;
     public string name;
     public bool isVoid;
     public bool isStatic;
     public bool isPublic;
+    public bool isConstructor;
     public bool isEnumerable;
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
@@ -33,6 +35,9 @@ public class Function
         // By default the function is public, it is changed in internal functions.
         isPublic = true;
 
+        // Translated function __init__ is a constructor.
+        isConstructor = false;
+
         statements = new BlockModel();
         parameters = new List<string>();
         defaultParameters = new Dictionary<string, string>();
@@ -44,26 +49,34 @@ public class Function
     public void CommitToOutput()
     {
         string firstLine = "";
-        if (isPublic)
+        if (isConstructor)
         {
             firstLine += "public ";
         }
-        if (isStatic)
+        else
         {
-            firstLine += "static ";
-        }
+            if (isPublic)
+            {
+                firstLine += "public ";
+            }
+            // For now, all methods outside of Main class are not static.
+            if (isStatic && parentClass.name == "Program")
+            {
+                firstLine += "static ";
+            }
 
-        if (isVoid)
-        {
-            firstLine += "void ";
-        }
-        else if (!isVoid && !isEnumerable)
-        {
-            firstLine += "dynamic ";
-        }
-        else if (!isVoid && isEnumerable)
-        {
-            firstLine += "IEnumerable<dynamic> ";
+            if (isVoid)
+            {
+                firstLine += "void ";
+            }
+            else if (!isVoid && !isEnumerable)
+            {
+                firstLine += "dynamic ";
+            }
+            else if (!isVoid && isEnumerable)
+            {
+                firstLine += "IEnumerable<dynamic> ";
+            }
         }
 
         firstLine += name;

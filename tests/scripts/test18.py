@@ -6,3 +6,4 @@ class Person:
         print(self.name)
         print(self.age)
 p1 = Person("John", 20)
+p1.show()

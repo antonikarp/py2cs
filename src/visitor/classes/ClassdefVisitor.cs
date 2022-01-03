@@ -26,9 +26,21 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
         context.suite().Accept(suiteVisitor);
 
         result = state.output.currentClasses.Pop();
-        
-        // So far no nested classes.
-        state.output.classes.Add(result);
+        // If the function is not internal, add it to the list of classes in
+        // the output.
+        // Otherwise, add it to the list of classes in the current class.
+        // Remember that at the bottom there is always the Program class.
+        if (state.output.currentClasses.Count > 1)
+        {
+            Class parentClass = state.output.currentClasses.Peek();
+            parentClass.internalClasses.Add(result);
+        }
+        else
+        {
+            state.output.classes.Add(result);
+        }
+        state.output.allClasses.Add(result);
+
         return result;
     }
 

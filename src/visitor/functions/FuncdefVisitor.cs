@@ -30,18 +30,27 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         result = state.output.currentClasses.Peek().currentFunctions.Pop();
 
         result.name = context.GetChild(1).ToString();
+
         // Special case __init__ - constructor
         if (result.name == "__init__")
         {
-            result.name = state.output.currentClasses.Peek().name;
+            HandleInitMethod();
         }
+
+        // If the first paramter is "self" then we remove it.
+        if (result.parameters.Count > 0 && result.parameters[0] == "self")
+        {
+            result.parameters.RemoveAt(0);
+        }
+        
 
         result.statements.lines = suiteVisitor.result.lines;
 
         // If the function is not internal, add it to the list of functions
         // in the class state.
         // Otherwise, add it to the list of functions in the current function.
-        // Remember that at the bottom there is always a Main function.
+        // If we are in the Program class, at the bottom there is always a Main
+        // function.
         if (state.output.currentClasses.Peek().currentFunctions.Count > 1)
         {
             Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
@@ -51,7 +60,15 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         {
             state.output.currentClasses.Peek().functions.Add(result);
         }
+        result.parentClass = state.output.currentClasses.Peek();
         return result;
+    }
+    public void HandleInitMethod()
+    {
+        // Change the name to the name of the class (constructor).
+        result.name = state.output.currentClasses.Peek().name;
+        result.isConstructor = true;
+        
     }
 
 

@@ -12,7 +12,17 @@ public class MethodArglistTrailerVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitTrailer([NotNull] Python3Parser.TrailerContext context)
     {
         result = new LineModel();
-        // We have the following child:
+        // We have the following children if there are no arguments:
+        // Child #0: "("
+        // Child #1: ")"
+        if (context.ChildCount == 2 && context.GetChild(0).ToString() == "("
+            && context.GetChild(1).ToString() == ")")
+        {
+            result.tokens.Add("()");
+            return result;
+        }
+
+        // We have the following children if there are arguments:
         // Child #0: "("
         // Child #1: arglist
         // Child #2: ")"
