@@ -39,7 +39,7 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
         {
             state.output.classes.Add(result);
         }
-        state.output.allClasses.Add(result);
+        state.output.allClasses.Add(result.name);
 
         return result;
     }

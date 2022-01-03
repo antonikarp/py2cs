@@ -68,7 +68,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             string[] tokens2 = potentialConstructorCall.Split('(');
             foreach (var cls in state.output.allClasses)
             {
-                if (cls.name == tokens2[0])
+                if (cls == tokens2[0])
                 {
                     result.tokens.Add("new ");
                     break;

@@ -12,7 +12,7 @@ public class Output
     public List<Class> classes;
     // allClasses is for checking if we have a constructor call (we need to
     // take into account also the nested classes).
-    public List<Class> allClasses;
+    public List<string> allClasses;
     public HashSet<string> usingDirs;
     public Output()
     {
@@ -21,7 +21,7 @@ public class Output
         currentClasses = new Stack<Class>();
         usingDirs = new HashSet<string>();
         classes = new List<Class>();
-        allClasses = new List<Class>();
+        allClasses = new List<string>();
         // Class Program.
         Class programClass = new Class(this);
         programClass.name = "Program";
@@ -37,7 +37,7 @@ public class Output
 
         currentClasses.Push(programClass);
         classes.Add(programClass);
-        allClasses.Add(programClass);
+        allClasses.Add(programClass.name);
 
         // Add System in using directives.
         usingDirs.Add("System");
