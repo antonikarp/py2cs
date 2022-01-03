@@ -5,18 +5,20 @@ using System.Collections.Generic;
 public class Function
 {
     public BlockModel statements;
+    public Class parentClass;
     public string name;
     public bool isVoid;
     public bool isStatic;
     public bool isPublic;
+    public bool isConstructor;
     public bool isEnumerable;
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
     public Dictionary<string, VarState.Types> defaultParameterTypes;
-    public OutputBuilder outputBuilder;
     public Dictionary<string, VarState.Types> variables;
     public List<Function> internalFunctions;
-    public Function()
+    public Output output;
+    public Function(Output _output)
     {
         // By default this value is true, however when the visitor encounters
         // a return statement with expression, it becomes false.
@@ -33,36 +35,48 @@ public class Function
         // By default the function is public, it is changed in internal functions.
         isPublic = true;
 
+        // Translated function __init__ is a constructor.
+        isConstructor = false;
+
         statements = new BlockModel();
         parameters = new List<string>();
         defaultParameters = new Dictionary<string, string>();
         defaultParameterTypes = new Dictionary<string, VarState.Types>();
         internalFunctions = new List<Function>();
         variables = new Dictionary<string, VarState.Types>();
+        output = _output;
     }
     public void CommitToOutput()
     {
         string firstLine = "";
-        if (isPublic)
+        if (isConstructor)
         {
             firstLine += "public ";
         }
-        if (isStatic)
+        else
         {
-            firstLine += "static ";
-        }
+            if (isPublic)
+            {
+                firstLine += "public ";
+            }
+            // For now, all methods outside of Main class are not static.
+            if (isStatic && parentClass.name == "Program")
+            {
+                firstLine += "static ";
+            }
 
-        if (isVoid)
-        {
-            firstLine += "void ";
-        }
-        else if (!isVoid && !isEnumerable)
-        {
-            firstLine += "dynamic ";
-        }
-        else if (!isVoid && isEnumerable)
-        {
-            firstLine += "IEnumerable<dynamic> ";
+            if (isVoid)
+            {
+                firstLine += "void ";
+            }
+            else if (!isVoid && !isEnumerable)
+            {
+                firstLine += "dynamic ";
+            }
+            else if (!isVoid && isEnumerable)
+            {
+                firstLine += "IEnumerable<dynamic> ";
+            }
         }
 
         firstLine += name;
@@ -106,22 +120,21 @@ public class Function
         }
         firstLine += ")";
 
-        outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
-        outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
+        output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
         // Commit each internal function.
         foreach (var internalFunc in internalFunctions)
         {
             // Internal functions are not public.
             internalFunc.isPublic = false;
-            internalFunc.outputBuilder = outputBuilder;
             internalFunc.CommitToOutput();
         }
 
         foreach (var indentedLine in statements.lines)
         {
-            outputBuilder.commitIndentedLine(indentedLine);
+            output.outputBuilder.commitIndentedLine(indentedLine);
         }
-        outputBuilder.commitIndentedLine(new IndentedLine("", -1));
-        outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("", -1));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
     }
 }

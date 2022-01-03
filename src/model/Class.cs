@@ -4,42 +4,46 @@ using System.Collections.Generic;
 public class Class
 {
     public string name;
+    public BlockModel fieldDecl;
+    public List<string> fields;
     public Function mainMethod;
-    public OutputBuilder outputBuilder;
     public Stack<Function> currentFunctions;
     public List<Function> functions;
-    public Class(OutputBuilder _outputBuilder)
+    public List<Class> internalClasses;
+    public Output output;
+    public Class(Output _output)
     {
-        mainMethod = new Function();
-        outputBuilder = _outputBuilder;
+        output = _output;
+        mainMethod = new Function(output);
         currentFunctions = new Stack<Function>();
         functions = new List<Function>();
-        // Function Main
-        Function mainFunction = new Function();
-        mainFunction.isVoid = true;
-        mainFunction.isStatic = true;
-        mainFunction.name = "Main";
-        currentFunctions.Push(mainFunction);
+        fieldDecl = new BlockModel();
+        fields = new List<string>();
+        internalClasses = new List<Class>();
     }
     public void CommitToOutput()
     {
-        string firstLine = "class ";
+        string firstLine = "public class ";
         firstLine += name;
-        outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
-        outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
+        output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
+        foreach (var line in fieldDecl.lines)
+        {
+            output.outputBuilder.commitIndentedLine(line);
+        }
+        // Print all internal classes.
+        foreach (var internalCls in internalClasses)
+        {
+            internalCls.CommitToOutput();
+        }
+
         foreach (var func in functions)
         {
-            func.outputBuilder = outputBuilder;
             func.CommitToOutput();
         }
 
-        // Main function is left on the stack.
-        var mainFunction = currentFunctions.Peek();
-        mainFunction.outputBuilder = outputBuilder;
-        mainFunction.CommitToOutput();
-
-        outputBuilder.commitIndentedLine(new IndentedLine("", -1));
-        outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("", -1));
+        output.outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
 
     }
 

@@ -10,6 +10,9 @@ public class Output
     public OutputBuilder outputBuilder;
     public Stack<Class> currentClasses;
     public List<Class> classes;
+    // allClasses is for checking if we have a constructor call (we need to
+    // take into account also the nested classes).
+    public List<string> allClasses;
     public HashSet<string> usingDirs;
     public Output()
     {
@@ -18,12 +21,24 @@ public class Output
         currentClasses = new Stack<Class>();
         usingDirs = new HashSet<string>();
         classes = new List<Class>();
-        // Class Program
-        Class programClass = new Class(outputBuilder);
+        allClasses = new List<string>();
+        // Class Program.
+        Class programClass = new Class(this);
         programClass.name = "Program";
-        // For now this is the only class.
+        
+        // Function Main - entry point
+        Function mainFunction = new Function(this);
+        mainFunction.isVoid = true;
+        mainFunction.isStatic = true;
+        mainFunction.name = "Main";
+        mainFunction.parentClass = programClass;
+        programClass.currentFunctions.Push(mainFunction);
+        programClass.functions.Add(mainFunction);
+
         currentClasses.Push(programClass);
         classes.Add(programClass);
+        allClasses.Add(programClass.name);
+
         // Add System in using directives.
         usingDirs.Add("System");
     }
@@ -36,7 +51,6 @@ public class Output
         }
         foreach (var cls in classes)
         {
-            cls.outputBuilder = outputBuilder;
             cls.CommitToOutput();
         }
         return outputBuilder.output.ToString();

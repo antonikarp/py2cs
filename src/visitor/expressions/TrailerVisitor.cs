@@ -229,6 +229,27 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
         {
             result.tokens.Add("()");
         }
+        // Field (ex. self.name)
+        else if (context.ChildCount == 2 && context.GetChild(0).ToString() == ".")
+        {
+            result.tokens.Add(".");
+            string name = context.GetChild(1).ToString();
+
+            // Add a line to the field declarations.
+            if (!state.output.currentClasses.Peek().fields.Contains(name))
+            {
+                string line = "public dynamic ";
+                line += name;
+                line += ";";
+                state.output.currentClasses.Peek().fieldDecl.lines.Add(new IndentedLine(line, 0));
+
+                // Add a name to the fields of the class.
+                state.output.currentClasses.Peek().fields.Add(name);
+            }
+
+            result.tokens.Add(name);
+        }
+
         return result;
     }
 

@@ -24,8 +24,13 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             TestVisitor rightVisitor = new TestVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
+
             // Check if the variable has been already declared.
-            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(leftVisitor.result.ToString()))
+            // Or it can be declared as a field.
+            string[] tokens = leftVisitor.result.ToString().Split(".");
+
+            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(leftVisitor.result.ToString())
+                && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
             {
                 // This is a case of declaration with initialization.
                 switch (state.varState.type)
@@ -57,6 +62,19 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(leftVisitor.result.tokens[i]);
             }
             result.tokens.Add(" = ");
+
+            // If it is a call to constructor, we need to add "new" keyword.
+            string potentialConstructorCall = rightVisitor.result.ToString();
+            string[] tokens2 = potentialConstructorCall.Split('(');
+            foreach (var cls in state.output.allClasses)
+            {
+                if (cls == tokens2[0])
+                {
+                    result.tokens.Add("new ");
+                    break;
+                }
+            }
+
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(rightVisitor.result.tokens[i]);
