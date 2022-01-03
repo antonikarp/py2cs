@@ -12,7 +12,7 @@ public class FactorVisitor : Python3ParserBaseVisitor<LineModel>
     {
         result = new LineModel();
 
-        // Case of the unary '+' or '-'
+        // Case of the unary '+' or '-' or bitwise '~'
         if (context.ChildCount == 2)
         {
             result.tokens.Add(context.GetChild(0).ToString());

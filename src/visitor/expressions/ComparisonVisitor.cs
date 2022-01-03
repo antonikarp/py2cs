@@ -15,10 +15,10 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitComparison([NotNull] Python3Parser.ComparisonContext context)
     {
         result = new LineModel();
-        // If there is one child then it is shift expression.
+        // If there is one child then it is a "expr".
         if (context.ChildCount == 1)
         {
-            ShiftExprVisitor newVisitor = new ShiftExprVisitor(state);
+            ExprVisitor newVisitor = new ExprVisitor(state);
             context.GetChild(0).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
@@ -30,8 +30,8 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
         else if (context.ChildCount == 3)
         {
             CompOpVisitor opVisitor = new CompOpVisitor(state);
-            ShiftExprVisitor leftVisitor = new ShiftExprVisitor(state);
-            ShiftExprVisitor rightVisitor = new ShiftExprVisitor(state);
+            ExprVisitor leftVisitor = new ExprVisitor(state);
+            ExprVisitor rightVisitor = new ExprVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(1).Accept(opVisitor);
             context.GetChild(2).Accept(rightVisitor);
@@ -82,12 +82,12 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
         else
         {
             int numberOfExpr = context.ChildCount / 2 + 1;
-            List<ShiftExprVisitor> visitors = new List<ShiftExprVisitor>();
+            List<ExprVisitor> visitors = new List<ExprVisitor>();
             List<CompOpVisitor> opVisitors = new List<CompOpVisitor>();
             // Invoke visitors on all of the child expressions.
             for (int i = 0; i < numberOfExpr; ++i)
             {
-                ShiftExprVisitor newVisitor = new ShiftExprVisitor(state);
+                ExprVisitor newVisitor = new ExprVisitor(state);
                 context.GetChild(i * 2).Accept(newVisitor);
                 visitors.Add(newVisitor);
                 if (i != numberOfExpr - 1)

@@ -27,7 +27,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // (single expr and single test). We also do not currently consider an
         // "else" block.
 
-        ShiftExprVisitor iteratorVisitor = new ShiftExprVisitor(state);
+        ExprVisitor iteratorVisitor = new ExprVisitor(state);
         context.GetChild(1).Accept(iteratorVisitor);
         TestVisitor collectionVisitor = new TestVisitor(state);
         context.GetChild(3).Accept(collectionVisitor);
