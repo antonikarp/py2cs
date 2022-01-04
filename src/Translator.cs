@@ -1,14 +1,20 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 namespace py2cs
 {
     public class Translator
     {
-        public void Translate(string input_path, string output_path)
+        public OutputVisitor outputVisitor;
+        public static string input_path;
+        public static string output_path;
+        public void Translate(string input_path, string output_path, string moduleName)
         {
+            Translator.input_path = input_path;
+            Translator.output_path = output_path;
             string text = File.ReadAllText(input_path);
             ICharStream stream = CharStreams.fromString(text);
             ITokenSource lexer = new Python3Lexer(stream);
@@ -17,10 +23,20 @@ namespace py2cs
             parser.BuildParseTree = true;
             // Start at the root, which is a node 'file_input'
             IParseTree tree = parser.file_input();
-            OutputVisitor outputVisitor = new OutputVisitor();
+            outputVisitor = new OutputVisitor(moduleName);
             // Translate the program.
             outputVisitor.Visit(tree);
             File.WriteAllText(output_path, outputVisitor.state.output.ToString());
+        }
+        public void Compile(string filename)
+        {
+            ProcessStartInfo compiler = new ProcessStartInfo();
+            // This is for Mac OS X.
+            compiler.FileName = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/csc";
+            compiler.Arguments = filename;
+            compiler.WorkingDirectory = Directory.GetCurrentDirectory() + "/../generated";
+            var process = Process.Start(compiler);
+            process.WaitForExit();
         }
     }
 }
