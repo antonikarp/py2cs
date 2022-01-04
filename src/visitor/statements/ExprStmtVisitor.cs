@@ -65,14 +65,21 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             // If it is a call to constructor, we need to add "new" keyword.
             string potentialConstructorCall = rightVisitor.result.ToString();
-            string[] tokens2 = potentialConstructorCall.Split('(');
-            foreach (var cls in state.output.allClasses)
+            string[] splitBeforeLeftParan = potentialConstructorCall.Split('(');
+            string[] tokens2 = splitBeforeLeftParan[0].Split(".");
+            bool isConstructorCall = true;
+            foreach (var token in tokens2)
             {
-                if (cls == tokens2[0])
+                // For it to be a constructor each token delimited by a dot must
+                // be a class name.
+                if (!state.output.allClasses.Contains(token))
                 {
-                    result.tokens.Add("new ");
-                    break;
+                    isConstructorCall = false;
                 }
+            }
+            if (isConstructorCall)
+            {
+                result.tokens.Add("new ");
             }
 
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)

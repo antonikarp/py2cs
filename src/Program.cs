@@ -5,12 +5,14 @@ using System.IO;
 using System.Threading.Tasks;
 namespace py2cs
 {
-    class Program
+    public class Program
     {
+        public static string input_path;
+        public static string output_path;
         static void Main(string[] args)
         {
-            string input_path = "../../../input/example.py";
-            string output_path = "../../../output/example.cs";
+            input_path = "../../../input/example.py";
+            output_path = "../../../output/example.cs";
             if (args.Length == 2)
             {
                 input_path = args[0];
@@ -24,7 +26,7 @@ namespace py2cs
             parser.BuildParseTree = true;
             // Start at the root, which is a node 'file_input'
             IParseTree tree = parser.file_input();
-            OutputVisitor outputVisitor = new OutputVisitor();
+            OutputVisitor outputVisitor = new OutputVisitor("");
             // Translate the program.
             outputVisitor.Visit(tree);
             File.WriteAllText(output_path, outputVisitor.state.output.ToString());

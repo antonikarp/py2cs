@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Xunit;
 using py2cs;
 
@@ -8,6 +9,7 @@ public class AutoTests
     [Fact]
     public void RunTests()
     {
+        Directory.SetCurrentDirectory("../../../../tests/scripts/");
         List<string> names = new List<string>
         {
             "test1", "test2", "test3",
@@ -16,14 +18,16 @@ public class AutoTests
             "test10", "test11", "test12",
             "test13", "test14", "test15",
             "test16", "test17", "test18",
-            "test19", "test20"
+            "test19", "test20", "test21_0",
+            "test22_0"
         };
         foreach (string name in names)
         {
-            string input_path = "../../../../tests/scripts/" + name + ".py";
-            string output_path = "../../../../tests/generated/" + name + ".cs";
+            string input_path = name + ".py";
+            string output_path = "../generated/" + name + ".cs";
             Translator translator = new Translator();
-            translator.Translate(input_path, output_path);
+            translator.Translate(input_path, output_path, "");
+            translator.Compile(name + ".cs");
         }
     }
 }

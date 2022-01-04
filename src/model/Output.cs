@@ -14,6 +14,9 @@ public class Output
     // take into account also the nested classes).
     public List<string> allClasses;
     public HashSet<string> usingDirs;
+    // This indicates whether the file is translated during processing an "import"
+    // statement.
+    public string moduleName;
     public Output()
     {
         internalLines = new List<IndentedLine>();
@@ -48,6 +51,25 @@ public class Output
         foreach (var dir in usingDirs)
         {
             outputBuilder.commitIndentedLine(new IndentedLine("using " + dir + ";", 0));
+        }
+        if (moduleName != "")
+        {
+            Class moduleClass = new Class(this);
+            moduleClass.name = moduleName;
+
+            // Put each class into a module class.
+            foreach (var cls in classes)
+            {
+                // Skip "Program" class containing an entry point if it comes from an import.
+                if (cls.name == "Program" && moduleName != "")
+                {
+                    continue;
+                }
+                moduleClass.internalClasses.Add(cls);
+            }
+            classes.Clear();
+            classes.Add(moduleClass);
+            allClasses.Add(moduleClass.name);
         }
         foreach (var cls in classes)
         {

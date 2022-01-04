@@ -30,8 +30,11 @@ public class SmallStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
         }
+        else if (context.import_stmt() != null)
+        {
+            ImportStmtVisitor newVisitor = new ImportStmtVisitor(state);
+            context.import_stmt().Accept(newVisitor);
+        }
         return result;
     }
-
-
 }
