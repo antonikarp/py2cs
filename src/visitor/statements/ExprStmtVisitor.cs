@@ -82,15 +82,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add("new ");
             }
 
-            /*foreach (var cls in state.output.allClasses)
-            {
-                if (cls == tokens2[0])
-                {
-                    result.tokens.Add("new ");
-                    break;
-                }
-            }*/
-
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(rightVisitor.result.tokens[i]);
