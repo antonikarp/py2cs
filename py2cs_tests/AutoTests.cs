@@ -19,7 +19,7 @@ public class AutoTests
             "test13", "test14", "test15",
             "test16", "test17", "test18",
             "test19", "test20", "test21_0",
-            "test22_0", "test23"
+            "test22_0", "test23", "test24"
         };
         foreach (string name in names)
         {

@@ -42,9 +42,12 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
             }
             else
             {
-                // Add a semicolon at the end of each line.
-                IndentedLine onlyLine = new IndentedLine(line + ";", 0);
-                result.lines.Add(onlyLine);
+                // Add a semicolon at the end of each non-empty line.
+                if (line != "")
+                {
+                    IndentedLine onlyLine = new IndentedLine(line + ";", 0);
+                    result.lines.Add(onlyLine);
+                }
             }
         }
         else if (context.compound_stmt() != null)

@@ -5,7 +5,6 @@ public class TypedargslistVisitor : Python3ParserBaseVisitor<Empty>
 {
     public Empty result;
     public State state;
-
     public TypedargslistVisitor(State _state)
     {
         state = _state;
@@ -35,6 +34,7 @@ public class TypedargslistVisitor : Python3ParserBaseVisitor<Empty>
             TfpdefVisitor newVisitor = new TfpdefVisitor(state);
             context.GetChild(i).Accept(newVisitor);
             string newParameter = newVisitor.result.value.ToString();
+
             state.output.currentClasses.Peek().currentFunctions.Peek().parameters.Add(newParameter);
             // The parameter is also a valid variable in the function, so we need
             // to reserve the name.
