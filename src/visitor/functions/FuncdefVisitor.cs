@@ -31,18 +31,19 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
 
         result.name = context.GetChild(1).ToString();
 
+        
+        // If the first paramter is "self" then we remove it.
+        if (result.parameters.Count > 0 && result.parameters[0] == "self")
+        {
+            result.parameters.RemoveAt(0);
+        }
+
         // Special case __init__ - constructor
         if (result.name == "__init__")
         {
             HandleInitMethod();
         }
 
-        // If the first paramter is "self" then we remove it.
-        if (result.parameters.Count > 0 && result.parameters[0] == "self")
-        {
-            result.parameters.RemoveAt(0);
-        }
-        
 
         result.statements.lines = suiteVisitor.result.lines;
 
@@ -68,7 +69,8 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         // Change the name to the name of the class (constructor).
         result.name = state.output.currentClasses.Peek().name;
         result.isConstructor = true;
-        
+        state.output.currentClasses.Peek().constructorSignatures
+            [result.parameters.Count] = result;
     }
 
 

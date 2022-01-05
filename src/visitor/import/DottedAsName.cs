@@ -71,12 +71,12 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
         // Add filenames as command line arguments for compilation.
         string commandLineArgument = filename + ".cs";
         py2cs.Translator.importedFilenames.Add(commandLineArgument);
-        List<string> allClassesFromModule = translator.outputVisitor.state.output.allClasses;
+        List<string> allClassesFromModule = translator.outputVisitor.state.output.allClassesNames;
         for (int i = 0; i < allClassesFromModule.Count; ++i)
         {
-            if (!state.output.allClasses.Contains(allClassesFromModule[i]))
+            if (!state.output.allClassesNames.Contains(allClassesFromModule[i]))
             {
-                state.output.allClasses.Add(allClassesFromModule[i]);
+                state.output.allClassesNames.Add(allClassesFromModule[i]);
             }
         }
         return result;

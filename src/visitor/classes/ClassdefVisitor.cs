@@ -11,17 +11,38 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
     }
     public override Class VisitClassdef([NotNull] Python3Parser.ClassdefContext context)
     {
-        // We assume that we have the following children (so far no inheritance):
+        // We assume that we have the following children
+
+        // If no inheritance:
 
         // Child #0: "class"
-        // Child #1: class name
+        // Child #1: <class name>
         // Child #2: ":"
         // Child #3: suite
+
+        // If simple inheritance (one parent class):
+
+        // Child #0: "class"
+        // Child #1: <class name>
+        // Child #2: "("
+        // Child #3: arglist
+        // Child #4: ")"
+        // Child #5: ":"
+        // Child #6: suite
 
         result = new Class(state.output);
         result.name = context.GetChild(1).ToString();
         state.output.currentClasses.Push(result);
-        
+
+        // Check if there is inhertitance (one parent class):
+        if (context.arglist() != null)
+        {
+            TestVisitor parentNameVisitor = new TestVisitor(state);
+            context.arglist().Accept(parentNameVisitor);
+            string parentName = parentNameVisitor.result.ToString();
+            result.parentClass = state.output.namesToClasses[parentName];
+        }
+
         SuiteVisitor suiteVisitor = new SuiteVisitor(state);
         context.suite().Accept(suiteVisitor);
 
@@ -39,7 +60,8 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
         {
             state.output.classes.Add(result);
         }
-        state.output.allClasses.Add(result.name);
+        state.output.allClassesNames.Add(result.name);
+        state.output.namesToClasses[result.name] = result;
 
         return result;
     }

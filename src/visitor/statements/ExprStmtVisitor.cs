@@ -66,13 +66,13 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // If it is a call to constructor, we need to add "new" keyword.
             string potentialConstructorCall = rightVisitor.result.ToString();
             string[] splitBeforeLeftParan = potentialConstructorCall.Split('(');
-            string[] tokens2 = splitBeforeLeftParan[0].Split(".");
+            string[] identifiers = splitBeforeLeftParan[0].Split(".");
             bool isConstructorCall = true;
-            foreach (var token in tokens2)
+            foreach (var token in identifiers)
             {
                 // For it to be a constructor each token delimited by a dot must
                 // be a class name.
-                if (!state.output.allClasses.Contains(token))
+                if (!state.output.allClassesNames.Contains(token))
                 {
                     isConstructorCall = false;
                 }
@@ -80,6 +80,26 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             if (isConstructorCall)
             {
                 result.tokens.Add("new ");
+                // If it is a parent class, we need to generate a constructor.
+                // For now we assume that we don't have nested classes here:
+                // Only p = Parent(arg1, arg2)
+                // No: p = Module.Parent(arg1, arg2)
+                if (identifiers.Length == 1 &&
+                    state.output.namesToClasses[identifiers[0]].parentClass != null)
+                {
+                    // Remove the dangling right paran
+                    splitBeforeLeftParan[1] = splitBeforeLeftParan[1].Remove(splitBeforeLeftParan[1].Length - 1);
+                    // Remove spaces
+                    splitBeforeLeftParan[1] = splitBeforeLeftParan[1].Replace(" ", "");
+                    string[] arguments = splitBeforeLeftParan[1].Split(",");
+                    List<VarState.Types> argumentTypes = new List<VarState.Types>();
+                    foreach (string arg in arguments)
+                    {
+                        argumentTypes.Add(ParamTypeDeduction.Deduce(arg));
+                    }
+                    state.output.namesToClasses[identifiers[0]].GenerateConstructor(argumentTypes);
+                }
+
             }
 
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)

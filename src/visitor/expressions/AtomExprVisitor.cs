@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using System;
+using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
 public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 {
@@ -60,13 +61,13 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 methodNameTrailerVisitors[0].result.tokens.Add(".Add");
             }
 
-            
+
             if (varName == "self")
             {
                 varName = "";
                 // Case of the inner constructor
                 // self.B(arg)
-                if (state.output.allClasses.Contains(methodNameTrailerVisitors[0].result.ToString().Remove(0,1)))
+                if (state.output.allClassesNames.Contains(methodNameTrailerVisitors[0].result.ToString().Remove(0, 1)))
                 {
                     result.tokens.Add("new ");
                     // Drop the dot.
@@ -77,7 +78,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add("this");
                 }
-                
+
                 for (int j = 0; j < methodNameTrailerVisitors.Count; ++j)
                 {
                     for (int i = 0; i < methodNameTrailerVisitors[j].result.tokens.Count; ++i)
@@ -88,6 +89,22 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 for (int i = 0; i < methodArglistTrailerVisitor.result.tokens.Count; ++i)
                 {
                     result.tokens.Add(methodArglistTrailerVisitor.result.tokens[i]);
+                }
+            }
+            // Case: BaseClass.__init__(self, arg1, arg2, ...)
+            else if (state.output.currentClasses.Peek().parentClass != null &&
+                state.output.currentClasses.Peek().parentClass.name == varName &&
+                methodNameTrailerVisitors[0].result.ToString().Remove(0, 1) == "__init__")
+            {
+                // Copy each argument to the base constructor initializer list which
+                // is translated to ... : base(arg1, arg2)
+                // First arguments is skipped because it is "this"
+                for (int i = 1; i < methodArglistTrailerVisitor.arguments.Count; ++i)
+                {
+                    string arg = methodArglistTrailerVisitor.arguments[i];
+                    state.output.currentClasses.Peek().currentFunctions.Peek().
+                        baseConstructorInitializerList.Add(arg);
+
                 }
             }
             else

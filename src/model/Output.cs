@@ -10,9 +10,10 @@ public class Output
     public OutputBuilder outputBuilder;
     public Stack<Class> currentClasses;
     public List<Class> classes;
-    // allClasses is for checking if we have a constructor call (we need to
+    // allClassesNames is for checking if we have a constructor call (we need to
     // take into account also the nested classes).
-    public List<string> allClasses;
+    public List<string> allClassesNames;
+    public Dictionary<string, Class> namesToClasses;
     public HashSet<string> usingDirs;
     // This indicates whether the file is translated during processing an "import"
     // statement.
@@ -24,7 +25,8 @@ public class Output
         currentClasses = new Stack<Class>();
         usingDirs = new HashSet<string>();
         classes = new List<Class>();
-        allClasses = new List<string>();
+        allClassesNames = new List<string>();
+        namesToClasses = new Dictionary<string, Class>();
         // Class Program.
         Class programClass = new Class(this);
         programClass.name = "Program";
@@ -40,7 +42,8 @@ public class Output
 
         currentClasses.Push(programClass);
         classes.Add(programClass);
-        allClasses.Add(programClass.name);
+        allClassesNames.Add(programClass.name);
+        namesToClasses[programClass.name] = programClass;
 
         // Add System in using directives.
         usingDirs.Add("System");
@@ -69,7 +72,8 @@ public class Output
             }
             classes.Clear();
             classes.Add(moduleClass);
-            allClasses.Add(moduleClass.name);
+            allClassesNames.Add(moduleClass.name);
+            namesToClasses[moduleClass.name] = moduleClass;
         }
         foreach (var cls in classes)
         {

@@ -11,6 +11,12 @@ public class Class
     public List<Function> functions;
     public List<Class> internalClasses;
     public Output output;
+    public Class parentClass;
+
+    // constructorSignatures maps the number of parameters in a constructor
+    // to the constructor. It is enough, because in Python variables are dynamically
+    // typed.
+    public Dictionary<int, Function> constructorSignatures;
     public Class(Output _output)
     {
         output = _output;
@@ -20,11 +26,18 @@ public class Class
         fieldDecl = new BlockModel();
         fields = new List<string>();
         internalClasses = new List<Class>();
+        parentClass = null;
+        constructorSignatures = new Dictionary<int, Function>();
     }
     public void CommitToOutput()
     {
         string firstLine = "public class ";
         firstLine += name;
+        if (parentClass != null)
+        {
+            firstLine += " : ";
+            firstLine += parentClass.name;
+        }
         output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
         output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
         foreach (var line in fieldDecl.lines)
@@ -45,6 +58,16 @@ public class Class
         output.outputBuilder.commitIndentedLine(new IndentedLine("", -1));
         output.outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
 
+    }
+    public void GenerateConstructor(List<VarState.Types> argTypes)
+    {
+        // We invoke this function only in a constructor of a derived class.
+        if (parentClass != null)
+        {
+            int n = argTypes.Count;
+            Function constructor = constructorSignatures[n];
+            constructor.usedParameterTypesInConstructor.Add(argTypes);
+        }
     }
 
 }
