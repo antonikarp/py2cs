@@ -66,7 +66,31 @@ public class Class
         {
             int n = argTypes.Count;
             Function constructor = constructorSignatures[n];
-            constructor.usedParameterTypesInConstructor.Add(argTypes);
+
+            // Avoid duplicates.
+            bool isDuplicate = false;
+            foreach (var paramTypes in constructor.usedParameterTypesInConstructor)
+            {
+                if (paramTypes.Count == n)
+                {
+                    isDuplicate = true;
+                    for (int i = 0; i < n; ++i)
+                    {
+                        if (paramTypes[i] != argTypes[i])
+                        {
+                            isDuplicate = false;
+                        }
+                    }
+                    if (isDuplicate)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (!isDuplicate)
+            {
+                constructor.usedParameterTypesInConstructor.Add(argTypes);
+            }
         }
     }
 

@@ -10,3 +10,5 @@ class Student(Person):
         self.age = age
 x = Student("John", "Doe", 20)
 x.get()
+y = Student("Mary", "James", 21)
+y.get()
