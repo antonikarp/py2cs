@@ -29,6 +29,12 @@ public class ShiftExprVisitor : Python3ParserBaseVisitor<LineModel>
         // or "<expr_1> >> <expr_2>"
         else if (context.ChildCount == 3)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             ArithExprVisitor leftVisitor = new ArithExprVisitor(state);
             ArithExprVisitor rightVisitor = new ArithExprVisitor(state);
             context.GetChild(0).Accept(leftVisitor);

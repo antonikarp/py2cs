@@ -1,4 +1,5 @@
 # Standalone expressions.
 
-# This line should be ignored in translation.
+# These lines should be ignored in translation.
 2+2
+5

@@ -15,6 +15,12 @@ public class FactorVisitor : Python3ParserBaseVisitor<LineModel>
         // Case of the unary '+' or '-' or bitwise '~'
         if (context.ChildCount == 2)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             result.tokens.Add(context.GetChild(0).ToString());
             FactorVisitor newVisitor = new FactorVisitor(state);
             context.GetChild(1).Accept(newVisitor);

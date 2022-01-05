@@ -32,6 +32,12 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
         // Child #3: ...
         else if (context.ChildCount > 1)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             int n = context.ChildCount;
             int i = 0;
             while (i < n)

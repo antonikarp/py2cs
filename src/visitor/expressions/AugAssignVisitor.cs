@@ -9,9 +9,6 @@ public class AugAssignVisitor : Python3ParserBaseVisitor<TokenModel>
     }
     public override TokenModel VisitAugassign([NotNull] Python3Parser.AugassignContext context)
     {
-        // Expression is not standalone.
-        state.stmtState.isStandalone = false;
-
         result = new TokenModel();
         if (context.ADD_ASSIGN() != null)
         {

@@ -27,11 +27,17 @@ public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
         }
         // If there are more than one child then we have the following children:
         // Child #0: <expr1>
-        // Child #1: or
+        // Child #1: and
         // Child #2: <expr2>
         // Child #3: ...
         else if (context.ChildCount > 1)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             int n = context.ChildCount;
             int i = 0;
             while (i < n)

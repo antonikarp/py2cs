@@ -28,6 +28,12 @@ public class NotTestVisitor : Python3ParserBaseVisitor<LineModel>
         // <expr> is the second child of type not_test
         else if (context.ChildCount == 2)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             result.tokens.Add("!");
             NotTestVisitor newVisitor = new NotTestVisitor(state);
             context.GetChild(1).Accept(newVisitor);

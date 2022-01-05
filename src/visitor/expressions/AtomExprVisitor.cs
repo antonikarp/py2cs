@@ -28,8 +28,13 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).GetType().ToString() == "Python3Parser+AtomContext" &&
             context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext")
         {
-            // Expression is not standalone.
-            state.stmtState.isStandalone = false;
+            // This is not a standalone expression.
+            if (state.stmtState.isLocked == false)
+            {
+                state.stmtState.isStandalone = false;
+                state.stmtState.isLocked = true;
+            }
+
             int n = context.ChildCount;
             AtomVisitor atomVisitor = new AtomVisitor(state);
             List<MethodNameTrailerVisitor> methodNameTrailerVisitors = new List<MethodNameTrailerVisitor>();
@@ -108,14 +113,23 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         else if (context.atom() != null && context.atom().ChildCount == 1 && context.atom().NAME() != null)
         {
+            // This is not a standalone expression.
+            if (state.stmtState.isLocked == false)
+            {
+                state.stmtState.isStandalone = false;
+                state.stmtState.isLocked = true;
+            }
+
             AtomVisitor atomVisitor = new AtomVisitor(state);
             context.atom().Accept(atomVisitor);
             string name = atomVisitor.result.ToString();
+
             // Function call or field.         
             if (name == "print")
             {
                 // In this case (print) the arguments are not changing, we can use the standard
                 // TrailerVisitor for arguments. See one of the cases in this file.
+                // (the onew with "function call or field")
                 name = "Console.WriteLine";
             }
             else if (name == "range")
@@ -157,9 +171,6 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
         // or field (ex. self.name)
         if (context.ChildCount == 2 && context.trailer() != null)
         {
-            // Expression is not standalone.
-            state.stmtState.isStandalone = false;
-
             TrailerVisitor newVisitor = new TrailerVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
