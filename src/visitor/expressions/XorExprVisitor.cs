@@ -31,6 +31,12 @@ public class XorExprVisitor : Python3ParserBaseVisitor<LineModel>
         //  ... ) - optional
         else if (context.ChildCount > 1)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             AndExprVisitor firstVisitor = new AndExprVisitor(state);
             context.GetChild(0).Accept(firstVisitor);
             for (int j = 0; j < firstVisitor.result.tokens.Count; ++j)

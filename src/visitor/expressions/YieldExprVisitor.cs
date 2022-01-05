@@ -16,6 +16,10 @@ public class YieldExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         if (context.ChildCount == 2)
         {
+            // This is not a standalone expression.
+            state.stmtState.isStandalone = false;
+            state.stmtState.isLocked = true;
+
             // We have the following children:
             // Child #0: yield
             // Child #1: <test>

@@ -31,6 +31,12 @@ public class AndExprVisitor : Python3ParserBaseVisitor<LineModel>
         //  ... ) - optional
         else if (context.ChildCount > 1)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             ShiftExprVisitor firstVisitor = new ShiftExprVisitor(state);
             context.GetChild(0).Accept(firstVisitor);
             for (int j = 0; j < firstVisitor.result.tokens.Count; ++j)

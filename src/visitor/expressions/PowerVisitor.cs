@@ -23,6 +23,12 @@ public class PowerVisitor : Python3ParserBaseVisitor<LineModel>
         // Power operator
         else if (context.ChildCount == 3)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             AtomExprVisitor leftVisitor = new AtomExprVisitor(state);
             FactorVisitor rightVisitor = new FactorVisitor(state);
             context.GetChild(0).Accept(leftVisitor);

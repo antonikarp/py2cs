@@ -10,7 +10,12 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitAtom([NotNull] Python3Parser.AtomContext context)
     {
         result = new LineModel();
-
+        // Expression is standalone:
+        if (!state.stmtState.isLocked)
+        {
+            state.stmtState.isStandalone = true;
+            state.stmtState.isLocked = true;
+        }
         if (context.ChildCount == 1)
         {
             // Case of numeric literal

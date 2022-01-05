@@ -11,9 +11,6 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
     }
     public override LineModel VisitFlow_stmt([NotNull] Python3Parser.Flow_stmtContext context)
     {
-        // Expression is not standalone.
-        state.stmtState.isStandalone = false;
-
         result = new LineModel();
         if (context.break_stmt() != null)
         {
@@ -29,6 +26,10 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // We have a case: "return expr";
             if (context.return_stmt().ChildCount == 2)
             {
+                // This is not a standalone expression.
+                state.stmtState.isStandalone = false;
+                state.stmtState.isLocked = true;
+
                 state.output.currentClasses.Peek().currentFunctions.Peek().isVoid = false;
                 TestVisitor newVisitor = new TestVisitor(state);
                 context.return_stmt().GetChild(1).Accept(newVisitor);

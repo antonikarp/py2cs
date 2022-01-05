@@ -29,6 +29,12 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
         // a comparison operator (<, >, <=, >=, ==, !=)
         else if (context.ChildCount == 3)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
             CompOpVisitor opVisitor = new CompOpVisitor(state);
             ExprVisitor leftVisitor = new ExprVisitor(state);
             ExprVisitor rightVisitor = new ExprVisitor(state);
@@ -81,6 +87,11 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
         // For instance: a < b < c
         else
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+            }
             int numberOfExpr = context.ChildCount / 2 + 1;
             List<ExprVisitor> visitors = new List<ExprVisitor>();
             List<CompOpVisitor> opVisitors = new List<CompOpVisitor>();

@@ -31,36 +31,66 @@ public class TermVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitTerm([NotNull] Python3Parser.TermContext context)
     {
         result = new LineModel();
-        for (int i = 0; i < context.ChildCount; ++i)
+        // If there is one child then it is a factor.
+        if (context.ChildCount == 1)
         {
-            var curChild = context.GetChild(i);
-            if (curChild.ToString() == "*")
+            FactorVisitor newVisitor = new FactorVisitor(state);
+            context.GetChild(0).Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add("*");
+                result.tokens.Add(newVisitor.result.tokens[i]);
             }
-            else if (curChild.ToString() == "/")
+        }
+        // If there is more than one child then we have the following children:
+        // Child #0: factor
+        // Child #1: "*" or "/" or "%" or "//"
+        // Child #2: factor
+        // ...
+        else if (context.ChildCount > 1)
+        {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
             {
-                result.tokens.Add("/");
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
             }
-            else if (curChild.ToString() == "%")
+            int n = context.ChildCount;
+            FactorVisitor firstVisitor = new FactorVisitor(state);
+            context.GetChild(0).Accept(firstVisitor);
+            for (int j = 0; j < firstVisitor.result.tokens.Count; ++j)
             {
-                result.tokens.Add("%");
+                result.tokens.Add(firstVisitor.result.tokens[j]);
             }
-            else if (curChild.ToString() == "//")
+            int i = 1;
+            while (i + 1 < n)
             {
-                result.tokens.Add("//");
-            }
-            else // We have encountered a factor.
-            {
+                if (context.GetChild(i).ToString() == "*")
+                {
+                    result.tokens.Add("*");
+                }
+                else if (context.GetChild(i).ToString() == "/")
+                {
+                    result.tokens.Add("/");
+                }
+                else if (context.GetChild(i).ToString() == "%")
+                {
+                    result.tokens.Add("%");
+                }
+                else if (context.GetChild(i).ToString() == "//")
+                {
+                    result.tokens.Add("//");
+                }
                 FactorVisitor newVisitor = new FactorVisitor(state);
-                curChild.Accept(newVisitor); 
+                context.GetChild(i + 1).Accept(newVisitor);
                 for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                 {
                     result.tokens.Add(newVisitor.result.tokens[j]);
                 }
+                i += 2;
             }
+            TranslateFloorDivision();
         }
-        TranslateFloorDivision();
+        
         return result;
     }
     

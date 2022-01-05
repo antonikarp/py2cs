@@ -14,11 +14,11 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
     {
         result = new LineModel();
         // This case handles variable declaration and initializtion.
-        // Todo: handle assignment.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
         {
-            // The expression is not standalone.
+            // This is not a standalone expression.
             state.stmtState.isStandalone = false;
+            state.stmtState.isLocked = true;
 
             TestVisitor leftVisitor = new TestVisitor(state);
             TestVisitor rightVisitor = new TestVisitor(state);

@@ -29,11 +29,21 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 sb.Append(newVisitor.result.tokens[i]);
             }
             string line = sb.ToString();
-            // Add a semicolon at the end of each line.
-            IndentedLine onlyLine = new IndentedLine(line + ";", 0);
-            // Check if we have a standalone expression to be ignored.
-            if (!state.stmtState.isStandalone)
+
+
+            // Check if we have a standalone expression to be assigned to a
+            // discard. We don't completely ignore such an expression because
+            // there might be side effects of the used function calls.
+            if (state.stmtState.isStandalone)
             {
+                IndentedLine lineWithDiscard = new IndentedLine
+                    ("_ = " + line + ";", 0);
+                result.lines.Add(lineWithDiscard);
+            }
+            else
+            {
+                // Add a semicolon at the end of each line.
+                IndentedLine onlyLine = new IndentedLine(line + ";", 0);
                 result.lines.Add(onlyLine);
             }
         }
