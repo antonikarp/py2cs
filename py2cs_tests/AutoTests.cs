@@ -10,18 +10,35 @@ public class AutoTests
     public void RunTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/");
-        List<string> names = new List<string>
+        string[] paths = Directory.GetFiles(Directory.GetCurrentDirectory());
+        List<string> filenames = new List<string>();
+        foreach (string path in paths)
         {
-            "test1", "test2", "test3",
-            "test4", "test5", "test6",
-            "test7", "test8", "test9",
-            "test10", "test11", "test12",
-            "test13", "test14", "test15",
-            "test16", "test17", "test18",
-            "test19", "test20", "test21_0",
-            "test22_0", "test23", "test24"
-        };
-        foreach (string name in names)
+            string[] tokens = path.Split("/");
+            string potentialFilename = tokens[tokens.Length - 1];
+            if (potentialFilename.EndsWith(".py"))
+            {
+                // For test files with imports, take only file that ends with "_0"
+                // We exclude the other categories of tests like must_have_...
+                if (potentialFilename.Contains("_") &&
+                    !potentialFilename.StartsWith("must_have") &&
+                    !potentialFilename.EndsWith("_0.py"))
+                {
+                    continue;
+                }
+                string[] beforeDot = potentialFilename.Split(".");
+                filenames.Add(beforeDot[0]);
+            }
+        }
+        filenames.Sort();
+        Directory.SetCurrentDirectory("..");
+
+        // Write all eligible filenames to a file which will be read by a bash scipt
+        // "run_tests.sh"
+        File.WriteAllLines("testnames.txt", filenames);
+        Directory.SetCurrentDirectory("./scripts");
+
+        foreach (string name in filenames)
         {
             string input_path = name + ".py";
             string output_path = "../generated/" + name + ".cs";
