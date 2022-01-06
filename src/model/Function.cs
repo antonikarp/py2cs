@@ -20,6 +20,8 @@ public class Function
     public List<string> baseConstructorInitializerList;
     public List<List<VarState.Types>> usedParameterTypesInConstructor; 
     public Output output;
+    // This indicates how many temporarary bool variables for
+    public int currentGeneratedElseBlockEntryNumber = -1;
     public Function(Output _output)
     {
         // By default this value is true, however when the visitor encounters
@@ -179,7 +181,13 @@ public class Function
                 internalFunc.isPublic = false;
                 internalFunc.CommitToOutput();
             }
-
+            // Declare the temporaries used for translation of the "else" block in for loops.
+            for (int i = 0; i <= currentGeneratedElseBlockEntryNumber; ++i)
+            {
+                IndentedLine newLine = new IndentedLine("dynamic " +
+                    "_generated_else_entry_" + i + " = true;", 0);
+                output.outputBuilder.commitIndentedLine(newLine);
+            }
             foreach (var indentedLine in statements.lines)
             {
                 output.outputBuilder.commitIndentedLine(indentedLine);

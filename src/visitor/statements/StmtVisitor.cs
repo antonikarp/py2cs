@@ -30,6 +30,18 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
             }
             string line = sb.ToString();
 
+            // If we are in a for loop with an else statement then we need to
+            // append a new statement setting the generated bool variable to be false.
+            if (line == "break" && state.forStmtState.hasElseBlock == true)
+            {
+                IndentedLine lineSettingToFalse = new IndentedLine(
+                    "_generated_else_entry_" +
+                    state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber
+                    + " = false;", 0);
+                result.lines.Add(lineSettingToFalse);
+            }
+
+
 
             // Check if we have a standalone expression to be assigned to a
             // discard. We don't completely ignore such an expression because
