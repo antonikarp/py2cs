@@ -42,14 +42,19 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         result.tokens.Add("Dictionary<dynamic, dynamic> ");
                         break;
                     case VarState.Types.HashSet:
-                        result.tokens.Add("HashSet<dynamic>");
+                        result.tokens.Add("HashSet<dynamic> ");
+                        break;
+                    // Due to CS1977 when trying to invoke .Where(lambda) in slices
+                    // the type must be var.
+                    case VarState.Types.ListComp:
+                        result.tokens.Add("var ");
                         break;
                     // Type other (numeric) or tuple. Tuple is here, because
                     // it is inconvenient to explicity state the type like:
                     // (int, int) or (int, int, int) ...
                     case VarState.Types.Tuple:
                     case VarState.Types.Other:
-                        result.tokens.Add("var ");
+                        result.tokens.Add("dynamic ");
                         break;
 
                 }
