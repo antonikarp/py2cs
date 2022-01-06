@@ -107,6 +107,8 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             IndentedLine closingBraceLineElse = new IndentedLine("}", 0);
             result.lines.Add(closingBraceLineElse);
         }
+        // Flush ForStmtState
+        state.forStmtState = new ForStmtState();
         
         return result;
     }

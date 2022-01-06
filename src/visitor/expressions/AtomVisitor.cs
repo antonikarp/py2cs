@@ -31,7 +31,16 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // Function name
             else if (context.NAME() != null)
             {
-                result.tokens.Add(context.NAME().ToString());
+                // Replace the iteration variable with the generated name.
+                if (state.forStmtState.nameForGeneratedVariable != "" &&
+                    state.forStmtState.forStmtIterationVariable == context.NAME().ToString())
+                {
+                    result.tokens.Add(state.forStmtState.nameForGeneratedVariable);
+                }
+                else
+                {
+                    result.tokens.Add(context.NAME().ToString());
+                }
             }
             else if (context.TRUE() != null)
             {

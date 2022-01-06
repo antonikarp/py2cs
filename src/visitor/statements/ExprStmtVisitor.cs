@@ -12,6 +12,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
     }
     public override LineModel VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
     {
+        bool assignmentToIterationVariable = false;
         result = new LineModel();
         // This case handles variable declaration and initializtion.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
@@ -25,17 +26,23 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
 
-            // This statement needs to be omitted, because it is an assignment to the iteration variable.
-            if (state.forStmtState.forStmtIterationVariable == leftVisitor.result.ToString())
+            string identifier = leftVisitor.result.ToString();
+            // If we have an assignment to the iteration variable, we need to
+            // create a new variable.
+            if (state.forStmtState.forStmtIterationVariable == identifier)
             {
-                state.stmtState.isOmitted = true;
+                identifier = "_generated_" + identifier + "_" + state.forStmtState.generatedInBlockCount;
+                state.forStmtState.nameForGeneratedVariable = identifier;
+                assignmentToIterationVariable = true;
+                ++state.forStmtState.generatedInBlockCount;
             }
 
             // Check if the variable has been already declared.
             // Or it can be declared as a field.
-            string[] tokens = leftVisitor.result.ToString().Split(".");
+            string[] tokens = identifier.Split(".");
 
-            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(leftVisitor.result.ToString())
+            // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate
+            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(identifier)
                 && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
             {
                 // This is a case of declaration with initialization.
@@ -64,14 +71,18 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         break;
 
                 }
-                state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(leftVisitor.result.ToString(), state.varState.type);
+                if (assignmentToIterationVariable)
+                {
+                    state.forStmtState.declaredIdentifiers.Add(identifier);
+                }
+                else
+                {
+                    state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(identifier, state.varState.type);
+                }
             }
             // The following instructions are common for both cases (declaration
             // with initialization, assignment)
-            for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
-            {
-                result.tokens.Add(leftVisitor.result.tokens[i]);
-            }
+            result.tokens.Add(identifier);
             result.tokens.Add(" = ");
 
             // If it is a call to constructor, we need to add "new" keyword.
