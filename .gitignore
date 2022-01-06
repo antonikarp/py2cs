@@ -150,6 +150,7 @@ output/
 tests/generated/*
 tests/generated_output/*
 tests/scripts_output/*
+tests/testnames.txt
 
 # pycache temporary files from the tests:
 tests/scripts/__pycache__/*
