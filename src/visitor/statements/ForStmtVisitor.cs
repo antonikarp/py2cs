@@ -12,6 +12,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
     }
     public override BlockModel VisitFor_stmt([NotNull] Python3Parser.For_stmtContext context)
     {
+        state.forStmtState = new ForStmtState();
         result = new BlockModel();
 
         // We assume that we have the following children:
@@ -33,6 +34,9 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         context.GetChild(3).Accept(collectionVisitor);
         string line = "foreach (dynamic " + iteratorVisitor.result.ToString() + " in " +
             collectionVisitor.result.ToString();
+
+        // Mark the variable as the iteration variable. It cannot be assigned to.
+        state.forStmtState.forStmtIterationVariable = iteratorVisitor.result.ToString();
 
         // Check type of the collection. If it is Dictionary then add the property Keys
         if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(collectionVisitor.result.ToString()))

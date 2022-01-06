@@ -40,7 +40,7 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                     ("_ = " + line + ";", 0);
                 result.lines.Add(lineWithDiscard);
             }
-            else
+            else if (!state.stmtState.isOmitted)
             {
                 // Add a semicolon at the end of each non-empty line.
                 if (line != "")

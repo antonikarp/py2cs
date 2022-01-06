@@ -25,6 +25,12 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
 
+            // This statement needs to be omitted, because it is an assignment to the iteration variable.
+            if (state.forStmtState.forStmtIterationVariable == leftVisitor.result.ToString())
+            {
+                state.stmtState.isOmitted = true;
+            }
+
             // Check if the variable has been already declared.
             // Or it can be declared as a field.
             string[] tokens = leftVisitor.result.ToString().Split(".");
