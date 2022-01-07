@@ -55,7 +55,8 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
             else if (!state.stmtState.isOmitted)
             {
                 // Add a semicolon at the end of each non-empty line.
-                if (line != "")
+                // We make exception for "pass" statement
+                if (line != "" || state.stmtState.isPassStmt)
                 {
                     IndentedLine onlyLine = new IndentedLine(line + ";", 0);
                     result.lines.Add(onlyLine);

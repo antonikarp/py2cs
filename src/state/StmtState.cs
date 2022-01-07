@@ -7,10 +7,14 @@ public class StmtState
     public bool isLocked;
     // isOmitted: for example: assignment to the iterator variable in for loop
     public bool isOmitted;
+    // isPassStmt: indicates whether we have a "pass" statement - so that
+    // the single semicolon will be printed.
+    public bool isPassStmt;
     public StmtState()
     {
         isOmitted = false; 
         isStandalone = false;
         isLocked = false;
+        isPassStmt = false;
     }
 }
