@@ -12,11 +12,12 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
     }
     public override BlockModel VisitFor_stmt([NotNull] Python3Parser.For_stmtContext context)
     {
-        state.forStmtState = new ForStmtState();
+        state.loopState = new LoopState();
+        state.loopState.loopType = LoopState.LoopType.ForLoop;
         // Store the information whether we have an else block;
         if (context.ELSE() != null)
         {
-            state.forStmtState.hasElseBlock = true;
+            state.loopState.hasElseBlock = true;
             ++state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber;
         }
 
@@ -34,7 +35,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // For now, we assume that exprlist and testlist have only one child
         // (single expr and single test).
 
-        // If there is an "else" block, then we have additionaly the following children:
+        // If there is an "else" block, then we have additionally the following children:
         // Child 6: "else"
         // Child 7: ":"
         // Child 8: suite
@@ -47,7 +48,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             collectionVisitor.result.ToString();
 
         // Mark the variable as the iteration variable. It cannot be assigned to.
-        state.forStmtState.forStmtIterationVariable = iteratorVisitor.result.ToString();
+        state.loopState.forStmtIterationVariable = iteratorVisitor.result.ToString();
 
         // Check type of the collection. If it is Dictionary then add the property Keys
         if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(collectionVisitor.result.ToString()))
@@ -81,7 +82,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         IndentedLine closingBraceLine = new IndentedLine("}", 0);
         result.lines.Add(closingBraceLine);
 
-        if (state.forStmtState.hasElseBlock)
+        if (state.loopState.hasElseBlock)
         {
             SuiteVisitor suiteVisitorElse = new SuiteVisitor(state);
             context.GetChild(8).Accept(suiteVisitorElse);
@@ -100,15 +101,15 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             // Indent back after the last line.
             if (m != 0)
             {
-                IndentedLine lastLine = new IndentedLine(suiteVisitorElse.result.lines[m - 1].line, -1);
-                result.lines.Add(lastLine);
+                IndentedLine lastLineElse = new IndentedLine(suiteVisitorElse.result.lines[m - 1].line, -1);
+                result.lines.Add(lastLineElse);
             }
             // End the block with a closing brace.
             IndentedLine closingBraceLineElse = new IndentedLine("}", 0);
             result.lines.Add(closingBraceLineElse);
         }
-        // Flush ForStmtState
-        state.forStmtState = new ForStmtState();
+        // Flush LoopState
+        state.loopState = new LoopState();
         
         return result;
     }

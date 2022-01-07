@@ -12,6 +12,15 @@ public class WhileStmtVisitor : Python3ParserBaseVisitor<BlockModel>
     }
     public override BlockModel VisitWhile_stmt([NotNull] Python3Parser.While_stmtContext context)
     {
+        state.loopState = new LoopState();
+        state.loopState.loopType = LoopState.LoopType.WhileLoop;
+        // Store the information whether we have an else block;
+        if (context.ELSE() != null)
+        {
+            state.loopState.hasElseBlock = true;
+            ++state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber;
+        }
+
         result = new BlockModel();
         // We assume that we have the following children:
 
@@ -20,7 +29,10 @@ public class WhileStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // Child 2: ":"
         // Child 3: suite
 
-        // We currently do not consider an "else" block.
+        // If there is an "else" block, then we have additionally the following children:
+        // Child 4: "else"
+        // Child 5: ":"
+        // Child 6: suite
         TestVisitor conditionVisitor = new TestVisitor(state);
         context.GetChild(1).Accept(conditionVisitor);
         string line = "while (" + conditionVisitor.result.ToString() + ")";
@@ -49,6 +61,38 @@ public class WhileStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // End the block with a closing brace.
         IndentedLine closingBraceLine = new IndentedLine("}", 0);
         result.lines.Add(closingBraceLine);
+
+        if (state.loopState.hasElseBlock)
+        {
+            SuiteVisitor suiteVisitorElse = new SuiteVisitor(state);
+            context.GetChild(6).Accept(suiteVisitorElse);
+            IndentedLine firstLineElse = new IndentedLine("if ("
+                + "_generated_else_entry_"
+                + state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber
+                + ")", 0);
+            result.lines.Add(firstLineElse);
+            IndentedLine openingBraceLineElse = new IndentedLine("{", 1);
+            result.lines.Add(openingBraceLine);
+            int m = suiteVisitorElse.result.lines.Count;
+            for (int j = 0; j < m - 1; ++j)
+            {
+                result.lines.Add(suiteVisitorElse.result.lines[j]);
+            }
+            // Indent back after the last line.
+            if (m != 0)
+            {
+                IndentedLine lastLineElse = new IndentedLine(suiteVisitorElse.result.lines[m - 1].line, -1);
+                result.lines.Add(lastLineElse);
+            }
+            // End the block with a closing brace.
+            IndentedLine closingBraceLineElse = new IndentedLine("}", 0);
+            result.lines.Add(closingBraceLineElse);
+
+        }
+        // Flush LoopState
+        state.loopState = new LoopState();
+
+
         return result;
     }
 }
