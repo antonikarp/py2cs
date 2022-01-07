@@ -28,13 +28,14 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             string identifier = leftVisitor.result.ToString();
             // If we have an assignment to the iteration variable, we need to
-            // create a new variable.
-            if (state.forStmtState.forStmtIterationVariable == identifier)
+            // create a new variable. Only in for loop
+            if (state.loopState.loopType == LoopState.LoopType.ForLoop &&
+                state.loopState.forStmtIterationVariable == identifier)
             {
-                identifier = "_generated_" + identifier + "_" + state.forStmtState.generatedInBlockCount;
-                state.forStmtState.nameForGeneratedVariable = identifier;
+                identifier = "_generated_" + identifier + "_" + state.loopState.generatedInBlockCount;
+                state.loopState.nameForGeneratedVariable = identifier;
                 assignmentToIterationVariable = true;
-                ++state.forStmtState.generatedInBlockCount;
+                ++state.loopState.generatedInBlockCount;
             }
 
             // Check if the variable has been already declared.
@@ -71,9 +72,10 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         break;
 
                 }
+                // Add the new variable to a respective scope.
                 if (assignmentToIterationVariable)
                 {
-                    state.forStmtState.declaredIdentifiers.Add(identifier);
+                    state.loopState.declaredIdentifiers.Add(identifier);
                 }
                 else
                 {

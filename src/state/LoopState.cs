@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-public class ForStmtState
+public class LoopState
 {
     // This holds the name of the iteration variable. This variable cannot be assigned to, so
     // every ExprStmt with this variable on the lhs must be ignored.
@@ -13,7 +13,9 @@ public class ForStmtState
     public int generatedInBlockCount;
     public string nameForGeneratedVariable;
 
-    public ForStmtState()
+    public enum LoopType { ForLoop, WhileLoop }
+    public LoopType loopType;
+    public LoopState()
     {
         generatedInBlockCount = 0;
         nameForGeneratedVariable = "";

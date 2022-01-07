@@ -2,13 +2,13 @@
 {
     public VarState varState;
     public StmtState stmtState;
-    public ForStmtState forStmtState;
+    public LoopState loopState;
     public Output output;
     public State()
     {
         varState = new VarState();
         stmtState = new StmtState();
-        forStmtState = new ForStmtState();
+        loopState = new LoopState();
         output = new Output();
     }
 }
