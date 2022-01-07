@@ -12,6 +12,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
     }
     public override BlockModel VisitFor_stmt([NotNull] Python3Parser.For_stmtContext context)
     {
+        
         state.loopState = new LoopState();
         state.loopState.loopType = LoopState.LoopType.ForLoop;
         // Store the information whether we have an else block;
@@ -42,6 +43,9 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
 
         ExprVisitor iteratorVisitor = new ExprVisitor(state);
         context.GetChild(1).Accept(iteratorVisitor);
+
+        // varState is for the collection variable.
+        state.varState = new VarState();
         TestVisitor collectionVisitor = new TestVisitor(state);
         context.GetChild(3).Accept(collectionVisitor);
         string line = "foreach (dynamic " + iteratorVisitor.result.ToString() + " in " +
@@ -50,8 +54,13 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // Mark the variable as the iteration variable. It cannot be assigned to.
         state.loopState.forStmtIterationVariable = iteratorVisitor.result.ToString();
 
+        // Check if the expression represents a dictionary:
+        if (state.varState.type == VarState.Types.Dictionary)
+        {
+            line += ".Keys";
+        }
         // Check type of the collection. If it is Dictionary then add the property Keys
-        if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(collectionVisitor.result.ToString()))
+        else if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(collectionVisitor.result.ToString()))
         {
             VarState.Types type = state.output.currentClasses.Peek().currentFunctions.Peek().variables[collectionVisitor.result.ToString()];
             if (type == VarState.Types.Dictionary)
@@ -59,8 +68,18 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 line += ".Keys";
             }
         }
+        // Use reflection to iterate over a tuple
+        else if (state.varState.type == VarState.Types.Tuple)
+        {
+            state.output.usingDirs.Add("System.Linq");
+            line += ".GetType().GetFields().Select(x => x.GetValue(";
+            line += collectionVisitor.result.ToString();
+            line += "))";
+        }
+
         line += ")";
-        
+
+
         IndentedLine newLine = new IndentedLine(line, 0);
         result.lines.Add(newLine);
         IndentedLine openingBraceLine = new IndentedLine("{", 1);
@@ -108,6 +127,8 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             IndentedLine closingBraceLineElse = new IndentedLine("}", 0);
             result.lines.Add(closingBraceLineElse);
         }
+        // Flush Var
+
         // Flush LoopState
         state.loopState = new LoopState();
         
