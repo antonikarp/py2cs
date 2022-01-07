@@ -31,7 +31,16 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // Function name
             else if (context.NAME() != null)
             {
-                result.tokens.Add(context.NAME().ToString());
+                // Replace the iteration variable with the generated name.
+                if (state.forStmtState.nameForGeneratedVariable != "" &&
+                    state.forStmtState.forStmtIterationVariable == context.NAME().ToString())
+                {
+                    result.tokens.Add(state.forStmtState.nameForGeneratedVariable);
+                }
+                else
+                {
+                    result.tokens.Add(context.NAME().ToString());
+                }
             }
             else if (context.TRUE() != null)
             {
@@ -58,7 +67,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             result.tokens.Add(")");
 
         }
-        // List
+        // Non-empty list
         else if (context.ChildCount == 3 &&
             context.GetChild(0).ToString() == "[" &&
             context.GetChild(2).ToString() == "]")
@@ -101,9 +110,19 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(exprVisitor.result.tokens[i]);
                 }
-                result.tokens.Add(").ToList()");   
+                result.tokens.Add(").ToList()");
             }
         }
+        // Empty list
+        else if (context.ChildCount == 2 &&
+            context.GetChild(0).ToString() == "[" &&
+            context.GetChild(1).ToString() == "]")
+        {
+            // We use List from System.Collections.Generic
+            state.output.usingDirs.Add("System.Collections.Generic");
+            result.tokens.Add("new List<dynamic> {}");
+        }
+
         // Dictionary or set
         else if (context.ChildCount == 3 &&
             context.GetChild(0).ToString() == "{" &&

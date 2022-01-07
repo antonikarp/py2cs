@@ -19,7 +19,7 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (potentialFilename.StartsWith("test"))
+                /*if (!potentialFilename.StartsWith("temp"))
                 {
                     continue;
                 }*/

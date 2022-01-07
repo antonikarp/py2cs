@@ -30,6 +30,18 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
             }
             string line = sb.ToString();
 
+            // If we are in a for loop with an else statement then we need to
+            // append a new statement setting the generated bool variable to be false.
+            if (line == "break" && state.forStmtState.hasElseBlock == true)
+            {
+                IndentedLine lineSettingToFalse = new IndentedLine(
+                    "_generated_else_entry_" +
+                    state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber
+                    + " = false;", 0);
+                result.lines.Add(lineSettingToFalse);
+            }
+
+
 
             // Check if we have a standalone expression to be assigned to a
             // discard. We don't completely ignore such an expression because
@@ -40,10 +52,11 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                     ("_ = " + line + ";", 0);
                 result.lines.Add(lineWithDiscard);
             }
-            else
+            else if (!state.stmtState.isOmitted)
             {
                 // Add a semicolon at the end of each non-empty line.
-                if (line != "")
+                // We make exception for "pass" statement
+                if (line != "" || state.stmtState.isPassStmt)
                 {
                     IndentedLine onlyLine = new IndentedLine(line + ";", 0);
                     result.lines.Add(onlyLine);
