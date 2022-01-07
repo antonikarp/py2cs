@@ -19,7 +19,7 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (!potentialFilename.StartsWith("temp"))
+                /*if (!potentialFilename.StartsWith("should_have"))
                 {
                     continue;
                 }*/
@@ -27,7 +27,7 @@ public class AutoTests
                 // For test files with imports, take only file that ends with "_0"
                 // We exclude the other categories of tests like must_have_...
                 if (potentialFilename.Contains("_") &&
-                    !potentialFilename.StartsWith("must_have") &&
+                    potentialFilename.StartsWith("test") &&
                     !potentialFilename.EndsWith("_0.py"))
                 {
                     continue;
