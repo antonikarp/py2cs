@@ -45,6 +45,14 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                 i += 2;
             }
             result.tokens.Add(")");
+            // Case of enumerate. We use a Linq query to create a list of tuples.
+            if (state.funcCallState.funcName == "enumerate")
+            {
+                state.output.usingDirs.Add("System.Linq");
+                result.tokens.Add(".Select((p1, p2) => ValueTuple.Create(p2, p1))");
+                // We are done. Flush the FuncCall state.
+                state.funcCallState = new FuncCallState();
+            }
         }
         // Subscription and slices
         else if (context.ChildCount == 3 && context.GetChild(0).ToString() == "[" &&
