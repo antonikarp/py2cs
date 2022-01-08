@@ -966,6 +966,7 @@
     <None Remove="src\model\visitor\" />
     <None Remove="src\visitor\classes\" />
     <None Remove="src\visitor\import\" />
+    <None Remove="src\library\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -979,5 +980,6 @@
     <Folder Include="src\model\visitor\" />
     <Folder Include="src\visitor\classes\" />
     <Folder Include="src\visitor\import\" />
+    <Folder Include="src\library\" />
   </ItemGroup>
 </Project>

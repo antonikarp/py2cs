@@ -18,6 +18,9 @@ public class Output
     // This indicates whether the file is translated during processing an "import"
     // statement.
     public string moduleName;
+    // This class holds objects of type Class that will be added to the main file
+    // For example: FormattedList.
+    public Library library;
     public Output()
     {
         internalLines = new List<IndentedLine>();
@@ -47,6 +50,8 @@ public class Output
 
         // Add System in using directives.
         usingDirs.Add("System");
+
+        library = new Library(this);
     }
 
     public override string ToString()
@@ -74,6 +79,10 @@ public class Output
             classes.Add(moduleClass);
             allClassesNames.Add(moduleClass.name);
             namesToClasses[moduleClass.name] = moduleClass;
+        }
+        foreach (var cls in library.classesToCommit)
+        {
+            cls.CommitToOutput();
         }
         foreach (var cls in classes)
         {

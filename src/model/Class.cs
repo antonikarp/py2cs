@@ -12,11 +12,12 @@ public class Class
     public List<Class> internalClasses;
     public Output output;
     public Class parentClass;
-
     // constructorSignatures maps the number of parameters in a constructor
     // to the constructor. It is enough, because in Python variables are dynamically
     // typed.
     public Dictionary<int, Function> constructorSignatures;
+
+    public string libraryParentClassName;
     public Class(Output _output)
     {
         output = _output;
@@ -28,6 +29,7 @@ public class Class
         internalClasses = new List<Class>();
         parentClass = null;
         constructorSignatures = new Dictionary<int, Function>();
+        libraryParentClassName = "";
     }
     public void CommitToOutput()
     {
@@ -37,6 +39,12 @@ public class Class
         {
             firstLine += " : ";
             firstLine += parentClass.name;
+        }
+        // To be used only in library classes.
+        else if (libraryParentClassName != "")
+        {
+            firstLine += " : ";
+            firstLine += libraryParentClassName;
         }
         output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
         output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));

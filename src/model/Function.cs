@@ -12,6 +12,8 @@ public class Function
     public bool isPublic;
     public bool isConstructor;
     public bool isEnumerable;
+    public bool isOverride;
+    public string overrideReturnTypeString;
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
     public Dictionary<string, VarState.Types> defaultParameterTypes;
@@ -42,6 +44,10 @@ public class Function
         // Translated function __init__ is a constructor.
         isConstructor = false;
 
+        // isOverride - used for example when overriding the ToString() Method.
+        isOverride = false;
+
+
         statements = new BlockModel();
         parameters = new List<string>();
         defaultParameters = new Dictionary<string, string>();
@@ -49,6 +55,7 @@ public class Function
         internalFunctions = new List<Function>();
         variables = new Dictionary<string, VarState.Types>();
         baseConstructorInitializerList = new List<string>();
+        parentClass = null;
 
         // Used parameter types in constructor
         usedParameterTypesInConstructor = new List<List<VarState.Types>>();
@@ -82,12 +89,18 @@ public class Function
                     firstLine += "public ";
                 }
                 // For now, all methods outside of Main class are not static.
-                if (isStatic && parentClass.name == "Program")
+                if (isStatic && parentClass != null && parentClass.name == "Program")
                 {
                     firstLine += "static ";
                 }
 
-                if (isVoid)
+                if (isOverride)
+                {
+                    firstLine += "override ";
+                    firstLine += overrideReturnTypeString;
+                    firstLine += " ";
+                }
+                else if (isVoid)
                 {
                     firstLine += "void ";
                 }

@@ -146,7 +146,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 // In this case (print) the arguments are not changing, we can use the standard
                 // TrailerVisitor for arguments. See one of the cases in this file.
-                // (the onew with "function call or field")
+                // (the one with "function call or field")
                 name = "Console.WriteLine";
             }
             else if (name == "range")
