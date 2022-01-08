@@ -141,6 +141,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             context.atom().Accept(atomVisitor);
             string name = atomVisitor.result.ToString();
 
+            // Flush the FuncCallState
+            state.funcCallState = new FuncCallState();
+
             // Function call or field.         
             if (name == "print")
             {
@@ -171,6 +174,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             else if (name == "self")
             {
                 name = "this";
+            }
+            // enumerate() - erase the name and remember the name in the state
+            else if (name == "enumerate")
+            {
+                name = "";
+                state.funcCallState.funcName = "enumerate";
             }
             result.tokens.Add(name);
         }
