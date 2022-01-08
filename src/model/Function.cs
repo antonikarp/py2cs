@@ -12,15 +12,13 @@ public class Function
     public bool isPublic;
     public bool isConstructor;
     public bool isEnumerable;
-    public bool isOverride;
-    public string overrideReturnTypeString;
     public List<string> parameters;
     public Dictionary<string, string> defaultParameters;
     public Dictionary<string, VarState.Types> defaultParameterTypes;
     public Dictionary<string, VarState.Types> variables;
     public List<Function> internalFunctions;
     public List<string> baseConstructorInitializerList;
-    public List<List<VarState.Types>> usedParameterTypesInConstructor; 
+    public List<List<VarState.Types>> usedParameterTypesInConstructor;
     public Output output;
     // This indicates how many temporarary bool variables for
     public int currentGeneratedElseBlockEntryNumber = -1;
@@ -43,10 +41,6 @@ public class Function
 
         // Translated function __init__ is a constructor.
         isConstructor = false;
-
-        // isOverride - used for example when overriding the ToString() Method.
-        isOverride = false;
-
 
         statements = new BlockModel();
         parameters = new List<string>();
@@ -93,14 +87,7 @@ public class Function
                 {
                     firstLine += "static ";
                 }
-
-                if (isOverride)
-                {
-                    firstLine += "override ";
-                    firstLine += overrideReturnTypeString;
-                    firstLine += " ";
-                }
-                else if (isVoid)
+                if (isVoid)
                 {
                     firstLine += "void ";
                 }
@@ -146,10 +133,10 @@ public class Function
                     firstLine += " = ";
                     firstLine += defaultParameters[parameters[i]];
                 }
-                // Case of a positional (usual) parameter
+                // Case of a positional (usual) parameter.
                 // This is also a place where we place the used types in a parent
                 // constructor call.
-                else
+                else 
                 {
                     switch (usedParameterTypes[i])
                     {

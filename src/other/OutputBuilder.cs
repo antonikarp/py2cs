@@ -31,5 +31,12 @@ public class OutputBuilder
             --indentationLevel;
         }
     }
-
+    public void commitRawCodeBlock(string text)
+    {
+        string[] lines = text.Split("\n");
+        foreach (var line in lines)
+        {
+            output.AppendLine(line);
+        }
+    }
 }

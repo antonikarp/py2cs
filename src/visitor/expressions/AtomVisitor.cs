@@ -83,10 +83,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // List comprehension not found.
             if (compForVisitor.visited == false)
             {
-                // Add FormattedList to the set of library classes to be committed.
-                state.output.library.CommitFormattedList();
-
-                result.tokens.Add("new Generated_FormattedList {");
+                result.tokens.Add("new List<dynamic> {");
                 // We assign the type List before visiting the child.
                 state.varState.type = VarState.Types.List;
                 TestListCompVisitor newVisitor = new TestListCompVisitor(state);
@@ -124,9 +121,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
         {
             // We use List from System.Collections.Generic
             state.output.usingDirs.Add("System.Collections.Generic");
-            // Add FormattedList to the set of library classes to be committed.
-            state.output.library.CommitFormattedList();
-            result.tokens.Add("new Generated_FormattedList {}");
+            result.tokens.Add("new List<dynamic> {}");
         }
 
         // Dictionary or set

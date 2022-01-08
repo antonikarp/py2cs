@@ -49,9 +49,8 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 // This is a case of declaration with initialization.
                 switch (state.varState.type)
                 {
-                    // We use Generated_FormattedList instead of List<dynamic>.
                     case VarState.Types.List:
-                        result.tokens.Add("Generated_FormattedList ");
+                        result.tokens.Add("List<dynamic> ");
                         break;
                     case VarState.Types.Dictionary:
                         result.tokens.Add("Dictionary<dynamic, dynamic> ");
