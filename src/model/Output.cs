@@ -19,7 +19,7 @@ public class Output
     // statement.
     public string moduleName;
     // This class holds objects of type Class that will be added to the main file
-    // For example: FormattedList.
+    // For example: ConsoleExt.
     public Library library;
     public Output()
     {
@@ -80,10 +80,13 @@ public class Output
             allClassesNames.Add(moduleClass.name);
             namesToClasses[moduleClass.name] = moduleClass;
         }
-        foreach (var cls in library.classesToCommit)
+
+        // Here we write the library functions to the main file.
+        if (moduleName == "")
         {
-            cls.CommitToOutput();
+            library.libConsoleExt.CommitToOutput();
         }
+
         foreach (var cls in classes)
         {
             cls.CommitToOutput();
