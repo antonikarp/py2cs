@@ -17,7 +17,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
         visited = true;
         result = new LineModel();
 
-        // We have the following children:
+        // In case of no "if" clause, we have the following children
         // Child #0: for
         // Child #1: exprlist (for now assume that it is a single expr)
         // Child #2: in
@@ -25,6 +25,16 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
 
         // We will use Linq to translate it into C#:
         // [expr_x for x in y] => (from x in y select expr_x).ToList();
+
+        // In case of "if" clause, we have the following children:
+        // Child #0: for
+        // Child #1: exprlist (for now assume that it is a single expr)
+        // Child #2: in
+        // Child #3: or_test
+        // Child #4: comp_iter
+        //
+        // This translates to:
+        // [expr_x for x in y if expr_x_2] => (from x in y where expr_x_2 select expr_x).ToList();
         if (context.ChildCount >= 4)
         {
             // Override the trype to be ListComp
@@ -38,11 +48,24 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(iteratorVisitor.result.tokens[i]);
             }
             result.tokens.Add(" in ");
+            
             OrTestVisitor collectionVisitor = new OrTestVisitor(state);
             context.GetChild(3).Accept(collectionVisitor);
             for (int i = 0; i < collectionVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(collectionVisitor.result.tokens[i]);
+            }
+
+            // "If" clause present. 
+            if (context.ChildCount == 5)
+            {
+                CompIfVisitor ifVisitor = new CompIfVisitor(state);
+                context.GetChild(4).Accept(ifVisitor);
+                result.tokens.Add(" where ");
+                for (int i = 0; i < ifVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(ifVisitor.result.tokens[i]);
+                }
             }
         }
         return result;
