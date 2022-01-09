@@ -33,23 +33,35 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // Child 4: ":"
         // Child 5: suite
 
-        // For now, we assume that exprlist and testlist have only one child
-        // (single expr and single test).
+        // For now, we assume that testlist have only one child (single test).
+        // exprlist can have multiple children -> tuple unpacking
 
         // If there is an "else" block, then we have additionally the following children:
         // Child 6: "else"
         // Child 7: ":"
         // Child 8: suite
 
-        ExprVisitor iteratorVisitor = new ExprVisitor(state);
+        ExprlistVisitor iteratorVisitor = new ExprlistVisitor(state);
         context.GetChild(1).Accept(iteratorVisitor);
 
         // varState is for the collection variable.
         state.varState = new VarState();
         TestVisitor collectionVisitor = new TestVisitor(state);
         context.GetChild(3).Accept(collectionVisitor);
-        string line = "foreach (dynamic " + iteratorVisitor.result.ToString() + " in " +
-            collectionVisitor.result.ToString();
+
+        string line = "";
+
+        // No tuple unpacking: there is only one expression in the list
+        if (iteratorVisitor.result.expressions.Count == 1)
+        {
+            line += "foreach (dynamic " + iteratorVisitor.result.expressions[0].ToString() + " in " +
+                collectionVisitor.result.ToString();
+        }
+        // Tuple unpacking: declare a generated varibale: "_tuple"
+        else
+        {
+            line += "foreach (dynamic _tuple in " + collectionVisitor.result.ToString();
+        }
 
         // Mark the variable as the iteration variable. It cannot be assigned to.
         state.loopState.forStmtIterationVariable = iteratorVisitor.result.ToString();
@@ -84,6 +96,19 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         result.lines.Add(newLine);
         IndentedLine openingBraceLine = new IndentedLine("{", 1);
         result.lines.Add(openingBraceLine);
+
+        // Tuple unpacking - add additional variables
+        if (iteratorVisitor.result.expressions.Count > 1)
+        {
+            for (int j = 0; j < iteratorVisitor.result.expressions.Count; ++j)
+            {
+                IndentedLine tupleUnpackingDecl = new IndentedLine
+                    ("dynamic " + iteratorVisitor.result.expressions[j]
+                    + " = _tuple.Item" + (j + 1).ToString() + ";", 0);
+                result.lines.Add(tupleUnpackingDecl);
+            }
+        }
+
         SuiteVisitor suiteVisitor = new SuiteVisitor(state);
         context.GetChild(5).Accept(suiteVisitor);
         int n = suiteVisitor.result.lines.Count;
