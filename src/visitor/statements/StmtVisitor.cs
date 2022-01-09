@@ -42,8 +42,6 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 result.lines.Add(lineSettingToFalse);
             }
 
-
-
             // Check if we have a standalone expression to be assigned to a
             // discard. We don't completely ignore such an expression because
             // there might be side effects of the used function calls.
@@ -55,6 +53,7 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
             }
             else if (!state.stmtState.isOmitted)
             {
+                // Here we add the obtained line.
                 // Add a semicolon at the end of each non-empty line.
                 // We make exception for "pass" statement
                 if (line != "" || state.stmtState.isPassStmt)
@@ -63,6 +62,22 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                     result.lines.Add(onlyLine);
                 }
             }
+            // If we have a comma separated assignment ten we add assignmnent
+            // to lhs members here.
+            if (state.commaListAssignmentState.isActive)
+            {
+                for (int j = 0; j < state.commaListAssignmentState.lhsExpressions.Count; ++j)
+                {
+                    IndentedLine lhsAssignmentLine = new IndentedLine
+                        (state.commaListAssignmentState.lhsExpressions[j] + " = " +
+                        state.commaListAssignmentState.tupleIdentifier + ".Item" +
+                        (j + 1).ToString() + ";", 0 );
+                    result.lines.Add(lhsAssignmentLine);
+                }
+                // We are done with CommaListAssignment state, we need to flush it.
+                state.commaListAssignmentState = new CommaListAssignmentState();
+            }
+
         }
         else if (context.compound_stmt() != null)
         {

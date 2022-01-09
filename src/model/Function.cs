@@ -20,8 +20,10 @@ public class Function
     public List<string> baseConstructorInitializerList;
     public List<List<VarState.Types>> usedParameterTypesInConstructor;
     public Output output;
-    // This indicates how many temporarary bool variables for
+    // This indicates how many temporarary bool variables for entry to else blocks.
     public int currentGeneratedElseBlockEntryNumber = -1;
+    // This indicates how many tuples from comma seperated expression have we generated.
+    public int currentGeneratedTupleNumber = -1;
     public Function(Output _output)
     {
         // By default this value is true, however when the visitor encounters
