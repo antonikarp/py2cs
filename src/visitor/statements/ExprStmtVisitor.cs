@@ -23,59 +23,99 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             TestlistStarExprVisitor leftVisitor = new TestlistStarExprVisitor(state);
             TestlistStarExprVisitor rightVisitor = new TestlistStarExprVisitor(state);
+            state.lhsTupleState = new LhsTupleState();
             context.GetChild(0).Accept(leftVisitor);
+            // Check if there is a tuple on the lhs. This bool value is set in AtomExprVisitor.
+            bool isTupleOnLhs = state.lhsTupleState.isTupleOnLhs;
+            // Flush the LhsTupleState.
+            state.lhsTupleState = new LhsTupleState();
             context.GetChild(2).Accept(rightVisitor);
+            bool isTupleAssignment = false;
 
-            string identifier = "";
+            string lhs = "";
             string rhs = "";
-            // Simple assignment like: "a = b"
             if (leftVisitor.result.expressions.Count == 1 && rightVisitor.result.expressions.Count == 1)
             {
-                identifier = leftVisitor.result.expressions[0].ToString();
-                rhs = rightVisitor.result.expressions[0].ToString();
+                isTupleAssignment = isTupleOnLhs;
+                rhs = rightVisitor.result.expressions[0];
             }
-            // Comma seperated assignment like: "a, b = b, a"
-            else
+            else if (leftVisitor.result.expressions.Count > 1 && rightVisitor.result.expressions.Count == 1)
             {
-                state.commaListAssignmentState = new CommaListAssignmentState();
-                state.commaListAssignmentState.isActive = true;
-                result.tokens.Add("dynamic ");
-                ++state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedTupleNumber;
-                string tupleIdentifier = "_generated_tuple_" + state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedTupleNumber;
-                state.commaListAssignmentState.tupleIdentifier = tupleIdentifier;
-                result.tokens.Add(tupleIdentifier);
-                result.tokens.Add(" = (");
+                isTupleAssignment = true;
+                rhs = rightVisitor.result.expressions[0];
+            }
+            else if (rightVisitor.result.expressions.Count > 1)
+            {
+                isTupleAssignment = true;
+                rhs += "(";
                 for (int i = 0; i < rightVisitor.result.expressions.Count; ++i)
                 {
                     if (i != 0)
                     {
-                        result.tokens.Add(", ");
+                        rhs += ", ";
                     }
-                    result.tokens.Add(rightVisitor.result.expressions[i].ToString());
+                    rhs += rightVisitor.result.expressions[i];
                 }
-                result.tokens.Add(")");
-                state.commaListAssignmentState.lhsExpressions = leftVisitor.result.expressions;
-                // Stop here, we will add assignment to the lhs expressions after this statement.
-                return result;
+                rhs += ")";
+            }
+            if (isTupleAssignment)
+            {
+                if (leftVisitor.result.expressions.Count == 1)
+                {
+                    // Todo: unpack the tuple on the lhs and add "dynamic" to
+                    // initialized variables.
+                    lhs = leftVisitor.result.expressions[0];
+                }
+                else
+                {
+                    lhs += "(";
+                    // Build lhs here with possible initializations of variables.  
+                    for (int i = 0; i < leftVisitor.result.expressions.Count; ++i)
+                    {
+                        if (i != 0)
+                        {
+                            lhs += ", ";
+                        }
+                        // Initialize new variables.
+                        if (!state.output.currentClasses.Peek().currentFunctions.Peek().
+                            variables.ContainsKey(leftVisitor.result.expressions[i]))
+                        {
+                            lhs += "dynamic ";
+                            state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(leftVisitor.result.expressions[i], VarState.Types.Other);
+                        }
+                        lhs += leftVisitor.result.expressions[i];
+                    }
+                    lhs += ")";
+                }
 
+                result.tokens.Add(lhs);
+                result.tokens.Add(" = ");
+                result.tokens.Add(rhs);
+
+                // We are done at this point.
+                return result;
+            }
+            else
+            {
+                lhs = leftVisitor.result.expressions[0].ToString();
             }
             // If we have an assignment to the iteration variable, we need to
             // create a new variable. Only in for loop.
             if (state.loopState.loopType == LoopState.LoopType.ForLoop &&
-                state.loopState.forStmtIterationVariable == identifier)
+            state.loopState.forStmtIterationVariable == lhs)
             {
-                identifier = "_generated_" + identifier + "_" + state.loopState.generatedInBlockCount;
-                state.loopState.nameForGeneratedVariable = identifier;
+                lhs = "_generated_" + lhs + "_" + state.loopState.generatedInBlockCount;
+                state.loopState.nameForGeneratedVariable = lhs;
                 assignmentToIterationVariable = true;
                 ++state.loopState.generatedInBlockCount;
             }
 
             // Check if the variable has been already declared.
             // Or it can be declared as a field.
-            string[] tokens = identifier.Split(".");
+            string[] tokens = lhs.Split(".");
 
             // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate
-            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(identifier)
+            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(lhs)
                 && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
             {
                 // This is a case of declaration with initialization.
@@ -107,16 +147,16 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 // Add the new variable to a respective scope.
                 if (assignmentToIterationVariable)
                 {
-                    state.loopState.declaredIdentifiers.Add(identifier);
+                    state.loopState.declaredIdentifiers.Add(lhs);
                 }
                 else
                 {
-                    state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(identifier, state.varState.type);
+                    state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(lhs, state.varState.type);
                 }
             }
             // The following instructions are common for both cases (declaration
             // with initialization, assignment)
-            result.tokens.Add(identifier);
+            result.tokens.Add(lhs);
             result.tokens.Add(" = ");
 
             // If it is a call to constructor, we need to add "new" keyword.

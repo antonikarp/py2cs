@@ -5,7 +5,7 @@
     public LoopState loopState;
     public FuncCallState funcCallState;
     public CompForState compForState;
-    public CommaListAssignmentState commaListAssignmentState;
+    public LhsTupleState lhsTupleState;
     public Output output;
     public State()
     {
@@ -14,7 +14,7 @@
         loopState = new LoopState();
         funcCallState = new FuncCallState();
         compForState = new CompForState();
-        commaListAssignmentState = new CommaListAssignmentState();
+        lhsTupleState = new LhsTupleState();
         output = new Output();
     }
 }
