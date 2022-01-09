@@ -124,6 +124,18 @@ public static class ConsoleExt
         result.Append(""}"");
         return result.ToString();
     }
+    public static void WriteLine(object obj1, object obj2, params object[] additional)
+    {
+        Console.Write(ToString(obj1));
+        Console.Write("" "");
+        Console.Write(ToString(obj2));
+        for (int i = 0; i < additional.Length; ++i)
+        {
+            Console.Write("" "");
+            Console.Write(ToString(additional[i]));
+        }
+        Console.WriteLine();
+    }
     public static void WriteLine(dynamic obj)
     {
         Console.WriteLine(ToString(obj));
