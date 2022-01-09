@@ -4,6 +4,7 @@
     public StmtState stmtState;
     public LoopState loopState;
     public FuncCallState funcCallState;
+    public CompForState compForState;
     public Output output;
     public State()
     {
@@ -11,6 +12,7 @@
         stmtState = new StmtState();
         loopState = new LoopState();
         funcCallState = new FuncCallState();
+        compForState = new CompForState();
         output = new Output();
     }
 }

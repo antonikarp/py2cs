@@ -1,5 +1,2 @@
-print("_TEST_UNORDERED_ON")
-print( { i**2 for i in range(10) if i%2==0 } )
-print( { x for x in "Test" } )
-print("_TEST_UNORDERED_OFF")
-print( [x for x in [1, 2, 3, 4]])
+print( { i:i**2 for i in range(10) if i%2==0 } )
+print( { x:x**2 for x in [2,3,5,7,11] } )

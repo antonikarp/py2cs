@@ -92,6 +92,38 @@ public static class ConsoleExt
         result.Append(""}"");
         return result.ToString();
     }
+    public static string ToString(Dictionary<int, double> d)
+    {
+        StringBuilder result = new StringBuilder();
+        result.Append(""{"");
+        int i = 0;
+        foreach (var kv in d)
+        {
+            if (i != 0) { result.Append("", ""); }
+            result.Append(ToString(kv.Key));
+            result.Append("": "");
+            result.Append(ToString(kv.Value));
+            ++i;
+        }
+        result.Append(""}"");
+        return result.ToString();
+    }
+    public static string ToString(Dictionary<object, object> d)
+    {
+        StringBuilder result = new StringBuilder();
+        result.Append(""{"");
+        int i = 0;
+        foreach (var kv in d)
+        {
+            if (i != 0) { result.Append("", ""); }
+            result.Append(ToString(kv.Key));
+            result.Append("": "");
+            result.Append(ToString(kv.Value));
+            ++i;
+        }
+        result.Append(""}"");
+        return result.ToString();
+    }
     public static void WriteLine(dynamic obj)
     {
         Console.WriteLine(ToString(obj));

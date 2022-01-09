@@ -27,35 +27,79 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         if (isDict)
         {
             state.output.usingDirs.Add("System.Collections.Generic");
-            result.tokens.Add("new Dictionary<dynamic, dynamic> {");
-            state.varState.type = VarState.Types.Dictionary;
-            int j = 0;
-            // We assume that we have the following children:
 
-            // Child 0: key_1
-            // Child 1: ":"
-            // Child 2: val_1
-            // Child 3: ","
-            // Child 4: key_2
-            // ...
-
-            while (j < n)
+            // This is a dict comprehension.
+            if (context.ChildCount == 4 && context.GetChild(3).GetType().ToString() ==
+                "Python3Parser+Comp_forContext")
             {
+                // We have the following children:
+                // Child #0: test (key expression)
+                // Child #1: ":"
+                // Child #2: test (value expression)
+                // Child #3: comp_for
                 TestVisitor keyVisitor = new TestVisitor(state);
-                context.GetChild(j).Accept(keyVisitor);
-                j += 2;
-                TestVisitor valVisitor = new TestVisitor(state);
-                context.GetChild(j).Accept(valVisitor);
-                j += 2;
-                // Add a preceding comma to every item except to the first one.
-                if (j != 4)
+                context.GetChild(0).Accept(keyVisitor);
+                TestVisitor valueVisitor = new TestVisitor(state);
+                context.GetChild(2).Accept(valueVisitor);
+                // We use Linq for dict comprehension.
+                state.output.usingDirs.Add("System.Linq");
+                // Get the iterator expression.
+                state.compForState = new CompForState();
+                CompForVisitor compForVisitor = new CompForVisitor(state);
+                context.GetChild(3).Accept(compForVisitor);
+                for (int i = 0; i < compForVisitor.result.tokens.Count; ++i)
                 {
-                    result.tokens.Add(", ");
+                    result.tokens.Add(compForVisitor.result.tokens[i]);
                 }
-                result.tokens.Add("{" + keyVisitor.result.ToString() + ", " +
-                    valVisitor.result.ToString() + "}");
+                result.tokens.Add(" select ");
+                result.tokens.Add(state.compForState.iteratorExpr);
+                
+                result.tokens.Add(").ToDictionary(");
+                result.tokens.Add(state.compForState.iteratorExpr);
+                result.tokens.Add(" => ");
+                result.tokens.Add(keyVisitor.result.ToString());
+                result.tokens.Add(", ");
+                result.tokens.Add(state.compForState.iteratorExpr);
+                result.tokens.Add(" => ");
+                result.tokens.Add(valueVisitor.result.ToString());
+                result.tokens.Add(")");
+
+                // We are done with compForState, we need to flush it.
+                state.compForState = new CompForState();
             }
-            result.tokens.Add("}");
+            else
+            {
+
+                result.tokens.Add("new Dictionary<dynamic, dynamic> {");
+                state.varState.type = VarState.Types.Dictionary;
+                int j = 0;
+                // We assume that we have the following children:
+
+                // Child 0: key_1
+                // Child 1: ":"
+                // Child 2: val_1
+                // Child 3: ","
+                // Child 4: key_2
+                // ...
+
+                while (j < n)
+                {
+                    TestVisitor keyVisitor = new TestVisitor(state);
+                    context.GetChild(j).Accept(keyVisitor);
+                    j += 2;
+                    TestVisitor valVisitor = new TestVisitor(state);
+                    context.GetChild(j).Accept(valVisitor);
+                    j += 2;
+                    // Add a preceding comma to every item except to the first one.
+                    if (j != 4)
+                    {
+                        result.tokens.Add(", ");
+                    }
+                    result.tokens.Add("{" + keyVisitor.result.ToString() + ", " +
+                        valVisitor.result.ToString() + "}");
+                }
+                result.tokens.Add("}");
+            }
         }
         // Case of a set.
         else
@@ -63,7 +107,8 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
             state.output.usingDirs.Add("System.Collections.Generic");
 
             state.varState.type = VarState.Types.HashSet;
-            // It could be a set comprehension.
+
+            // This is a set comprehension.
             if (context.ChildCount == 2 && context.GetChild(1).GetType().ToString() ==
                 "Python3Parser+Comp_forContext")
             {

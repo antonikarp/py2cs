@@ -47,6 +47,9 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(iteratorVisitor.result.tokens[i]);
             }
+            // Update the CompForState.
+            state.compForState.iteratorExpr = iteratorVisitor.result.ToString();
+
             result.tokens.Add(" in ");
             
             OrTestVisitor collectionVisitor = new OrTestVisitor(state);
