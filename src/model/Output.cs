@@ -56,6 +56,9 @@ public class Output
 
     public override string ToString()
     {
+        // By default we include ConsoleExt.
+        library.CommitConsoleExt();
+
         foreach (var dir in usingDirs)
         {
             outputBuilder.commitIndentedLine(new IndentedLine("using " + dir + ";", 0));
@@ -84,7 +87,10 @@ public class Output
         // Here we write the library functions to the main file.
         if (moduleName == "")
         {
-            library.libConsoleExt.CommitToOutput();
+            foreach (var text in library.toCommit)
+            {
+                outputBuilder.commitRawCodeBlock(text);
+            }
         }
 
         foreach (var cls in classes)

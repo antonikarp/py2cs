@@ -30,6 +30,9 @@ public class YieldExprVisitor : Python3ParserBaseVisitor<LineModel>
             // We use IEnumerable from System.Collections.Generic
             state.output.usingDirs.Add("System.Collections.Generic");
 
+            // We include OnceEnumerable class from the library.
+            state.output.library.CommitOnceEnumerable();
+           
             result.tokens.Add("yield return ");
             TestVisitor newVisitor = new TestVisitor(state);
             context.GetChild(1).Accept(newVisitor);
