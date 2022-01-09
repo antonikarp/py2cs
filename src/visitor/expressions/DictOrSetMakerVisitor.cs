@@ -61,29 +61,57 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
         else
         {
             state.output.usingDirs.Add("System.Collections.Generic");
-            result.tokens.Add("new HashSet<dynamic> {");
+
             state.varState.type = VarState.Types.HashSet;
-            int j = 0;
-            // We assume that we have the following children:
-
-            // Child 0: val_1
-            // Child 1: ","
-            // Child 2: val_2
-            // ...
-
-            while (j < n)
+            // It could be a set comprehension.
+            if (context.ChildCount == 2 && context.GetChild(1).GetType().ToString() ==
+                "Python3Parser+Comp_forContext")
             {
-                TestVisitor valVisitor = new TestVisitor(state);
-                context.GetChild(j).Accept(valVisitor);
-                j += 2;
-                // Add a preceding comma to every item except for the first one.
-                if (j != 2)
+                // We use Linq for set comprehension.
+                state.output.usingDirs.Add("System.Linq");
+                CompForVisitor compForVisitor = new CompForVisitor(state);
+                context.GetChild(1).Accept(compForVisitor);
+                
+                for (int i = 0; i < compForVisitor.result.tokens.Count; ++i)
                 {
-                    result.tokens.Add(", ");
+                    result.tokens.Add(compForVisitor.result.tokens[i]);
                 }
-                result.tokens.Add("{" + valVisitor.result.ToString() + "}");
+                result.tokens.Add(" select ");
+                TestVisitor exprVisitor = new TestVisitor(state);
+                // Force the collection of tokens only in the leftmost child where
+                // the expression in the set comprehension is located.
+                context.GetChild(0).Accept(exprVisitor);
+                for (int i = 0; i < exprVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(exprVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(").ToHashSet()");
             }
-            result.tokens.Add("}");
+            else
+            {
+                result.tokens.Add("new HashSet<dynamic> {");
+                int j = 0;
+                // We assume that we have the following children:
+
+                // Child 0: val_1
+                // Child 1: ","
+                // Child 2: val_2
+                // ...
+
+                while (j < n)
+                {
+                    TestVisitor valVisitor = new TestVisitor(state);
+                    context.GetChild(j).Accept(valVisitor);
+                    j += 2;
+                    // Add a preceding comma to every item except for the first one.
+                    if (j != 2)
+                    {
+                        result.tokens.Add(", ");
+                    }
+                    result.tokens.Add("{" + valVisitor.result.ToString() + "}");
+                }
+                result.tokens.Add("}");
+            }
         }
         return result;
     }

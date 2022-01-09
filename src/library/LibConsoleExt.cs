@@ -62,6 +62,36 @@ public static class ConsoleExt
         result.Append(""]"");
         return result.ToString();
     }
+    public static string ToString(HashSet<double> s)
+    {
+        StringBuilder result = new StringBuilder();
+        result.Append(""{"");
+        int i = 0;
+        foreach (var element in s)
+        {
+            if (i != 0) { result.Append("", ""); }
+            result.Append(ToString(element));
+            ++i;
+        }
+        result.Append(""}"");
+        return result.ToString();
+    }
+    public static string ToString(HashSet<char> s)
+    {
+        StringBuilder result = new StringBuilder();
+        result.Append(""{"");
+        int i = 0;
+        foreach (var element in s)
+        {
+            if (i != 0) { result.Append("", ""); }
+            result.Append(""'"");
+            result.Append(ToString(element));
+            result.Append(""'"");
+            ++i;
+        }
+        result.Append(""}"");
+        return result.ToString();
+    }
     public static void WriteLine(dynamic obj)
     {
         Console.WriteLine(ToString(obj));
