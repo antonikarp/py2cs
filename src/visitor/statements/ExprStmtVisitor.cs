@@ -21,14 +21,46 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             state.stmtState.isStandalone = false;
             state.stmtState.isLocked = true;
 
-            TestVisitor leftVisitor = new TestVisitor(state);
-            TestVisitor rightVisitor = new TestVisitor(state);
+            TestlistStarExprVisitor leftVisitor = new TestlistStarExprVisitor(state);
+            TestlistStarExprVisitor rightVisitor = new TestlistStarExprVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(2).Accept(rightVisitor);
 
-            string identifier = leftVisitor.result.ToString();
+            string identifier = "";
+            string rhs = "";
+            // Simple assignment like: "a = b"
+            if (leftVisitor.result.expressions.Count == 1 && rightVisitor.result.expressions.Count == 1)
+            {
+                identifier = leftVisitor.result.expressions[0].ToString();
+                rhs = rightVisitor.result.expressions[0].ToString();
+            }
+            // Comma seperated assignment like: "a, b = b, a"
+            else
+            {
+                state.commaListAssignmentState = new CommaListAssignmentState();
+                state.commaListAssignmentState.isActive = true;
+                result.tokens.Add("dynamic ");
+                ++state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedTupleNumber;
+                string tupleIdentifier = "_generated_tuple_" + state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedTupleNumber;
+                state.commaListAssignmentState.tupleIdentifier = tupleIdentifier;
+                result.tokens.Add(tupleIdentifier);
+                result.tokens.Add(" = (");
+                for (int i = 0; i < rightVisitor.result.expressions.Count; ++i)
+                {
+                    if (i != 0)
+                    {
+                        result.tokens.Add(", ");
+                    }
+                    result.tokens.Add(rightVisitor.result.expressions[i].ToString());
+                }
+                result.tokens.Add(")");
+                state.commaListAssignmentState.lhsExpressions = leftVisitor.result.expressions;
+                // Stop here, we will add assignment to the lhs expressions after this statement.
+                return result;
+
+            }
             // If we have an assignment to the iteration variable, we need to
-            // create a new variable. Only in for loop
+            // create a new variable. Only in for loop.
             if (state.loopState.loopType == LoopState.LoopType.ForLoop &&
                 state.loopState.forStmtIterationVariable == identifier)
             {
@@ -88,7 +120,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             result.tokens.Add(" = ");
 
             // If it is a call to constructor, we need to add "new" keyword.
-            string potentialConstructorCall = rightVisitor.result.ToString();
+            string potentialConstructorCall = rhs;
             string[] splitBeforeLeftParan = potentialConstructorCall.Split('(');
             string[] identifiers = splitBeforeLeftParan[0].Split(".");
             bool isConstructorCall = true;
@@ -125,11 +157,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 }
 
             }
-
-            for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
-            {
-                result.tokens.Add(rightVisitor.result.tokens[i]);
-            }
+            result.tokens.Add(rhs);
             return result;
 
         }
