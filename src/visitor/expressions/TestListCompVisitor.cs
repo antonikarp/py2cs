@@ -25,6 +25,7 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
                 if (state.varState.type != VarState.Types.List)
                 {
                     state.varState.type = VarState.Types.Tuple;
+                    state.lhsTupleState.isTupleOnLhs = true;
                 }
                 result.tokens.Add(", ");
             }
