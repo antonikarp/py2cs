@@ -64,7 +64,14 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         }
 
         // Mark the variable as the iteration variable. It cannot be assigned to.
-        state.loopState.forStmtIterationVariable = iteratorVisitor.result.ToString();
+        if (iteratorVisitor.result.expressions.Count == 1)
+        {
+            state.loopState.forStmtIterationVariable = iteratorVisitor.result.expressions[0].ToString();
+        }
+        else
+        {
+            state.loopState.forStmtIterationVariable = "_tuple";
+        }
 
         // Check if the expression represents a dictionary:
         if (state.varState.type == VarState.Types.Dictionary)
