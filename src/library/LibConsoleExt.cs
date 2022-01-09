@@ -1,10 +1,10 @@
 ﻿public class LibConsoleExt
 {
     public string text;
-    public Output output;
-    public LibConsoleExt(Output _output)
+    public Library library;
+    public LibConsoleExt(Library _library)
     {
-        output = _output;
+        library = _library;
         text = @"
 public static class ConsoleExt
 {
@@ -71,12 +71,6 @@ public static class ConsoleExt
         Console.WriteLine();
     }
 }";
-        output.usingDirs.Add("System.Text");
-        output.usingDirs.Add("System.Collections.Generic");
+        library.availableClasses["ConsoleExt"] = text;
     }
-    public void CommitToOutput()
-    {
-        output.outputBuilder.commitRawCodeBlock(text);
-    }
-
 }

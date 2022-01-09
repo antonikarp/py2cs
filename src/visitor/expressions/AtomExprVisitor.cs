@@ -14,7 +14,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         result = new LineModel();
 
-        // Method call
+        // Method/function call
         // We have the following children:
         // Child #0: atom
         // Child #1: trailer
@@ -180,6 +180,20 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 name = "";
                 state.funcCallState.funcName = "enumerate";
+            }
+            else
+            {
+                // Check if the name of the function is the name of a previously defined
+                // iterator.
+                foreach (var func in state.output.currentClasses.Peek().functions)
+                {
+                    if (func.name == name && func.isEnumerable)
+                    {
+                        state.funcCallState.isIterator = true;
+                        result.tokens.Add("new OnceEnumerable<dynamic>(");
+                    }
+                }
+
             }
             result.tokens.Add(name);
         }
