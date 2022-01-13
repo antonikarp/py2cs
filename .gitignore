@@ -147,10 +147,28 @@ _NCrunch*
 # Project specific directories/files.
 input/
 output/
+
+tests/scripts/difference/__pycache__/*
+tests/scripts/difference/testnames.txt
+
+tests/scripts/error/__pycache__/*
+tests/scripts/error/testnames.txt
+
+tests/scripts/must_have/__pycache__/*
+tests/scripts/must_have/testnames.txt
+
+tests/scripts/nice_to_have/__pycache__/*
+tests/scripts/nice_to_have/testnames.txt
+
+tests/scripts/not_implemented/__pycache__/*
+tests/scripts/not_implemented/testnames.txt
+
+tests/scripts/should_have/__pycache__/*
+tests/scripts/should_have/testnames.txt
+
+tests/scripts/unit/__pycache__/*
+tests/scripts/unit/testnames.txt
+
 tests/generated/*
 tests/generated_output/*
 tests/scripts_output/*
-tests/testnames.txt
-
-# pycache temporary files from the tests:
-tests/scripts/__pycache__/*

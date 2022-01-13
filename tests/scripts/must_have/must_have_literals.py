@@ -1,0 +1,10 @@
+print(1234)
+print(0b101,0B11)
+print(0x0ff,0xA,0Xb)
+print(0o777,0O05)
+print(1.230)
+print(1.)
+print(.05)
+print(1e3)
+print(1.2e-3,1.25E1)
+

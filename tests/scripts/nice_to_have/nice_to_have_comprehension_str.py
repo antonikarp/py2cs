@@ -1,0 +1,1 @@
+print( "".join(x for x in "Nowy Rok 2022!" if not x.isdigit()) )

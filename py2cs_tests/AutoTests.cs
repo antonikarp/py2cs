@@ -4,12 +4,11 @@ using System.IO;
 using Xunit;
 using py2cs;
 
+
 public class AutoTests
 {
-    [Fact]
-    public void RunTests()
+    private void RunTests(string directory)
     {
-        Directory.SetCurrentDirectory("../../../../tests/scripts/");
         string[] paths = Directory.GetFiles(Directory.GetCurrentDirectory());
         List<string> filenames = new List<string>();
         foreach (string path in paths)
@@ -37,20 +36,26 @@ public class AutoTests
             }
         }
         filenames.Sort();
-        Directory.SetCurrentDirectory("..");
-
         // Write all eligible filenames to a file which will be read by a bash scipt
         // "run_tests.sh"
         File.WriteAllLines("testnames.txt", filenames);
-        Directory.SetCurrentDirectory("./scripts");
-
         foreach (string name in filenames)
         {
             string input_path = name + ".py";
-            string output_path = "../generated/" + name + ".cs";
+            string output_path = "../../generated/" + directory + "/" + name + ".cs";
             Translator translator = new Translator();
             translator.Translate(input_path, output_path, "");
-            translator.Compile(name + ".cs");
+            translator.Compile(name + ".cs", directory);
         }
+    }
+
+    [Fact]
+    public void RunAllTests()
+    {
+        Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
+        // Directory.SetCurrentDirectory("../unit");
+        // RunTests("unit");
+        Directory.SetCurrentDirectory("../must_have");
+        RunTests("must_have");
     }
 }

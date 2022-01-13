@@ -31,7 +31,7 @@ namespace py2cs
             outputVisitor.Visit(tree);
             File.WriteAllText(output_path, outputVisitor.state.output.ToString());
         }
-        public void Compile(string filename)
+        public void Compile(string filename, string directory)
         {
             ProcessStartInfo compiler = new ProcessStartInfo();
             // This is for Mac OS X.
@@ -43,7 +43,7 @@ namespace py2cs
                 arguments += importedFilename ;
             }
             compiler.Arguments = arguments;
-            compiler.WorkingDirectory = Directory.GetCurrentDirectory() + "/../generated";
+            compiler.WorkingDirectory = Directory.GetCurrentDirectory() + "/../../generated/" + directory;
             var process = Process.Start(compiler);
             process.WaitForExit();
         }
