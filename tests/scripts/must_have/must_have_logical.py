@@ -1,0 +1,42 @@
+
+print(False and 1/0>1)
+print(True or 1/0>1)
+b = False and 1/0>1 and 1/0>1 and 1/0>1 and 1/0>1
+print(b)
+a = True or 1/0>1 or 1/0>1 or 1/0>1 or 1/0>1
+print(a)
+print()
+
+print(a and b and 1/0>1)
+print(b or a or 1/0>1)
+print(a and ( b and 1/0>1 ))
+print(b or ( a or 1/0>1 ))
+print(True or 1/0>1 and True or 1/0>1 and False and False and 1/0>1)
+print(False and 1/0>1 or False and 1/0>1 or True or True or 1/0>1)
+print()
+
+print(True!=(not False))
+print(True==(not False))
+print(False!=(not True))
+print(False==(not True))
+print()
+
+print(True or True and True)
+print(True or True and False)
+print(True or False and True)
+print(True or False and False)
+print(False or True and True)
+print(False or True and False)
+print(False or False and True)
+print(False or False and False)
+print()
+
+print(True and True or True)
+print(True and True or False)
+print(True and False or True)
+print(True and False or False)
+print(False and True or True)
+print(False and True or False)
+print(False and False or True)
+print(False and False or False)
+print()
