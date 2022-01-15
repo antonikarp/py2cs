@@ -216,9 +216,23 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(leftVisitor.result.tokens[i]);
             }
             result.tokens.Add(" " + opVisitor.result.value + " ");
-            for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+            // If we have a power assignment then:
+            // x **= y becomes
+            // x = Math.Pow(x, y);
+            if (opVisitor.isPowerAssign)
             {
-                result.tokens.Add(rightVisitor.result.tokens[i]);
+                result.tokens.Add("Math.Pow(");
+                result.tokens.Add(leftVisitor.result.ToString());
+                result.tokens.Add(", ");
+                result.tokens.Add(rightVisitor.result.ToString());
+                result.tokens.Add(")");
+            }
+            else
+            {
+                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(rightVisitor.result.tokens[i]);
+                }
             }
             return result;
         }
