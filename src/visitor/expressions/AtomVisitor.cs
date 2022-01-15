@@ -47,12 +47,6 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(state.loopState.nameForGeneratedVariable);
                 }
-                // We have a type cast: add parantheses:
-                else if (context.NAME().ToString() == "int")
-                {
-                    result.tokens.Add("(" + context.NAME().ToString() + ")");
-                }
-
                 else
                 {
                     result.tokens.Add(context.NAME().ToString());
@@ -65,6 +59,11 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             else if (context.FALSE() != null)
             {
                 result.tokens.Add("false");
+            }
+            // For now, "None" is translated to "null".
+            else if (context.NONE() != null)
+            {
+                result.tokens.Add("null");
             }
         }
         // Expression surrounded by parenthesis.
