@@ -53,8 +53,8 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        //Directory.SetCurrentDirectory("../unit");
-        //RunTests("unit");
+        Directory.SetCurrentDirectory("../unit");
+        RunTests("unit");
         Directory.SetCurrentDirectory("../must_have");
         RunTests("must_have");
     }
