@@ -37,10 +37,16 @@ public class NotTestVisitor : Python3ParserBaseVisitor<LineModel>
             result.tokens.Add("!");
             NotTestVisitor newVisitor = new NotTestVisitor(state);
             context.GetChild(1).Accept(newVisitor);
+
+            // Explicitly convert to boolean.
+            result.tokens.Add("Convert.ToBoolean(");
+
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
+
+            result.tokens.Add(")");
         }
         return result;
     }

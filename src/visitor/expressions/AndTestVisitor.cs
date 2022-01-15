@@ -47,11 +47,16 @@ public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
                     result.tokens.Add("&&");
                 }
                 NotTestVisitor newVisitor = new NotTestVisitor(state);
+
+                // Explicitly convert to boolean.
+                result.tokens.Add("Convert.ToBoolean(");
+
                 context.GetChild(i).Accept(newVisitor);
                 for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                 {
                     result.tokens.Add(newVisitor.result.tokens[j]);
                 }
+                result.tokens.Add(")");
                 i += 2;
             }
         }

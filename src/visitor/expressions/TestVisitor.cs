@@ -32,10 +32,17 @@ public class TestVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(4).Accept(falseValueVisitor);
             OrTestVisitor conditionVisitor = new OrTestVisitor(state);
             context.GetChild(2).Accept(conditionVisitor);
+
+            // Explicitly convert to boolean.
+            result.tokens.Add("Convert.ToBoolean(");
+
             for (int i = 0; i < conditionVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(conditionVisitor.result.tokens[i]);
             }
+
+            result.tokens.Add(")");
+
             result.tokens.Add(" ? ");
             for (int i = 0; i < trueValueVisitor.result.tokens.Count; ++i)
             {
