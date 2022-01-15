@@ -19,6 +19,7 @@ public class Function
     public List<Function> internalFunctions;
     public List<string> baseConstructorInitializerList;
     public List<List<VarState.Types>> usedParameterTypesInConstructor;
+    public bool isChainedComparison;
     public Output output;
     // This indicates how many temporarary bool variables for entry to else blocks.
     public int currentGeneratedElseBlockEntryNumber = -1;
@@ -42,6 +43,9 @@ public class Function
 
         // Translated function __init__ is a constructor.
         isConstructor = false;
+
+        // Represents a generated function for a chained comparison.
+        isChainedComparison = false;
 
         statements = new BlockModel();
         parameters = new List<string>();
@@ -88,7 +92,11 @@ public class Function
                 {
                     firstLine += "static ";
                 }
-                if (isVoid)
+                if (isChainedComparison)
+                {
+                    firstLine += "bool ";
+                }
+                else if (isVoid)
                 {
                     firstLine += "void ";
                 }
