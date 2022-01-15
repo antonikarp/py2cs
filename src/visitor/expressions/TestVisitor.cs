@@ -23,12 +23,11 @@ public class TestVisitor : Python3ParserBaseVisitor<LineModel>
         // Child 3 : "else"
         // Child 4 : test
 
-        // For now, we assume that Child 4 is or_test (the expression is not nested).
         if (context.ChildCount == 5)
         {
             OrTestVisitor trueValueVisitor = new OrTestVisitor(state);
             context.GetChild(0).Accept(trueValueVisitor);
-            OrTestVisitor falseValueVisitor = new OrTestVisitor(state);
+            TestVisitor falseValueVisitor = new TestVisitor(state);
             context.GetChild(4).Accept(falseValueVisitor);
             OrTestVisitor conditionVisitor = new OrTestVisitor(state);
             context.GetChild(2).Accept(conditionVisitor);
@@ -49,10 +48,12 @@ public class TestVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(trueValueVisitor.result.tokens[i]);
             }
             result.tokens.Add(" : ");
+            result.tokens.Add("(");
             for (int i = 0; i < falseValueVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(falseValueVisitor.result.tokens[i]);
             }
+            result.tokens.Add(")");
         }
         // One child which is or_test.
         else if (context.ChildCount == 1)
