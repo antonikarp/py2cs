@@ -26,7 +26,16 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // Case of string literal
             else if (context.STRING().Length > 0)
             {
-                result.tokens.Add(context.STRING().GetValue(0).ToString());
+                string value = context.STRING().GetValue(0).ToString();
+
+                // Replace single quotes with double quotes.
+                if (value.StartsWith("'") && value.EndsWith("'"))
+                {
+                    value = value.Remove(value.Length - 1);
+                    value = value.Remove(0, 1);
+                    value = ("\"" + value + "\"");
+                }
+                result.tokens.Add(value);
             }
             // Function name
             else if (context.NAME() != null)

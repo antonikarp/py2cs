@@ -18,6 +18,10 @@ public class Class
     public Dictionary<int, Function> constructorSignatures;
 
     public string libraryParentClassName;
+
+    // This indicates how many functions returning bool which represent a chained
+    // expression have been generated.
+    public int currentGeneratedChainedComparisonNumber = -1;
     public Class(Output _output)
     {
         output = _output;

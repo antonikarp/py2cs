@@ -87,11 +87,6 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
         // For instance: a < b < c
         else
         {
-            // Expression is standalone:
-            if (!state.stmtState.isLocked)
-            {
-                state.stmtState.isStandalone = true;
-            }
             int numberOfExpr = context.ChildCount / 2 + 1;
             List<ExprVisitor> visitors = new List<ExprVisitor>();
             List<CompOpVisitor> opVisitors = new List<CompOpVisitor>();
@@ -108,26 +103,54 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
                     opVisitors.Add(newOpVisitor);
                 }
             }
-            // Build the conjuction of pairs of statements. For instance:
-            // a < b < c -> (a < b) && (b < c)
-            for (int i = 0; i < numberOfExpr - 1; ++i)
+
+            // a < b < c is translated into:
+            //
+            // var var_0 = a;
+            // var var_1 = b;
+            // if (!(var_0 < var_1))
+            // {
+            //   return false;
+            // }
+            // var var_2 = c;
+            // if (!(var_1 < var_2))
+            // {
+            //   return false;
+            // }
+            // return true;
+
+            ++state.output.currentClasses.Peek().currentGeneratedChainedComparisonNumber;
+            var num = state.output.currentClasses.Peek().currentGeneratedChainedComparisonNumber;
+            Function chainedComparisonFunction = new Function(state.output);
+            chainedComparisonFunction.name = "GeneratedChainedComparison" + num;
+            chainedComparisonFunction.isChainedComparison = true;
+            chainedComparisonFunction.isPublic = false;
+            for (int i = 0; i < numberOfExpr; ++i)
             {
-                result.tokens.Add("(");
-                for (int j = 0; j < visitors[i].result.tokens.Count; ++j)
+                chainedComparisonFunction.statements.lines.Add(new IndentedLine
+                    ("var var_" + i + " = " + visitors[i].result.ToString() + ";", 0));
+                if (i != 0)
                 {
-                    result.tokens.Add(visitors[i].result.tokens[j]);
-                }
-                result.tokens.Add(opVisitors[i].result.value);
-                for (int j = 0; j < visitors[i + 1].result.tokens.Count; ++j)
-                {
-                    result.tokens.Add(visitors[i + 1].result.tokens[j]);
-                }
-                result.tokens.Add(")");
-                if (i != numberOfExpr - 2)
-                {
-                    result.tokens.Add("&&");
+                    chainedComparisonFunction.statements.lines.Add(new IndentedLine
+                    ("if (!(var_" + (i - 1).ToString() + opVisitors[i - 1].result.value.ToString() +
+                    "var_" + i + "))", 0));
+                    chainedComparisonFunction.statements.lines.Add(new IndentedLine
+                    ("{", 1));
+                    chainedComparisonFunction.statements.lines.Add(new IndentedLine
+                    ("return false;", -1));
+                    chainedComparisonFunction.statements.lines.Add(new IndentedLine
+                    ("}", 0));
+
                 }
             }
+            chainedComparisonFunction.statements.lines.Add(new IndentedLine
+                ("return true;", 0));
+            Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
+            parentFunction.internalFunctions.Add(chainedComparisonFunction);
+            chainedComparisonFunction.parentClass = state.output.currentClasses.Peek();
+
+            result.tokens.Add("GeneratedChainedComparison" + num + "()");
+
         }
         return result;
     }
