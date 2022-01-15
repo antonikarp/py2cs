@@ -181,6 +181,60 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 name = "";
                 state.funcCallState.funcName = "enumerate";
             }
+            // We have a type cast to int:
+            else if (name == "int")
+            {
+                // Child #0: atom
+                // Child #1: trailer
+                if (context.GetChild(1).ChildCount == 2)
+                {
+                    // No arguments, we have: "int()", get the default value.
+                    result.tokens.Add("default(int)");
+                    return result;
+                }
+                else
+                {
+                    // One argument, use TrailerVisitor, we have: "int(a)".
+                    result.tokens.Add("Convert.ToInt32");
+                    name = "";
+                }
+            }
+            // We have a type cast to float:
+            else if (name == "float")
+            {
+                // Child #0: atom
+                // Child #1: trailer
+                if (context.GetChild(1).ChildCount == 2)
+                {
+                    // No arguments, we have: "float()", get the default value.
+                    result.tokens.Add("default(float)");
+                    return result;
+                }
+                else
+                {
+                    // One argument, use TrailerVisitor, we have: "float(a)".
+                    result.tokens.Add("Convert.ToDouble");
+                    name = "";
+                }
+            }
+            // We have a type cast to bool:
+            else if (name == "bool")
+            {
+                // Child #0: atom
+                // Child #1: trailer
+                if (context.GetChild(1).ChildCount == 2)
+                {
+                    // No arguments, we have: "bool()", get the default value.
+                    result.tokens.Add("default(bool)");
+                    return result;
+                }
+                else
+                {
+                    // One argument, use TrailerVisitor, we have: "bool(a)".
+                    result.tokens.Add("Convert.ToBoolean");
+                    name = "";
+                }
+            }
             else
             {
                 // Check if the name of the function is the name of a previously defined
