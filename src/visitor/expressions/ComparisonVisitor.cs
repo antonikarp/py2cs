@@ -61,10 +61,37 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
                         result.tokens.Add(".Contains");
                     }
                 }
+                else
+                // This is the case where we construct a variable in place
+                {
+                    if (state.varState.type == VarState.Types.List)
+                    {
+                        result.tokens.Add(".Contains");
+                    }
+                }
                 result.tokens.Add("(");
                 for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
                 {
                     result.tokens.Add(leftVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(")");
+
+                // Flush VarState
+                state.varState = new VarState();
+            }
+            else if (opVisitor.result.value == "is")
+            {
+                // "is" operator - use IsOperator class from the Library.
+                state.output.library.CommitIsOperator();
+                result.tokens.Add("IsOperator.Compare(");
+                for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(leftVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(", ");
+                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(rightVisitor.result.tokens[i]);
                 }
                 result.tokens.Add(")");
             }

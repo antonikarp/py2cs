@@ -4,6 +4,7 @@ public class Library
     public Dictionary<string, string> availableClasses;
     public LibConsoleExt libConsoleExt;
     public LibOnceEnumerable libOnceEnumerable;
+    public LibIsOperator libIsOperator;
     public Output output;
     public HashSet<string> toCommit;
     public Library(Output _output)
@@ -12,9 +13,10 @@ public class Library
         availableClasses = new Dictionary<string, string>();
         toCommit = new HashSet<string>();
 
-        // Save the code of the classes to availbleClasses
+        // Save the code of the classes to availableClasses
         libConsoleExt = new LibConsoleExt(this);
         libOnceEnumerable = new LibOnceEnumerable(this);
+        libIsOperator = new LibIsOperator(this);
     }
     public void CommitConsoleExt()
     {
@@ -28,5 +30,8 @@ public class Library
         output.usingDirs.Add("System.Collections.Generic");
         toCommit.Add(availableClasses["OnceEnumerable"]);
     }
-    
+    public void CommitIsOperator()
+    {
+        toCommit.Add(availableClasses["IsOperator"]);
+    }
 }
