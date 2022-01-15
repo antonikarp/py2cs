@@ -182,7 +182,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 state.funcCallState.funcName = "enumerate";
             }
             // We have a type cast to int:
-            else if (name == "int")
+            // Or a cast to bool with an occurrence of an arithmetic expression ->
+            // promotion to int.
+            else if (name == "int" || (name == "bool" && state.promoteBoolToIntState.isAritmExpr))
             {
                 // Child #0: atom
                 // Child #1: trailer

@@ -5,6 +5,7 @@ public class Library
     public LibConsoleExt libConsoleExt;
     public LibOnceEnumerable libOnceEnumerable;
     public LibIsOperator libIsOperator;
+    public LibModuloOperator libModuloOperator;
     public Output output;
     public HashSet<string> toCommit;
     public Library(Output _output)
@@ -17,6 +18,7 @@ public class Library
         libConsoleExt = new LibConsoleExt(this);
         libOnceEnumerable = new LibOnceEnumerable(this);
         libIsOperator = new LibIsOperator(this);
+        libModuloOperator = new LibModuloOperator(this);
     }
     public void CommitConsoleExt()
     {
@@ -33,5 +35,9 @@ public class Library
     public void CommitIsOperator()
     {
         toCommit.Add(availableClasses["IsOperator"]);
+    }
+    public void CommitModuloOperator()
+    {
+        toCommit.Add(availableClasses["ModuloOperator"]);
     }
 }

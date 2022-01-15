@@ -6,6 +6,7 @@
     public FuncCallState funcCallState;
     public CompForState compForState;
     public LhsTupleState lhsTupleState;
+    public PromoteBoolToIntState promoteBoolToIntState;
     public Output output;
     public State()
     {
@@ -15,6 +16,7 @@
         funcCallState = new FuncCallState();
         compForState = new CompForState();
         lhsTupleState = new LhsTupleState();
+        promoteBoolToIntState = new PromoteBoolToIntState();
         output = new Output();
     }
 }

@@ -12,6 +12,9 @@ public class ExprVisitor : Python3ParserBaseVisitor<LineModel>
     }
     public override LineModel VisitExpr([NotNull] Python3Parser.ExprContext context)
     {
+        // Create new PromoteBoolToIntState - we will be looking for an arith_expr
+        state.promoteBoolToIntState = new PromoteBoolToIntState();
+
         result = new LineModel();
         // If there is one child then it is a xor_expr.
         if (context.ChildCount == 1)

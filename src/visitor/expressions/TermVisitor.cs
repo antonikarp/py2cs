@@ -45,29 +45,30 @@ public class TermVisitor : Python3ParserBaseVisitor<LineModel>
     }
 
     public void TransformModuloDivision()
-    // x mod y == x - (x // y) * y
+    // x mod y == ModuloOperator.Compute(x, y);
 
-    // The expression on the right hand side corresponds to:
-    // factorVisitors[n]: x
-    // operands[n]: "-("
-    // factorVisitors[n + 1]: x
-    // operands[n + 1]: "//"
-    // factorVisitors[n + 2]: y
-    // operands[n + 2]: ")*"
-    // factorVisitors[n + 2]: y
+    // Before transformation:
+    // factorVisitors[n - 2] = x
+    // factorVisitors[n - 1] = y
 
-    // The operation "//" will be translated by TranslateFloorDivision() 
+    // After transformation:
+    // factorVisitors[n - 1] = ModuloOperator.Compute(x, y)
     {
+        // Use ModuloOperator class from the Library.
+        state.output.library.CommitModuloOperator();
+
         int n = factorVisitors.Count;
         FactorVisitor x = factorVisitors[n - 2];
         FactorVisitor y = factorVisitors[n - 1];
+
+        FactorVisitor replacement = new FactorVisitor(state);
+        replacement.result = new LineModel();
+        replacement.result.tokens.Add("ModuloOperator.Compute(" + x.result.ToString() + ", " +
+            y.result.ToString() + ")");
+
         factorVisitors.RemoveAt(n - 1);
-        operands.Add("-(");
-        factorVisitors.Add(x);
-        operands.Add("//");
-        factorVisitors.Add(y);
-        operands.Add(")*");
-        factorVisitors.Add(y);
+        factorVisitors.RemoveAt(n - 2);
+        factorVisitors.Add(replacement);
     }
 
     public void ProduceInterleavedOutput()
@@ -105,6 +106,10 @@ public class TermVisitor : Python3ParserBaseVisitor<LineModel>
         // ...
         else if (context.ChildCount > 1)
         {
+            // Mark that we have a promotion from bool to int - if there is a conversion]
+            // to bool, replace it with a conversion to int
+            state.promoteBoolToIntState.isAritmExpr = true;
+
             // Expression is standalone:
             if (!state.stmtState.isLocked)
             {

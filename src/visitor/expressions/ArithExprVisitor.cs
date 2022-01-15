@@ -14,6 +14,7 @@ public class ArithExprVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitArith_expr([NotNull] Python3Parser.Arith_exprContext context)
     {
         result = new LineModel();
+
         // If there is one child then it is a term.
         if (context.ChildCount == 1)
         {
@@ -31,6 +32,10 @@ public class ArithExprVisitor : Python3ParserBaseVisitor<LineModel>
         // ...
         else if (context.ChildCount > 1)
         {
+            // Mark that we have a promotion from bool to int - if there is a conversion]
+            // to bool, replace it with a conversion to int
+            state.promoteBoolToIntState.isAritmExpr = true;
+
             // Expression is standalone:
             if (!state.stmtState.isLocked)
             {
