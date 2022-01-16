@@ -71,6 +71,30 @@ public class TermVisitor : Python3ParserBaseVisitor<LineModel>
         factorVisitors.Add(replacement);
     }
 
+    // x / 0 == DivideByZero.Evaluate()
+
+    // Before transformation:
+    // factorVisitors[n - 2] = x
+    // factorVisitors[n - 1] = 0
+
+    // After transformation:
+    // factorVisitors[n - 1] = DivideByZero.Evaluate()
+    public void TransformDivisionByZero()
+    {
+        // Use DivideByZero class from the Library.
+        state.output.library.CommitDivideByZero();
+
+        int n = factorVisitors.Count;
+        
+        FactorVisitor replacement = new FactorVisitor(state);
+        replacement.result = new LineModel();
+        replacement.result.tokens.Add("DivideByZero.Evaluate()");
+
+        factorVisitors.RemoveAt(n - 1);
+        factorVisitors.RemoveAt(n - 2);
+        factorVisitors.Add(replacement);
+    }
+
     public void ProduceInterleavedOutput()
     {
         for (int i = 0; i < factorVisitors.Count; ++i)
@@ -134,7 +158,14 @@ public class TermVisitor : Python3ParserBaseVisitor<LineModel>
                 }
                 else if (context.GetChild(i).ToString() == "/")
                 {
-                    operands.Add("/");
+                    if (newVisitor.result.ToString() == "0")
+                    {
+                        TransformDivisionByZero();
+                    }
+                    else
+                    {
+                        operands.Add("/");
+                    }
                 }
                 else if (context.GetChild(i).ToString() == "//")
                 {
