@@ -55,6 +55,10 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         if (state.output.currentClasses.Peek().currentFunctions.Count > 1)
         {
             Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
+
+            // To be able to use parameters from the parent function.
+            result.isStatic = false;
+
             parentFunction.internalFunctions.Add(result);
         }
         else

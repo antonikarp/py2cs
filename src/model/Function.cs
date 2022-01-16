@@ -99,11 +99,25 @@ public class Function
         {
             result += ", dynamic>";
         }
+
+
         return result;
+    }
+    public void ReturnNullIfVoid()
+    {
+        if (isVoid && name != "Main")
+        {
+            IndentedLine newLine = new IndentedLine("return null;", 0);
+            statements.lines.Add(newLine);
+            isVoid = false;
+        }
     }
 
     public void CommitToOutput()
     {
+
+        ReturnNullIfVoid();
+
         // Handle the default case (if this is not a constructor of the parent class
         // or even if it is not constructor) by storing a list of "dynamic" types.
         if (usedParameterTypesInConstructor.Count == 0)
