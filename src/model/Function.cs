@@ -20,6 +20,11 @@ public class Function
     public List<string> baseConstructorInitializerList;
     public List<List<VarState.Types>> usedParameterTypesInConstructor;
     public bool isChainedComparison;
+
+    // Overriden types - used when arguments are functions.
+    public Dictionary<string, string> overridenParameterTypes;
+    public string overridenReturnType;
+
     public Output output;
     // This indicates how many temporarary bool variables for entry to else blocks.
     public int currentGeneratedElseBlockEntryNumber = -1;
@@ -58,8 +63,45 @@ public class Function
 
         // Used parameter types in constructor
         usedParameterTypesInConstructor = new List<List<VarState.Types>>();
+
+        overridenParameterTypes = new Dictionary<string, string>();
+
+        overridenReturnType = "";
+
         output = _output;
     }
+    public string getDelegateType()
+    {
+        string result = "Func<";
+        for (int i = 0; i < parameters.Count; ++i)
+        {
+            if (i != 0)
+            {
+                result += ", ";
+            }
+            if (overridenParameterTypes.ContainsKey(parameters[i]))
+            {
+                result += overridenParameterTypes[parameters[i]];
+            }
+            else
+            {
+                result += "dynamic";
+            }
+        }
+        // We always return a value - this is a return type:
+        if (overridenReturnType != "")
+        {
+            result += ", ";
+            result += overridenReturnType;
+            result += ">";
+        }
+        else
+        {
+            result += ", dynamic>";
+        }
+        return result;
+    }
+
     public void CommitToOutput()
     {
         // Handle the default case (if this is not a constructor of the parent class
@@ -69,6 +111,11 @@ public class Function
             List<VarState.Types> defaultTypes = new List<VarState.Types>();
             for (int i = 0; i < parameters.Count; ++i)
             {
+                // For example when the parameter is a function.
+                if (overridenParameterTypes.ContainsKey(parameters[i]))
+                {
+                    defaultTypes.Add(VarState.Types.Overriden);
+                }
                 defaultTypes.Add(VarState.Types.Other);
             }
             usedParameterTypesInConstructor.Add(defaultTypes);
@@ -92,7 +139,12 @@ public class Function
                 {
                     firstLine += "static ";
                 }
-                if (isChainedComparison)
+                if (overridenReturnType != "")
+                {
+                    firstLine += overridenReturnType;
+                    firstLine += " ";
+                }
+                else if (isChainedComparison)
                 {
                     firstLine += "bool ";
                 }
@@ -157,6 +209,9 @@ public class Function
                             break;
                         case VarState.Types.String:
                             firstLine += "string ";
+                            break;
+                        case VarState.Types.Overriden:
+                            firstLine += overridenParameterTypes[parameters[i]];
                             break;
                         default:
                             firstLine += "dynamic ";

@@ -38,6 +38,15 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(newVisitor.result.tokens[i]);
                 }
+
+                // Check if we return a function, if so - override return type
+                foreach (var function in state.output.currentClasses.Peek().currentFunctions.Peek().internalFunctions)
+                {
+                    if (newVisitor.result.ToString() == function.name)
+                    {
+                        state.output.currentClasses.Peek().currentFunctions.Peek().overridenReturnType = function.getDelegateType();
+                    }
+                }
             }
         }
         else if (context.yield_stmt() != null)

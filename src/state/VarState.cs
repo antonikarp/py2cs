@@ -1,6 +1,6 @@
 ﻿public class VarState
 {
-    public enum Types { List, Dictionary, HashSet, Other, Tuple, Int, Double, String, StringArray, ListComp, ListInt }
+    public enum Types { List, Dictionary, HashSet, Other, Tuple, Int, Double, String, StringArray, ListComp, ListInt, Overriden }
     public Types type;
     public VarState()
     {
