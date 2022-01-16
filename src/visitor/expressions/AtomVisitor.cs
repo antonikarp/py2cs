@@ -21,7 +21,24 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // Case of numeric literal
             if (context.NUMBER() != null)
             {
-                result.tokens.Add(context.NUMBER().ToString());
+                string value = context.NUMBER().ToString();
+                // In C# there are no octal literals. Convert a string representation
+                // to int with base 8.
+                if (value.StartsWith("0o") || value.StartsWith("0O"))
+                {
+                    value = value.Remove(0, 2);
+                    result.tokens.Add("Convert.ToInt32(\"" + value + "\", 8)");
+                }
+                // Remove trailing dot.
+                else if (value.EndsWith("."))
+                {
+                    value = value.Remove(value.Length - 1);
+                    result.tokens.Add(value);
+                }
+                else
+                {
+                    result.tokens.Add(value);
+                }
             }
             // Case of string literal
             else if (context.STRING().Length > 0)
