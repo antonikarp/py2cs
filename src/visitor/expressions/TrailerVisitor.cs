@@ -64,6 +64,9 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             Subscript_Visitor newVisitor = new Subscript_Visitor(state);
             context.GetChild(1).Accept(newVisitor);
             string value = newVisitor.result.ToString();
+            // Remove any parentheses.
+            value = value.Replace("(", "");
+            value = value.Replace(")", "");
             string[] parts = value.Split(':');
             bool includeLinq = true;
 
