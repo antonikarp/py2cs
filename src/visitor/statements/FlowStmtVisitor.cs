@@ -38,14 +38,24 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(newVisitor.result.tokens[i]);
                 }
+                string value = newVisitor.result.ToString();
 
                 // Check if we return a function, if so - override return type
                 foreach (var function in state.output.currentClasses.Peek().currentFunctions.Peek().internalFunctions)
                 {
-                    if (newVisitor.result.ToString() == function.name)
+                    if (function.name == value)
                     {
                         state.output.currentClasses.Peek().currentFunctions.Peek().overridenReturnType = function.getDelegateType();
                     }
+                }
+                // Check if we return a variable which is not in scope.
+                // If so, declare it.
+                if (Char.IsLetter(value[0]) && !state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(value)
+                    && !state.output.currentClasses.Peek().currentFunctions.Peek().parameters.Contains(value) &&
+                    state.output.currentClasses.Peek().currentFunctions.Peek().hiddenIdentifiers.Contains(value))
+                {
+                    var curFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
+                    curFunction.statements.lines.Add(new IndentedLine("dynamic " + value + " = 0;", 0));
                 }
             }
         }

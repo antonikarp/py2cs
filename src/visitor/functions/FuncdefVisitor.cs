@@ -45,7 +45,10 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         }
 
 
-        result.statements.lines = suiteVisitor.result.lines;
+        foreach (var line in suiteVisitor.result.lines)
+        {
+            result.statements.lines.Add(line);
+        }
 
         // If the function is not internal, add it to the list of functions
         // in the class state.

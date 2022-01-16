@@ -160,6 +160,13 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             result.lines.Add(closingBraceLineElse);
         }
 
+        // Add identifiers declared inside the loop to the hidden identifiers.
+        // They will be useful when checking if a identifier returned by the function is in scope.
+        foreach (string identifier in state.loopState.declaredIdentifiers)
+        {
+            state.output.currentClasses.Peek().currentFunctions.Peek().hiddenIdentifiers.Add(identifier);
+        }
+
         // Flush LoopState
         state.loopState = new LoopState();
         

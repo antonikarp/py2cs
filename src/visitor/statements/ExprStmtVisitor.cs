@@ -145,7 +145,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
                 }
                 // Add the new variable to a respective scope.
-                if (assignmentToIterationVariable)
+                if (state.loopState.loopType != LoopState.LoopType.NoLoop)
                 {
                     state.loopState.declaredIdentifiers.Add(lhs);
                 }

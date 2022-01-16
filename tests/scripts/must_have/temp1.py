@@ -10,4 +10,4 @@ def repeat(n=3):
 def myfunction(arg):
     print('inside myfunction: ',arg)
 
-repeat(4)(myfunction)
+repeat(4)(myfunction)(7)

@@ -21,6 +21,9 @@ public class Function
     public List<List<VarState.Types>> usedParameterTypesInConstructor;
     public bool isChainedComparison;
 
+    // Hidden identifiers at the function scope.
+    public List<string> hiddenIdentifiers;
+
     // Overriden types - used when arguments are functions.
     public Dictionary<string, string> overridenParameterTypes;
     public string overridenReturnType;
@@ -68,6 +71,8 @@ public class Function
 
         overridenReturnType = "";
 
+        hiddenIdentifiers = new List<string>();
+
         output = _output;
     }
     public string getDelegateType()
@@ -105,11 +110,30 @@ public class Function
     }
     public void ReturnNullIfVoid()
     {
-        if (isVoid && name != "Main")
+        if (isVoid && !isChainedComparison && name != "Main")
         {
             IndentedLine newLine = new IndentedLine("return null;", 0);
             statements.lines.Add(newLine);
             isVoid = false;
+        }
+    }
+    public void CheckForCollidingDeclarations()
+    {
+        HashSet<string> seen = new HashSet<string>();
+        for (int i = 0; i < statements.lines.Count; ++i)
+        {
+            string line = statements.lines[i].line;
+            string[] tokens = line.Split(" ");
+            if (tokens[0] == "dynamic" && !seen.Contains(tokens[1]))
+            {
+                seen.Add(tokens[1]);
+            }
+            else if (tokens[0] == "dynamic" && seen.Contains(tokens[1]))
+            {
+                tokens[0] = "";
+                string newLine = System.String.Join(" ", tokens);
+                statements.lines[i].line = newLine;
+            }
         }
     }
 
@@ -117,6 +141,7 @@ public class Function
     {
 
         ReturnNullIfVoid();
+        CheckForCollidingDeclarations();
 
         // Handle the default case (if this is not a constructor of the parent class
         // or even if it is not constructor) by storing a list of "dynamic" types.

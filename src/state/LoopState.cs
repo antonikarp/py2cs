@@ -13,7 +13,7 @@ public class LoopState
     public int generatedInBlockCount;
     public string nameForGeneratedVariable;
 
-    public enum LoopType { ForLoop, WhileLoop }
+    public enum LoopType { ForLoop, WhileLoop, NoLoop }
     public LoopType loopType;
     public LoopState()
     {
@@ -22,6 +22,7 @@ public class LoopState
         forStmtIterationVariable = "";
         hasElseBlock = false;
         declaredIdentifiers = new HashSet<string>();
+        loopType = LoopType.NoLoop;
     }
 
 }
