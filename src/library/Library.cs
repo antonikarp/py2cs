@@ -6,6 +6,7 @@ public class Library
     public LibOnceEnumerable libOnceEnumerable;
     public LibIsOperator libIsOperator;
     public LibModuloOperator libModuloOperator;
+    public LibDivideByZero libDivideByZero;
     public Output output;
     public HashSet<string> toCommit;
     public Library(Output _output)
@@ -19,6 +20,7 @@ public class Library
         libOnceEnumerable = new LibOnceEnumerable(this);
         libIsOperator = new LibIsOperator(this);
         libModuloOperator = new LibModuloOperator(this);
+        libDivideByZero = new LibDivideByZero(this);
     }
     public void CommitConsoleExt()
     {
@@ -39,5 +41,9 @@ public class Library
     public void CommitModuloOperator()
     {
         toCommit.Add(availableClasses["ModuloOperator"]);
+    }
+    public void CommitDivideByZero()
+    {
+        toCommit.Add(availableClasses["DivideByZero"]);
     }
 }
