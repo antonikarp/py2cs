@@ -59,6 +59,16 @@ do
 	done
 done
 
+# Tests of programs which generate error
+# The results of translation of an incorrect program could be the following:
+# a) error at parsing -> this is handled and a text file with message is created in 'generated'
+# b) code can't be compiled
+# c) code can be compiled, run and an output is produced
+# d) code can be compiled, but has a runtime error
+#
+# Due to these possibilities, it is hard to determine whether an 'error' test succeeded or not.
+
+
 echo ""
 
 
