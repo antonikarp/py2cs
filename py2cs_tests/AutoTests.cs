@@ -18,7 +18,7 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (potentialFilename.StartsWith("temp"))
+                /*if (!potentialFilename.StartsWith("not_implemented_starred"))
                 {
                     continue;
                 }*/
@@ -26,7 +26,7 @@ public class AutoTests
                 // For test files with imports, take only file that ends with "_0"
                 // We exclude the other categories of tests like must_have_...
                 if (potentialFilename.Contains("_") &&
-                    potentialFilename.StartsWith("test") &&
+                    potentialFilename.StartsWith("unit") &&
                     !potentialFilename.EndsWith("_0.py"))
                 {
                     continue;
@@ -44,8 +44,10 @@ public class AutoTests
             string input_path = name + ".py";
             string output_path = "../../generated/" + directory + "/" + name + ".cs";
             Translator translator = new Translator();
-            translator.Translate(input_path, output_path, "");
-            translator.Compile(name + ".cs", directory);
+            if (translator.Translate(input_path, output_path, ""))
+            {
+                translator.Compile(name + ".cs", directory);
+            }
         }
     }
 
@@ -57,7 +59,11 @@ public class AutoTests
         RunTests("unit");
         Directory.SetCurrentDirectory("../must_have");
         RunTests("must_have");
+        Directory.SetCurrentDirectory("../should_have");
+        RunTests("should_have");
         Directory.SetCurrentDirectory("../difference");
         RunTests("difference");
+        Directory.SetCurrentDirectory("../not_implemented");
+        RunTests("not_implemented");
     }
 }

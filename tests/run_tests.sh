@@ -9,7 +9,7 @@ dotnet test
 cd tests
 
 # Tests which give the same results.
-dir_names_1=(must_have nice_to_have unit)
+dir_names_1=(must_have should_have nice_to_have unit)
 
 for dir_name in "${dir_names_1[@]}"
 do
@@ -42,6 +42,20 @@ do
 		
 		# Compare the two outputs. They are expected to be different
 		python3 compare_results_different.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "$name"
+	done
+done
+
+# Tests which check scripts with language constructs which are not handled.
+dir_names_3=(not_implemented)
+for dir_name in "${dir_names_3[@]}"
+do
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
+		# Run the test script and get its output.
+		python3 scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
+		
+		# Instead of .cs file there is a generated .txt file
+		python3 compare_results_not_implemented.py ./generated/"$dir_name"/"$name".txt "$name"
 	done
 done
 
