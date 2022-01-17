@@ -24,8 +24,22 @@ namespace py2cs
             ITokenStream tokens = new CommonTokenStream(lexer);
             Python3Parser parser = new Python3Parser(tokens);
             parser.BuildParseTree = true;
+            // Add a custome error listener for syntax errors.
+            parser.RemoveErrorListeners();
+            SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
+            parser.AddErrorListener(syntaxErrorListener);
+
             // Start at the root, which is a node 'file_input'
             IParseTree tree = parser.file_input();
+
+            if (syntaxErrorListener.isSyntaxError)
+            {
+                string textFilePath = output_path;
+                textFilePath = textFilePath.Replace(".cs", ".txt");
+                string content = "Syntax error: Unable to parse the input.";
+                File.WriteAllText(textFilePath, content);
+                return false;
+            }
             outputVisitor = new OutputVisitor(moduleName);
             // Check if there are any not implemented features.
             NotImplementedCheckVisitor notImplementedCheckVisitor = new NotImplementedCheckVisitor();
