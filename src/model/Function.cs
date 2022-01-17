@@ -20,6 +20,14 @@ public class Function
     public List<string> baseConstructorInitializerList;
     public List<List<VarState.Types>> usedParameterTypesInConstructor;
     public bool isChainedComparison;
+
+    // Hidden identifiers at the function scope.
+    public List<string> hiddenIdentifiers;
+
+    // Overriden types - used when arguments are functions.
+    public Dictionary<string, string> overridenParameterTypes;
+    public string overridenReturnType;
+
     public Output output;
     // This indicates how many temporarary bool variables for entry to else blocks.
     public int currentGeneratedElseBlockEntryNumber = -1;
@@ -58,10 +66,105 @@ public class Function
 
         // Used parameter types in constructor
         usedParameterTypesInConstructor = new List<List<VarState.Types>>();
+
+        overridenParameterTypes = new Dictionary<string, string>();
+
+        overridenReturnType = "";
+
+        hiddenIdentifiers = new List<string>();
+
         output = _output;
     }
+    public string getDelegateType()
+    {
+        string result = "Func<";
+        for (int i = 0; i < parameters.Count; ++i)
+        {
+            if (i != 0)
+            {
+                result += ", ";
+            }
+            if (overridenParameterTypes.ContainsKey(parameters[i]))
+            {
+                result += overridenParameterTypes[parameters[i]];
+            }
+            else
+            {
+                result += "dynamic";
+            }
+        }
+        // We always return a value - this is a return type:
+        if (overridenReturnType != "")
+        {
+            result += ", ";
+            result += overridenReturnType;
+            result += ">";
+        }
+        else
+        {
+            result += ", dynamic>";
+        }
+
+
+        return result;
+    }
+    public void ReturnNullIfVoid()
+    {
+        if (isVoid && !isChainedComparison && !isConstructor && name != "Main")
+        {
+            IndentedLine newLine = new IndentedLine("return null;", 0);
+            statements.lines.Add(newLine);
+            isVoid = false;
+        }
+    }
+    public void CheckForCollidingDeclarations()
+    {
+        Dictionary<string, int> seen = new Dictionary<string, int>();
+        int curIndentation = 0;
+        for (int i = 0; i < statements.lines.Count; ++i)
+        {
+            List<KeyValuePair<string, int>> itemsToRemove = new List<KeyValuePair<string, int>>();
+            foreach (var kv in seen)
+            {
+                // We are outside of scope where kv.Key was defined (curIndentation is lower)
+                // Remove these items from seen, so that they can be redeclared.
+                if (kv.Value > curIndentation)
+                {
+                    itemsToRemove.Add(kv);
+                }
+            }
+            foreach (var kv in itemsToRemove)
+            {
+                seen.Remove(kv.Key);
+            }
+            string line = statements.lines[i].line;
+            string[] tokens = line.Split(" ");
+            // There is no previous conflicting declaration present in 'seen'.
+            // Add it to 'seen'. This declaration can stay.
+            if (tokens[0] == "dynamic" && !seen.ContainsKey(tokens[1]))
+            {
+                seen.Add(tokens[1], curIndentation);
+            }
+            // We are inside of scope where this variable is defined (curIndentation is higher)
+            // Change declaration to an assignment.
+            else if (tokens[0] == "dynamic" && seen.ContainsKey(tokens[1])
+                && curIndentation > seen[tokens[1]])
+            {
+                tokens[0] = "";
+                string newLine = System.String.Join(" ", tokens);
+                statements.lines[i].line = newLine;
+            }
+            // Update curIndentation.
+            curIndentation += statements.lines[i].increment;
+        }
+    }
+
     public void CommitToOutput()
     {
+
+        ReturnNullIfVoid();
+        CheckForCollidingDeclarations();
+
         // Handle the default case (if this is not a constructor of the parent class
         // or even if it is not constructor) by storing a list of "dynamic" types.
         if (usedParameterTypesInConstructor.Count == 0)
@@ -69,6 +172,11 @@ public class Function
             List<VarState.Types> defaultTypes = new List<VarState.Types>();
             for (int i = 0; i < parameters.Count; ++i)
             {
+                // For example when the parameter is a function.
+                if (overridenParameterTypes.ContainsKey(parameters[i]))
+                {
+                    defaultTypes.Add(VarState.Types.Overriden);
+                }
                 defaultTypes.Add(VarState.Types.Other);
             }
             usedParameterTypesInConstructor.Add(defaultTypes);
@@ -92,7 +200,12 @@ public class Function
                 {
                     firstLine += "static ";
                 }
-                if (isChainedComparison)
+                if (overridenReturnType != "")
+                {
+                    firstLine += overridenReturnType;
+                    firstLine += " ";
+                }
+                else if (isChainedComparison)
                 {
                     firstLine += "bool ";
                 }
@@ -157,6 +270,9 @@ public class Function
                             break;
                         case VarState.Types.String:
                             firstLine += "string ";
+                            break;
+                        case VarState.Types.Overriden:
+                            firstLine += overridenParameterTypes[parameters[i]];
                             break;
                         default:
                             firstLine += "dynamic ";

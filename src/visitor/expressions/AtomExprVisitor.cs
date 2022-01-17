@@ -14,10 +14,46 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         result = new LineModel();
 
+        // The function call can supply other functions as arguments, like:
+        // "repeat(4)(myfunction)".
+        if (context.ChildCount >= 3 &&
+            context.GetChild(0).GetType().ToString() == "Python3Parser+AtomContext" &&
+            context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext" &&
+            context.GetChild(1).ChildCount > 2)
+        {
+            // This is not a standalone expression.
+            if (state.stmtState.isLocked == false)
+            {
+                state.stmtState.isStandalone = false;
+                state.stmtState.isLocked = true;
+            }
+
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+            context.GetChild(0).Accept(atomVisitor);
+            for (int j = 0; j < atomVisitor.result.tokens.Count; ++j)
+            {
+                result.tokens.Add(atomVisitor.result.tokens[j]);
+            }
+            int n = context.ChildCount;
+            int i = 1;
+            while (i < n)
+            {
+                TrailerVisitor newVisitor = new TrailerVisitor(state);
+                context.GetChild(i).Accept(newVisitor);
+                for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
+                {
+                    result.tokens.Add(newVisitor.result.tokens[j]);
+                }
+                i += 1;
+            }
+            return result;
+        }
+
+
         // Method/function call
         // We have the following children:
         // Child #0: atom
-        // Child #1: trailer
+        // Child #1: trailer (has 2 children: #0: dot, #1: name of the method).
         // Child #2: trailer
 
         // We can also have a call to the inner constructor:
@@ -25,9 +61,10 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         // We know that the only possible children are atom and trailer.
         // Check Python3Parser.g4 for the generating rule.
-        if (context.ChildCount >= 3 &&
-            context.GetChild(0).GetType().ToString() == "Python3Parser+AtomContext" &&
-            context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext")
+        else if (context.ChildCount >= 3 &&
+        context.GetChild(0).GetType().ToString() == "Python3Parser+AtomContext" &&
+        context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext" &&
+        context.GetChild(1).ChildCount == 2)
         {
             // This is not a standalone expression.
             if (state.stmtState.isLocked == false)
@@ -268,6 +305,31 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
         // or field (ex. self.name)
         if (context.ChildCount == 2 && context.trailer() != null)
         {
+            // Update each argument that is a function - it is Func<dynamic, dynamic>
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+            context.GetChild(0).Accept(atomVisitor);
+            string name = atomVisitor.result.ToString();
+            Stack<Function> currentFunctions = state.output.currentClasses.Peek().currentFunctions;
+            List<Function> tempCurrentFunctions = new List<Function>();
+            while (currentFunctions.Count > 0)
+            {
+                Function topFunction = currentFunctions.Pop();
+                tempCurrentFunctions.Add(topFunction);
+            }
+            tempCurrentFunctions.Reverse();
+            foreach (var function in tempCurrentFunctions)
+            {
+                for (int i = 0; i < function.parameters.Count; ++i)
+                {
+                    if (function.parameters[i] == name)
+                    {
+                        function.overridenParameterTypes[name] = "Func<dynamic, dynamic> ";
+                    }
+                }
+                currentFunctions.Push(function);
+            }
+            tempCurrentFunctions.Clear();
+
             TrailerVisitor newVisitor = new TrailerVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             for (int i = 0; i < newVisitor.result.tokens.Count; ++i)

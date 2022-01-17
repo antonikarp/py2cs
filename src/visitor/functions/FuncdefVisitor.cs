@@ -45,7 +45,10 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         }
 
 
-        result.statements.lines = suiteVisitor.result.lines;
+        foreach (var line in suiteVisitor.result.lines)
+        {
+            result.statements.lines.Add(line);
+        }
 
         // If the function is not internal, add it to the list of functions
         // in the class state.
@@ -55,6 +58,10 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         if (state.output.currentClasses.Peek().currentFunctions.Count > 1)
         {
             Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
+
+            // To be able to use parameters from the parent function.
+            result.isStatic = false;
+
             parentFunction.internalFunctions.Add(result);
         }
         else
