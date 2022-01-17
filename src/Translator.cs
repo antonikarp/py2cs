@@ -13,7 +13,7 @@ namespace py2cs
         public static string input_path;
         public static string output_path;
         public static List<string> importedFilenames;
-        public void Translate(string input_path, string output_path, string moduleName)
+        public bool Translate(string input_path, string output_path, string moduleName)
         {
             Translator.importedFilenames = new List<string>();
             Translator.input_path = input_path;
@@ -27,9 +27,24 @@ namespace py2cs
             // Start at the root, which is a node 'file_input'
             IParseTree tree = parser.file_input();
             outputVisitor = new OutputVisitor(moduleName);
+            // Check if there are any not implemented features.
+            NotImplementedCheckVisitor notImplementedCheckVisitor = new NotImplementedCheckVisitor();
+            notImplementedCheckVisitor.Visit(tree);
+            if (notImplementedCheckVisitor.isNotImplemented)
+            {
+                // We have a language feature not handled by the tool.
+                // Write a .txt file with a message to the user. It is used
+                // also by scripts which checks the results of tests.
+                string textFilePath = output_path;
+                textFilePath = textFilePath.Replace(".cs", ".txt");
+                string content = "Not handled: With used language constructs the translation couldn't be performed.";
+                File.WriteAllText(textFilePath, content);
+                return false;
+            }
             // Translate the program.
             outputVisitor.Visit(tree);
             File.WriteAllText(output_path, outputVisitor.state.output.ToString());
+            return true;
         }
         public void Compile(string filename, string directory)
         {
