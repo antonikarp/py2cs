@@ -110,7 +110,7 @@ public class Function
     }
     public void ReturnNullIfVoid()
     {
-        if (isVoid && !isChainedComparison && name != "Main")
+        if (isVoid && !isChainedComparison && !isConstructor && name != "Main")
         {
             IndentedLine newLine = new IndentedLine("return null;", 0);
             statements.lines.Add(newLine);
@@ -119,21 +119,43 @@ public class Function
     }
     public void CheckForCollidingDeclarations()
     {
-        HashSet<string> seen = new HashSet<string>();
+        Dictionary<string, int> seen = new Dictionary<string, int>();
+        int curIndentation = 0;
         for (int i = 0; i < statements.lines.Count; ++i)
         {
+            List<KeyValuePair<string, int>> itemsToRemove = new List<KeyValuePair<string, int>>();
+            foreach (var kv in seen)
+            {
+                // We are outside of scope where kv.Key was defined (curIndentation is lower)
+                // Remove these items from seen, so that they can be redeclared.
+                if (kv.Value > curIndentation)
+                {
+                    itemsToRemove.Add(kv);
+                }
+            }
+            foreach (var kv in itemsToRemove)
+            {
+                seen.Remove(kv.Key);
+            }
             string line = statements.lines[i].line;
             string[] tokens = line.Split(" ");
-            if (tokens[0] == "dynamic" && !seen.Contains(tokens[1]))
+            // There is no previous conflicting declaration present in 'seen'.
+            // Add it to 'seen'. This declaration can stay.
+            if (tokens[0] == "dynamic" && !seen.ContainsKey(tokens[1]))
             {
-                seen.Add(tokens[1]);
+                seen.Add(tokens[1], curIndentation);
             }
-            else if (tokens[0] == "dynamic" && seen.Contains(tokens[1]))
+            // We are inside of scope where this variable is defined (curIndentation is higher)
+            // Change declaration to an assignment.
+            else if (tokens[0] == "dynamic" && seen.ContainsKey(tokens[1])
+                && curIndentation > seen[tokens[1]])
             {
                 tokens[0] = "";
                 string newLine = System.String.Join(" ", tokens);
                 statements.lines[i].line = newLine;
             }
+            // Update curIndentation.
+            curIndentation += statements.lines[i].increment;
         }
     }
 
