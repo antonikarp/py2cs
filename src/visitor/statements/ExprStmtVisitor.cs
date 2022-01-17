@@ -188,8 +188,16 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                     // Remove spaces
                     splitBeforeLeftParan[1] = splitBeforeLeftParan[1].Replace(" ", "");
                     string[] arguments = splitBeforeLeftParan[1].Split(",");
-                    List<VarState.Types> argumentTypes = new List<VarState.Types>();
+                    List<string> cleanedArguments = new List<string>();
                     foreach (string arg in arguments)
+                    {
+                        if (arg != "")
+                        {
+                            cleanedArguments.Add(arg);
+                        }
+                    }
+                    List<VarState.Types> argumentTypes = new List<VarState.Types>();
+                    foreach (string arg in cleanedArguments)
                     {
                         argumentTypes.Add(ParamTypeDeduction.Deduce(arg));
                     }
