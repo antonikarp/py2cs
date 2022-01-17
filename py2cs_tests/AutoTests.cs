@@ -18,7 +18,7 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (!potentialFilename.StartsWith("must_have_for_else"))
+                /*if (potentialFilename.StartsWith("temp"))
                 {
                     continue;
                 }*/
@@ -57,5 +57,7 @@ public class AutoTests
         RunTests("unit");
         Directory.SetCurrentDirectory("../must_have");
         RunTests("must_have");
+        Directory.SetCurrentDirectory("../difference");
+        RunTests("difference");
     }
 }
