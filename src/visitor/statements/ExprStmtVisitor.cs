@@ -114,8 +114,12 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // Or it can be declared as a field.
             string[] tokens = lhs.Split(".");
 
+            // The lhs can have a form: 'a[2]'. To get the name of the variable, we need to split it
+            // by '[' and take the first token.
+            string[] potentialSubscriptionTokens = lhs.Split("[");
+
             // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate the name.
-            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(lhs)
+            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(potentialSubscriptionTokens[0])
                 && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
             {
                 // This is a case of declaration with initialization.
