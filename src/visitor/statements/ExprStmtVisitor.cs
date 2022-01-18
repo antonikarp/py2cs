@@ -114,7 +114,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // Or it can be declared as a field.
             string[] tokens = lhs.Split(".");
 
-            // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate
+            // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate the name.
             if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(lhs)
                 && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
             {
@@ -207,15 +207,47 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             }
             result.tokens.Add(rhs);
             return result;
+        }
+        // Chained assignment, for instance: 'x = y = z = 1' 
+        else if (context.ChildCount > 3 && context.GetChild(1).ToString() == "=")
+        {
+            // We assume that we have the following children:
+            // Child #0: testlist_star_expr
+            // Child #1: "="
+            // Child #2: testlist_star_expr
+            // Child #3: "="
+            // Child #4: testlist_star_expr
+
+            // This is not a standalone expression.
+            state.stmtState.isStandalone = false;
+            state.stmtState.isLocked = true;
+
+            TestlistStarExprVisitor rhsVisitor = new TestlistStarExprVisitor(state);
+            int n = context.ChildCount;
+            context.GetChild(n - 1).Accept(rhsVisitor);
+            int i = 0;
+            while (i < n - 1)
+            {
+                TestlistStarExprVisitor newVisitor = new TestlistStarExprVisitor(state);
+                context.GetChild(i).Accept(newVisitor);
+                result.tokens.Add("dynamic ");
+                result.tokens.Add(newVisitor.result.expressions[0]);
+                result.tokens.Add(" = ");
+                result.tokens.Add(rhsVisitor.result.expressions[0]);
+                result.tokens.Add(";");
+                i += 2;
+            }
 
         }
+
+
         // Augmented assignment
         else if (context.ChildCount == 3 &&
-            context.GetChild(1).GetType().ToString() == "Python3Parser+AugassignContext")
+    context.GetChild(1).GetType().ToString() == "Python3Parser+AugassignContext")
         {
             TestVisitor leftVisitor = new TestVisitor(state);
             AugAssignVisitor opVisitor = new AugAssignVisitor(state);
-            TestVisitor rightVisitor = new TestVisitor(state);      
+            TestVisitor rightVisitor = new TestVisitor(state);
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(1).Accept(opVisitor);
             context.GetChild(2).Accept(rightVisitor);

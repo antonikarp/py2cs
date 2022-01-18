@@ -58,8 +58,20 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 // We make exception for "pass" statement
                 if (line != "" || state.stmtState.isPassStmt)
                 {
-                    IndentedLine onlyLine = new IndentedLine(line + ";", 0);
-                    result.lines.Add(onlyLine);
+                    // Perform splitting by ";" so that one line containing many
+                    // statements is split into many lines.
+                    string[] lines = line.Split(";");
+                    
+                    for (int i = 0; i < lines.Length; ++i)
+                    {
+                        // Remove empty string, if there was a ";" at the end.
+                        if (i == lines.Length - 1 && lines[i] == "")
+                        {
+                            continue;
+                        }
+                        IndentedLine newLine = new IndentedLine(lines[i] + ";", 0);
+                        result.lines.Add(newLine);
+                    }
                 }
             }
 
