@@ -39,6 +39,10 @@ public class AndExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
             ShiftExprVisitor firstVisitor = new ShiftExprVisitor(state);
             context.GetChild(0).Accept(firstVisitor);
+
+            // Sorround the expression with parentheses
+            result.tokens.Add("(");
+
             for (int j = 0; j < firstVisitor.result.tokens.Count; ++j)
             {
                 result.tokens.Add(firstVisitor.result.tokens[j]);
@@ -58,6 +62,8 @@ public class AndExprVisitor : Python3ParserBaseVisitor<LineModel>
                 }
                 i += 2;
             }
+
+            result.tokens.Add(")");
 
         }
         return result;
