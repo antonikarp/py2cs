@@ -968,6 +968,7 @@
     <None Remove="src\visitor\import\" />
     <None Remove="src\library\" />
     <None Remove="src\error_listener\" />
+    <None Remove="src\not_implemented_check\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -983,5 +984,6 @@
     <Folder Include="src\visitor\import\" />
     <Folder Include="src\library\" />
     <Folder Include="src\error_listener\" />
+    <Folder Include="src\not_implemented_check\" />
   </ItemGroup>
 </Project>
