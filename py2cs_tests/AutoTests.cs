@@ -18,10 +18,10 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                if (potentialFilename.StartsWith("temp"))
-                {
-                    continue;
-                }
+                //if (!potentialFilename.StartsWith("must_have_assignment3"))
+                //{
+                //    continue;
+                //}
 
                 // For test files with imports, take only file that ends with "_0"
                 // We exclude the other categories of tests like must_have_...
@@ -57,14 +57,14 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
         //Directory.SetCurrentDirectory("../unit");
         //RunTests("unit");
-        //Directory.SetCurrentDirectory("../must_have");
-        //RunTests("must_have");
+        Directory.SetCurrentDirectory("../must_have");
+        RunTests("must_have");
         //Directory.SetCurrentDirectory("../should_have");
         //RunTests("should_have");
         //Directory.SetCurrentDirectory("../difference");
         //RunTests("difference");
-        Directory.SetCurrentDirectory("../not_implemented");
-        RunTests("not_implemented");
+        //Directory.SetCurrentDirectory("../not_implemented");
+        //RunTests("not_implemented");
         //Directory.SetCurrentDirectory("../error");
         //RunTests("error");
     }
