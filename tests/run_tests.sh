@@ -51,9 +51,8 @@ for dir_name in "${dir_names_3[@]}"
 do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do
-		# Run the test script and get its output.
-		python3 scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
-		
+		# There is no need to run scripts (which might not be correct), because we don't check its results. 
+
 		# Instead of .cs file there is a generated .txt file
 		python3 compare_results_not_implemented.py ./generated/"$dir_name"/"$name".txt "$name"
 	done
