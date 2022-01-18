@@ -181,6 +181,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // Flush the FuncCallState
             state.funcCallState = new FuncCallState();
 
+            // Reserved words, which cannot be used as identifiers.
+            HashSet<string> reservedIdentifiers = new HashSet<string> { "private" };
+
             // Function call or field.         
             if (name == "print")
             {
@@ -273,6 +276,11 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                     result.tokens.Add("Convert.ToBoolean");
                     name = "";
                 }
+            }
+            // Append "_0" do that the name of the identifier is legal in C#.
+            else if (reservedIdentifiers.Contains(name))
+            {
+                name += "_0";
             }
             else
             {
