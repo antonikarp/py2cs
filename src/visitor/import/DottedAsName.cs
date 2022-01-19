@@ -81,6 +81,16 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
                 state.output.allClassesNames.Add(allClassesFromModule[i]);
             }
         }
+
+        // Save the alias only if hasn't been saved before.
+        if (!state.output.usedNamesFromImport.ContainsKey(filename))
+        {
+            state.output.usedNamesFromImport[filename] = new List<string>();
+        }
+        if (!state.output.usedNamesFromImport[filename].Contains(name))
+        {
+            state.output.usedNamesFromImport[filename].Add(name);
+        }
         return result;
     }
 

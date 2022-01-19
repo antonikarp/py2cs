@@ -21,6 +21,10 @@ public class Output
     // This class holds objects of type Class that will be added to the main file
     // For example: ConsoleExt.
     public Library library;
+
+    // This is a mapping from the name of the imported to used names throughout the program.
+    public Dictionary<string, List<string>> usedNamesFromImport;
+
     public Output()
     {
         internalLines = new List<IndentedLine>();
@@ -50,6 +54,8 @@ public class Output
 
         // Add System in using directives.
         usingDirs.Add("System");
+
+        usedNamesFromImport = new Dictionary<string, List<string>>();
 
         library = new Library(this);
     }

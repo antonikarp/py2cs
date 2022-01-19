@@ -66,7 +66,17 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                 }
                 else
                 {
-                    result.tokens.Add(context.NAME().ToString());
+                    string name = context.NAME().ToString();
+                    foreach (var kv in state.output.usedNamesFromImport)
+                    {
+                        var list = kv.Value;
+                        if ((list.IndexOf(name) != -1) && (list.IndexOf(name) != (list.Count - 1)))
+                        {
+                            // The alias needs to be updated to the last valid.
+                            name = list[list.Count - 1];
+                        }
+                    }
+                    result.tokens.Add(name);
                 }
             }
             else if (context.TRUE() != null)
