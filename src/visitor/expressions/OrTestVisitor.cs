@@ -30,7 +30,55 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
         // Child #1: or
         // Child #2: <expr2>
         // Child #3: ...
-        else if (context.ChildCount > 1)
+        else if (context.ChildCount == 3)
+        {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
+            AndTestVisitor leftVisitor = new AndTestVisitor(state);
+            context.GetChild(0).Accept(leftVisitor);
+            AndTestVisitor rightVisitor = new AndTestVisitor(state);
+            context.GetChild(2).Accept(rightVisitor);
+            VarState.Types leftType = ParamTypeDeduction.Deduce(leftVisitor.result.ToString());
+            // Left-hand side is either an int or double
+            // The expression "x or y" is equivalent to: x != 0 ? x : y
+            if (leftType == VarState.Types.Int || leftType == VarState.Types.Double)
+            {
+
+                result.tokens.Add(leftVisitor.result.ToString());
+                result.tokens.Add(" != 0 ? ");
+                result.tokens.Add(leftVisitor.result.ToString());
+                result.tokens.Add(" : ");
+                result.tokens.Add(rightVisitor.result.ToString());
+            }
+            // The expression "x or y" is equivalent to: x.Length != 0 ? x : y
+            else if (leftType == VarState.Types.String)
+            {
+                result.tokens.Add(leftVisitor.result.ToString());
+                result.tokens.Add(".Length != 0 ? ");
+                result.tokens.Add(leftVisitor.result.ToString());
+                result.tokens.Add(" : ");
+                result.tokens.Add(rightVisitor.result.ToString());
+            }
+            // Default or expression
+            else
+            {
+                // Todo: Convert.ToBoolean() might be necessary.
+                for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(leftVisitor.result.tokens[i]);
+                }
+                result.tokens.Add("||");
+                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(rightVisitor.result.tokens[i]);
+                }
+            }
+        }
+        else if (context.ChildCount > 3)
         {
             // Expression is standalone:
             if (!state.stmtState.isLocked)
@@ -57,7 +105,7 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
                     result.tokens.Add(newVisitor.result.tokens[j]);
                 }
                 result.tokens.Add(")");
-                i += 2; 
+                i += 2;
             }
         }
         return result;

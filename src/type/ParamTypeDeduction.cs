@@ -1,4 +1,5 @@
-﻿public class ParamTypeDeduction
+﻿using System;
+public class ParamTypeDeduction
 {
     // This is a simple type deducer for types int, double, string.
     // By default the type is int.
@@ -6,21 +7,21 @@
     // If we encounter a quotation mark them the type is overriden to string.
     public static VarState.Types Deduce(string value)
     {
-        VarState.Types result = VarState.Types.Int;
-        for (int i = 0; i < value.Length; ++i)
+        int varInt;
+        double varDouble;
+
+        if (int.TryParse(value, out varInt))
         {
-            if (value[i] == '.')
-            {
-                result = VarState.Types.Double;
-            }
+            return VarState.Types.Int;
         }
-        for (int i = 0; i < value.Length; ++i)
+        if (double.TryParse(value, out varDouble))
         {
-            if (value[i] == '\"')
-            {
-                result = VarState.Types.String;
-            }
+            return VarState.Types.Double;
         }
-        return result;
+        if (value.Length > 0 && value[0] == '\"' || value[0] == '\'')
+        {
+            return VarState.Types.String;
+        }
+        return VarState.Types.Other;
     }
 }
