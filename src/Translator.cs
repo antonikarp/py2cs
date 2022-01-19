@@ -12,10 +12,10 @@ namespace py2cs
         public OutputVisitor outputVisitor;
         public static string input_path;
         public static string output_path;
-        public static List<string> importedFilenames;
+        public static List<string> importedFilenames = new List<string>();
+
         public bool Translate(string input_path, string output_path, string moduleName)
         {
-            Translator.importedFilenames = new List<string>();
             Translator.input_path = input_path;
             Translator.output_path = output_path;
             string text = File.ReadAllText(input_path);
@@ -69,7 +69,7 @@ namespace py2cs
             foreach (var importedFilename in Translator.importedFilenames)
             {
                 arguments += " ";
-                arguments += importedFilename ;
+                arguments += importedFilename;
             }
             compiler.Arguments = arguments;
             string workingDirectory = Directory.GetCurrentDirectory();

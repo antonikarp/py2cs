@@ -73,8 +73,7 @@ public class Output
         {
             Class moduleClass = new Class(this);
             moduleClass.name = moduleName;
-
-
+            moduleClass.isStatic = true;
             // Put each class into the module class.
             foreach (var cls in classes)
             {

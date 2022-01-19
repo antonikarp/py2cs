@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using System;
+using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
 // This is a visitor used to process an individual import (possibly with an alias) or a series of imports.
 public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>

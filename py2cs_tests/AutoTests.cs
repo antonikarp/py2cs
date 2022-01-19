@@ -83,10 +83,13 @@ public class AutoTests
         Directory.SetCurrentDirectory("../error");
         RunTests("error", "");*/
 
-        Directory.SetCurrentDirectory("../must_have/import/1");
+        /*Directory.SetCurrentDirectory("../must_have/import/1");
         RunTests("must_have/import/1", "import/1");
         Directory.SetCurrentDirectory("../../");
         Directory.SetCurrentDirectory("../must_have/import/2");
         RunTests("must_have/import/2", "import/2");
+        Directory.SetCurrentDirectory("../../");*/
+        Directory.SetCurrentDirectory("../must_have/import/3");
+        RunTests("must_have/import/3", "import/3");
     }
 }
