@@ -19,6 +19,9 @@ public class Class
 
     public string libraryParentClassName;
 
+    // This is for variables defined in the main scope.
+    public BlockModel staticFieldDeclarations;
+
     // This indicates how many functions returning bool which represent a chained
     // expression have been generated.
     public int currentGeneratedChainedComparisonNumber = -1;
@@ -34,6 +37,7 @@ public class Class
         parentClass = null;
         constructorSignatures = new Dictionary<int, Function>();
         libraryParentClassName = "";
+        staticFieldDeclarations = new BlockModel();
     }
     public void CommitToOutput()
     {
@@ -52,10 +56,18 @@ public class Class
         }
         output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
         output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
+        // Field declarations (the class is other than Program)
         foreach (var line in fieldDecl.lines)
         {
             output.outputBuilder.commitIndentedLine(line);
         }
+
+        // Static field declaration (the class is Program)
+        foreach (var line in staticFieldDeclarations.lines)
+        {
+            output.outputBuilder.commitIndentedLine(line);
+        }
+
         // Print all internal classes.
         foreach (var internalCls in internalClasses)
         {

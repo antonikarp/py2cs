@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Text;
 using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
 
@@ -12,7 +12,10 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
     }
     public override LineModel VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
     {
-        bool assignmentToIterationVariable = false;
+        // If there is a declaration in the Main method it needs to be
+        // a static member declaration.
+        bool isStaticMemberDeclaration = false;
+
         result = new LineModel();
         // This case handles variable declaration and initializtion.
         if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
@@ -106,7 +109,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 lhs = "_generated_" + lhs + "_" + state.loopState.generatedInBlockCount;
                 state.loopState.nameForGeneratedVariable = lhs;
-                assignmentToIterationVariable = true;
                 ++state.loopState.generatedInBlockCount;
             }
 
@@ -122,7 +124,12 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(potentialSubscriptionTokens[0])
                 && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
             {
-                // This is a case of declaration with initialization.
+                // This is a case of declaration with initialization. We cannot be inside the scope of any loop.
+                if (state.output.currentClasses.Peek().currentFunctions.Peek().name == "Main" &&
+                    state.loopState.loopType == LoopState.LoopType.NoLoop)
+                {
+                    isStaticMemberDeclaration = true;
+                }
                 switch (state.varState.type)
                 {
                     case VarState.Types.List:
@@ -136,8 +143,12 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         break;
                     // Due to CS1977 when trying to invoke .Where(lambda) in slices
                     // the type must be var.
+                    // Important: for now, it cannot be declared as a static member (due to
+                    //            usage of 'var' so here we make an exception and
+                    //            proceed with the declaration in the function.
                     case VarState.Types.ListComp:
                         result.tokens.Add("var ");
+                        isStaticMemberDeclaration = false;
                         break;
                     // Type other (numeric) or tuple. Tuple is here, because
                     // it is inconvenient to explicity state the type like:
@@ -157,10 +168,32 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(lhs, state.varState.type);
                 }
+
             }
+
+            result.tokens.Add(lhs);
+
+            // Move the declaration to the field declarations.
+            if (isStaticMemberDeclaration)
+            {
+                StringBuilder fieldDeclLine = new StringBuilder();
+                fieldDeclLine.Append("static ");
+                for (int i = 0; i < result.tokens.Count; ++i)
+                {
+                    fieldDeclLine.Append(result.tokens[i]);
+                }
+                fieldDeclLine.Append(";");
+                IndentedLine fieldDeclIndentedLine = new IndentedLine(fieldDeclLine.ToString(), 0);
+                state.output.currentClasses.Peek().staticFieldDeclarations.lines.
+                    Add(fieldDeclIndentedLine);
+
+                // We have moved this declaration. Change the declaration to intialization.
+                result = new LineModel();
+                result.tokens.Add(lhs);
+            }
+
             // The following instructions are common for both cases (declaration
             // with initialization, assignment)
-            result.tokens.Add(lhs);
             result.tokens.Add(" = ");
 
             // If it is a call to constructor, we need to add "new" keyword.
