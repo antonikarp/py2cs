@@ -60,7 +60,7 @@ namespace py2cs
             File.WriteAllText(output_path, outputVisitor.state.output.ToString());
             return true;
         }
-        public void Compile(string filename, string directory)
+        public void Compile(string filename, string directory, string subDirectory)
         {
             ProcessStartInfo compiler = new ProcessStartInfo();
             // This is for Mac OS X.
@@ -72,7 +72,20 @@ namespace py2cs
                 arguments += importedFilename ;
             }
             compiler.Arguments = arguments;
-            compiler.WorkingDirectory = Directory.GetCurrentDirectory() + "/../../generated/" + directory;
+            string workingDirectory = Directory.GetCurrentDirectory();
+            workingDirectory += "/../../";
+            string[] subDirectoryTokens = subDirectory.Split("/");
+            // Append additional "../" if we are deeper in the subdirectory.
+            if (subDirectory != "")
+            {
+                for (int i = 0; i < subDirectoryTokens.Length; ++i)
+                {
+                    workingDirectory += "../";
+                }
+            }
+            workingDirectory += "generated/";
+            workingDirectory += directory;
+            compiler.WorkingDirectory = workingDirectory;
             var process = Process.Start(compiler);
             process.WaitForExit();
         }

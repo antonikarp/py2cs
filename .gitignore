@@ -172,3 +172,8 @@ tests/scripts/unit/testnames.txt
 tests/generated/*
 tests/generated_output/*
 tests/scripts_output/*
+
+tests/scripts/must_have/import/1/__pycache__/*
+tests/scripts/must_have/import/2/__pycache__/*
+tests/scripts/must_have/import/3/__pycache__/*
+tests/scripts/must_have/import/4/__pycache__/*

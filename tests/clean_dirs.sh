@@ -1,4 +1,28 @@
 #!/bin/bash
+
+# Tests with imports:
+rm scripts/must_have/import/1/testnames.txt
+rm scripts/must_have/import/2/testnames.txt
+rm scripts/must_have/import/3/testnames.txt
+rm scripts/must_have/import/4/testnames.txt
+
+rm scripts_output/must_have/import/1/*
+rm scripts_output/must_have/import/2/*
+rm scripts_output/must_have/import/3/*
+rm scripts_output/must_have/import/4/*
+
+rm generated/must_have/import/1/*
+rm generated/must_have/import/2/*
+rm generated/must_have/import/3/*
+rm generated/must_have/import/4/*
+
+rm generated_output/must_have/import/1/*
+rm generated_output/must_have/import/2/*
+rm generated_output/must_have/import/3/*
+rm generated_output/must_have/import/4/*
+
+# Other:
+
 rm scripts/difference/testnames.txt
 rm scripts/error/testnames.txt
 rm scripts/must_have/testnames.txt

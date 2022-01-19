@@ -68,12 +68,22 @@ public class Output
             Class moduleClass = new Class(this);
             moduleClass.name = moduleName;
 
-            // Put each class into a module class.
+
+            // Put each class into the module class.
             foreach (var cls in classes)
             {
-                // Skip "Program" class containing an entry point if it comes from an import.
-                if (cls.name == "Program" && moduleName != "")
+                // Add each function from "Program" class to the moduleClass except
+                // "Main" method.
+                // But do not add the whole "Program" class itself.
+                if (cls.name == "Program")
                 {
+                    foreach (var func in cls.functions)
+                    {
+                        if (func.name != "Main")
+                        {
+                            moduleClass.functions.Add(func);
+                        }
+                    }
                     continue;
                 }
                 moduleClass.internalClasses.Add(cls);

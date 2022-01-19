@@ -7,7 +7,7 @@ using py2cs;
 
 public class AutoTests
 {
-    private void RunTests(string directory)
+    private void RunTests(string directory, string subDirectory)
     {
         string[] paths = Directory.GetFiles(Directory.GetCurrentDirectory());
         List<string> filenames = new List<string>();
@@ -18,16 +18,17 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (potentialFilename != "must_have_operator_precedence3.py")
+                /*if (potentialFilename != "unit21_0.py")
                 {
                     continue;
                 }*/
 
-                // For test files with imports, take only file that ends with "_0"
-                // We exclude the other categories of tests like must_have_...
-                if (potentialFilename.Contains("_") &&
-                    potentialFilename.StartsWith("unit") &&
-                    !potentialFilename.EndsWith("_0.py"))
+                // For test files with imports, take only file that ends with "_0", which
+                // is the main file.
+                // It needs to end with "_0.py"
+                if (potentialFilename.Length >= 5 &&
+                    (potentialFilename[potentialFilename.Length - 5] != '_') ||
+                    (potentialFilename[potentialFilename.Length - 4] != '0'))
                 {
                     continue;
                 }
@@ -42,11 +43,25 @@ public class AutoTests
         foreach (string name in filenames)
         {
             string input_path = name + ".py";
-            string output_path = "../../generated/" + directory + "/" + name + ".cs";
+            string[] subDirectoryTokens = subDirectory.Split("/");
+
+            string output_path = "../../";
+            // Append additional "../" if we are deeper in the subdirectory.
+            if (subDirectory != "")
+            {
+                for (int i = 0; i < subDirectoryTokens.Length; ++i)
+                {
+                    output_path += "../";
+                }
+            }
+            output_path += "generated/";
+            output_path += directory + "/" + name + ".cs";
             Translator translator = new Translator();
+            // We are not dealing with imported files so we set the moduleName
+            // to empty.
             if (translator.Translate(input_path, output_path, ""))
             {
-                translator.Compile(name + ".cs", directory);
+                translator.Compile(name + ".cs", directory, subDirectory);
             }
         }
     }
@@ -55,17 +70,20 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        Directory.SetCurrentDirectory("../unit");
-        RunTests("unit");
-        //Directory.SetCurrentDirectory("../must_have");
-        //RunTests("must_have");
-        //Directory.SetCurrentDirectory("../should_have");
-        //RunTests("should_have");
-        //Directory.SetCurrentDirectory("../difference");
-        //RunTests("difference");
-        //Directory.SetCurrentDirectory("../not_implemented");
-        //RunTests("not_implemented");
-        //Directory.SetCurrentDirectory("../error");
-        //RunTests("error");
+        //Directory.SetCurrentDirectory("../unit");
+        //RunTests("unit", "");
+        /*Directory.SetCurrentDirectory("../must_have");
+        RunTests("must_have", "");
+        Directory.SetCurrentDirectory("../should_have");
+        RunTests("should_have", "");
+        Directory.SetCurrentDirectory("../difference");
+        RunTests("difference", "");
+        Directory.SetCurrentDirectory("../not_implemented");
+        RunTests("not_implemented", "");
+        Directory.SetCurrentDirectory("../error");
+        RunTests("error", "");*/
+
+        Directory.SetCurrentDirectory("../must_have/import/1");
+        RunTests("must_have/import/1", "import/1");
     }
 }
