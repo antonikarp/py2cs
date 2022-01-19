@@ -18,7 +18,7 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (potentialFilename != "must_have_nested_lists2.py")
+                /*if (!potentialFilename.StartsWith("must_have_operator"))
                 {
                     continue;
                 }*/
@@ -55,8 +55,8 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        //Directory.SetCurrentDirectory("../unit");
-        //RunTests("unit");
+        Directory.SetCurrentDirectory("../unit");
+        RunTests("unit");
         Directory.SetCurrentDirectory("../must_have");
         RunTests("must_have");
         //Directory.SetCurrentDirectory("../should_have");
