@@ -25,7 +25,7 @@ public class FactorVisitor : Python3ParserBaseVisitor<LineModel>
             FactorVisitor newVisitor = new FactorVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             // Merge the unary operator with the first token.
-            result.tokens.Add(context.GetChild(0).ToString() + "(" + newVisitor.result.tokens[0]);
+            result.tokens.Add("(" + context.GetChild(0).ToString() + newVisitor.result.tokens[0]);
             for (int j = 1; j < newVisitor.result.tokens.Count; ++j)
             {
                 result.tokens.Add(newVisitor.result.tokens[j]);
