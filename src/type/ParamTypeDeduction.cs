@@ -7,35 +7,21 @@ public class ParamTypeDeduction
     // If we encounter a quotation mark them the type is overriden to string.
     public static VarState.Types Deduce(string value)
     {
-        bool areAllDigits = true;
-        for (int i = 0; i < value.Length; ++i)
-        {
-            if (!Char.IsDigit(value[i]))
-            {
-                areAllDigits = false;
-            }
-        }
-        if (areAllDigits)
+        int varInt;
+        double varDouble;
+
+        if (int.TryParse(value, out varInt))
         {
             return VarState.Types.Int;
         }
-
-        for (int i = 0; i < value.Length; ++i)
+        if (double.TryParse(value, out varDouble))
         {
-            if (value[i] == '\"' || value[i] == '\'')
-            {
-                return VarState.Types.String;
-            }
+            return VarState.Types.Double;
         }
-
-        for (int i = 0; i < value.Length; ++i)
+        if (value.Length > 0 && value[0] == '\"' || value[0] == '\'')
         {
-            if (value[i] == '.')
-            {
-                return VarState.Types.Double;
-            }
+            return VarState.Types.String;
         }
-        
         return VarState.Types.Other;
     }
 }

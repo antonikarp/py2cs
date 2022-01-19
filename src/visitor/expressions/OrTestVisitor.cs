@@ -58,7 +58,7 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
             else if (leftType == VarState.Types.String)
             {
                 result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(" .Length != 0 ? ");
+                result.tokens.Add(".Length != 0 ? ");
                 result.tokens.Add(leftVisitor.result.ToString());
                 result.tokens.Add(" : ");
                 result.tokens.Add(rightVisitor.result.ToString());
@@ -66,7 +66,7 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
             // Default or expression
             else
             {
-                // Todo: Conver.ToBoolean() might be necessary.
+                // Todo: Convert.ToBoolean() might be necessary.
                 for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
                 {
                     result.tokens.Add(leftVisitor.result.tokens[i]);
