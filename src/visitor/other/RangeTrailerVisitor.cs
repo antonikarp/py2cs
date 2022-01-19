@@ -125,7 +125,7 @@ public class RangeTrailerVisitor : Python3ParserBaseVisitor<LineModel>
 
         }
         
-        return base.VisitTrailer(context);
+        return result;
     }
 
 
