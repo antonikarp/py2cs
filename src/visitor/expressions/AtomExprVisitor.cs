@@ -221,6 +221,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 name = "";
                 state.funcCallState.funcName = "enumerate";
             }
+            // len() - erase the name and remember the name in the state
+            else if (name == "len")
+            {
+                name = "";
+                state.funcCallState.funcName = "len";
+            }
             // We have a type cast to int:
             // Or a cast to bool with an occurrence of an arithmetic expression ->
             // promotion to int.
@@ -317,6 +323,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             AtomVisitor atomVisitor = new AtomVisitor(state);
             context.GetChild(0).Accept(atomVisitor);
             string name = atomVisitor.result.ToString();
+            // Go through each function in the currentFunctions stack.
             Stack<Function> currentFunctions = state.output.currentClasses.Peek().currentFunctions;
             List<Function> tempCurrentFunctions = new List<Function>();
             while (currentFunctions.Count > 0)

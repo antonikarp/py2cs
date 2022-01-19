@@ -22,6 +22,20 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(2).ToString() == ")" &&
             context.GetChild(1).GetType().ToString() == "Python3Parser+ArglistContext")
         {
+            string funcName = "";
+            // Remember funcName here. When creating new ArgumentVisitor in the following code
+            // the state is flushed.
+            if (state.funcCallState.funcName == "enumerate")
+            {
+                funcName = "enumerate";
+
+            }
+            else if (state.funcCallState.funcName == "len")
+            {
+                funcName = "len";
+            }
+
+
             result.tokens.Add("(");
             // We assume that we have the following children:
             // Child #0: argument_0
@@ -46,15 +60,23 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             }
             result.tokens.Add(")");
 
-            // Case of enumerate. We use a Linq query to create a list of tuples.
-            if (state.funcCallState.funcName == "enumerate")
+            // The case of 'enumerate'. We use a Linq query to create a list of tuples.
+            if (funcName == "enumerate")
             {
                 state.output.usingDirs.Add("System.Linq");
                 result.tokens.Add(".Select((p1, p2) => ValueTuple.Create(p2, p1))");
 
             }
+            // The case of 'len'. Use the Count property. For now we assume that the argument is a list.
+            else if (funcName == "len")
+            {
+                result.tokens.Add(".Count");
+            }
+
+
             // We are done with FuncCall state. We need to flush it.
             state.funcCallState = new FuncCallState();
+
         }
         // Subscription and slices
         else if (context.ChildCount == 3 && context.GetChild(0).ToString() == "[" &&
