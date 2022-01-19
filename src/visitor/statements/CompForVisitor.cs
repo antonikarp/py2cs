@@ -59,15 +59,14 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(collectionVisitor.result.tokens[i]);
             }
 
-            // "If" clause present. 
-            if (context.ChildCount == 5)
+            // We have a 'comp_iter' node. It could lead to 'comp_if' or 'comp_for'
+            if (context.ChildCount == 5 )
             {
-                CompIfVisitor ifVisitor = new CompIfVisitor(state);
-                context.GetChild(4).Accept(ifVisitor);
-                result.tokens.Add(" where ");
-                for (int i = 0; i < ifVisitor.result.tokens.Count; ++i)
+                CompIterVisitor compIterVisitor = new CompIterVisitor(state);
+                context.GetChild(4).Accept(compIterVisitor);
+                for (int i = 0; i < compIterVisitor.result.tokens.Count; ++i)
                 {
-                    result.tokens.Add(ifVisitor.result.tokens[i]);
+                    result.tokens.Add(compIterVisitor.result.tokens[i]);
                 }
             }
         }
