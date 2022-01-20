@@ -25,7 +25,7 @@ public class RaiseStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(1).Accept(nameVisitor);
             string name = nameVisitor.result.ToString();
             result.tokens.Add(name);
-            if ((name.Length < 2) || (name.Length >= 2 && !name.EndsWith("()")))
+            if ((name.Length < 2) || (name.Length >= 2 && !name.EndsWith(")")))
             {
                 result.tokens.Add("()");
             }

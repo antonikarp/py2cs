@@ -42,6 +42,17 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 result.lines.Add(lineSettingToFalse);
             }
 
+            // If the input(x) was called (with an argument) we need to
+            // add Console.Write(x).
+            if (state.inputState.isActive)
+            {
+                IndentedLine writeLine = new IndentedLine(
+                    "Console.Write(" + state.inputState.argument + ");", 0);
+                result.lines.Add(writeLine);
+                state.inputState = new InputState();
+                // We are done with the input state. We need to flush it.
+            }
+
             // Check if we have a standalone expression to be assigned to a
             // discard. We don't completely ignore such an expression because
             // there might be side effects of the used function calls.

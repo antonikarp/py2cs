@@ -8,6 +8,7 @@
     public LhsTupleState lhsTupleState;
     public PromoteBoolToIntState promoteBoolToIntState;
     public ScopeState scopeState;
+    public InputState inputState;
     public Output output;
     public State()
     {
@@ -19,6 +20,7 @@
         lhsTupleState = new LhsTupleState();
         promoteBoolToIntState = new PromoteBoolToIntState();
         scopeState = new ScopeState();
+        inputState = new InputState();
         output = new Output();
     }
 }

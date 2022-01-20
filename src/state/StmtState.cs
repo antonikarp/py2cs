@@ -10,11 +10,16 @@ public class StmtState
     // isPassStmt: indicates whether we have a "pass" statement - so that
     // the single semicolon will be printed.
     public bool isPassStmt;
+    // persistentFuncName: indicates for instance whether we have a pending bool conversion,
+    // this cannot be done in the FuncCallState, because it could be flushed when
+    // calling multiple functions like: 'bool(input())'
+    public string persistentFuncName;
     public StmtState()
     {
         isOmitted = false; 
         isStandalone = false;
         isLocked = false;
         isPassStmt = false;
+        persistentFuncName = "";
     }
 }
