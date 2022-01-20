@@ -40,7 +40,17 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
             TestVisitor parentNameVisitor = new TestVisitor(state);
             context.arglist().Accept(parentNameVisitor);
             string parentName = parentNameVisitor.result.ToString();
-            result.parentClass = state.output.namesToClasses[parentName];
+            // In C# it corresponds to Exception
+            if (parentName == "BaseException")
+            {
+                Class exceptionClass = new Class(state.output);
+                exceptionClass.name = "Exception";
+                result.parentClass = exceptionClass;
+            }
+            else
+            {
+                result.parentClass = state.output.namesToClasses[parentName];
+            }
         }
 
         SuiteVisitor suiteVisitor = new SuiteVisitor(state);

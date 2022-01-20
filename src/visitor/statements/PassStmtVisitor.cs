@@ -1,5 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
-// This is a visitor for Pythonn "pass" statement which does nothing - it translates
+// This is a visitor for Python "pass" statement which does nothing - it translates
 // to a standalone semicolon.
 public class PassStmtVisitor : Python3ParserBaseVisitor<LineModel>
 {
@@ -13,7 +13,7 @@ public class PassStmtVisitor : Python3ParserBaseVisitor<LineModel>
     {
         result = new LineModel();
        
-        // This is line cannot be omitted - it is a single semicolon.
+        // This is line which cannot be omitted - it is a single semicolon.
         state.stmtState.isPassStmt = true;
 
         return result;

@@ -68,6 +68,15 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(newVisitor.result.tokens[i]);
             }
         }
+        else if (context.raise_stmt() != null)
+        {
+            RaiseStmtVisitor newVisitor = new RaiseStmtVisitor(state);
+            context.raise_stmt().Accept(newVisitor);
+            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(newVisitor.result.tokens[i]);
+            }
+        }
         return result;
     }
 
