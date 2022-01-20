@@ -18,10 +18,10 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (potentialFilename != "unit21_0.py")
+                if (!potentialFilename.StartsWith("must_have_exceptions"))
                 {
                     continue;
-                }*/
+                }
 
                 // When importing, take only file that ends with "_0", which
                 // is the main file.

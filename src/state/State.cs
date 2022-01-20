@@ -7,6 +7,7 @@
     public CompForState compForState;
     public LhsTupleState lhsTupleState;
     public PromoteBoolToIntState promoteBoolToIntState;
+    public ScopeState scopeState;
     public Output output;
     public State()
     {
@@ -17,6 +18,7 @@
         compForState = new CompForState();
         lhsTupleState = new LhsTupleState();
         promoteBoolToIntState = new PromoteBoolToIntState();
+        scopeState = new ScopeState();
         output = new Output();
     }
 }
