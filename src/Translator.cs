@@ -14,7 +14,7 @@ namespace py2cs
         public static string output_path;
         public static List<string> importedFilenames = new List<string>();
 
-        public bool Translate(string input_path, string output_path, string moduleName)
+        public bool Translate(string input_path, string output_path, List<string> moduleNames)
         {
             Translator.input_path = input_path;
             Translator.output_path = output_path;
@@ -40,7 +40,7 @@ namespace py2cs
                 File.WriteAllText(textFilePath, content);
                 return false;
             }
-            outputVisitor = new OutputVisitor(moduleName);
+            outputVisitor = new OutputVisitor(moduleNames);
             // Check if there are any not implemented features.
             NotImplementedCheckVisitor notImplementedCheckVisitor = new NotImplementedCheckVisitor();
             notImplementedCheckVisitor.Visit(tree);
@@ -88,6 +88,9 @@ namespace py2cs
             compiler.WorkingDirectory = workingDirectory;
             var process = Process.Start(compiler);
             process.WaitForExit();
+
+            // Clear the static importedFileNames list
+            importedFilenames.Clear();
         }
     }
 }

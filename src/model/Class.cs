@@ -27,6 +27,7 @@ public class Class
     public int currentGeneratedChainedComparisonNumber = -1;
 
     public bool isStatic;
+    public bool isPartial;
     public Class(Output _output)
     {
         output = _output;
@@ -48,6 +49,10 @@ public class Class
         if (isStatic)
         {
             firstLine += "static ";
+        }
+        if (isPartial)
+        {
+            firstLine += "partial ";
         }
         firstLine += "class ";
         firstLine += name;
