@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using System;
+using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
 // This is a visitor used to process an individual import (possibly with an alias) or a series of imports.
 public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
@@ -67,7 +68,13 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
         new_output_path += filename;
         new_output_path += ".cs";
 
-        translator.Translate(new_input_path, new_output_path, name);
+        // Explicitly set new paths which contain the imported filename at the end.
+        // Add the name to the importedFilenames.
+        List<string> importedFileNamesCurrent = new List<string>(state.output.moduleNames);
+        importedFileNamesCurrent.Add(name);
+     
+        translator.Translate(new_input_path, new_output_path, importedFileNamesCurrent);
+
         // Add filenames as command line arguments for compilation.
         string commandLineArgument = filename + ".cs";
         py2cs.Translator.importedFilenames.Add(commandLineArgument);
@@ -78,6 +85,16 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
             {
                 state.output.allClassesNames.Add(allClassesFromModule[i]);
             }
+        }
+
+        // Save the alias only if hasn't been saved before.
+        if (!state.output.usedNamesFromImport.ContainsKey(filename))
+        {
+            state.output.usedNamesFromImport[filename] = new List<string>();
+        }
+        if (!state.output.usedNamesFromImport[filename].Contains(name))
+        {
+            state.output.usedNamesFromImport[filename].Add(name);
         }
         return result;
     }

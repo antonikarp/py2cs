@@ -7,10 +7,10 @@ using System.Text;
 // source code of the translated program using various different visitors.
 public class OutputVisitor : Python3ParserBaseVisitor<State> {
     public State state;
-    public OutputVisitor(string moduleName)
+    public OutputVisitor(List<string> moduleNames)
     {
         state = new State();
-        state.output.moduleName = moduleName;
+        state.output.moduleNames = moduleNames;
     }
     public override State VisitFile_input([NotNull] Python3Parser.File_inputContext context)
     {

@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Tree;
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 namespace py2cs
 {
@@ -26,7 +27,7 @@ namespace py2cs
             parser.BuildParseTree = true;
             // Start at the root, which is a node 'file_input'
             IParseTree tree = parser.file_input();
-            OutputVisitor outputVisitor = new OutputVisitor("");
+            OutputVisitor outputVisitor = new OutputVisitor(new List<string>());
             // Translate the program.
             outputVisitor.Visit(tree);
             File.WriteAllText(output_path, outputVisitor.state.output.ToString());

@@ -12,10 +12,10 @@ namespace py2cs
         public OutputVisitor outputVisitor;
         public static string input_path;
         public static string output_path;
-        public static List<string> importedFilenames;
-        public bool Translate(string input_path, string output_path, string moduleName)
+        public static List<string> importedFilenames = new List<string>();
+
+        public bool Translate(string input_path, string output_path, List<string> moduleNames)
         {
-            Translator.importedFilenames = new List<string>();
             Translator.input_path = input_path;
             Translator.output_path = output_path;
             string text = File.ReadAllText(input_path);
@@ -40,7 +40,7 @@ namespace py2cs
                 File.WriteAllText(textFilePath, content);
                 return false;
             }
-            outputVisitor = new OutputVisitor(moduleName);
+            outputVisitor = new OutputVisitor(moduleNames);
             // Check if there are any not implemented features.
             NotImplementedCheckVisitor notImplementedCheckVisitor = new NotImplementedCheckVisitor();
             notImplementedCheckVisitor.Visit(tree);
@@ -60,7 +60,7 @@ namespace py2cs
             File.WriteAllText(output_path, outputVisitor.state.output.ToString());
             return true;
         }
-        public void Compile(string filename, string directory)
+        public void Compile(string filename, string directory, string subDirectory)
         {
             ProcessStartInfo compiler = new ProcessStartInfo();
             // This is for Mac OS X.
@@ -69,12 +69,28 @@ namespace py2cs
             foreach (var importedFilename in Translator.importedFilenames)
             {
                 arguments += " ";
-                arguments += importedFilename ;
+                arguments += importedFilename;
             }
             compiler.Arguments = arguments;
-            compiler.WorkingDirectory = Directory.GetCurrentDirectory() + "/../../generated/" + directory;
+            string workingDirectory = Directory.GetCurrentDirectory();
+            workingDirectory += "/../../";
+            string[] subDirectoryTokens = subDirectory.Split("/");
+            // Append additional "../" if we are deeper in the subdirectory.
+            if (subDirectory != "")
+            {
+                for (int i = 0; i < subDirectoryTokens.Length; ++i)
+                {
+                    workingDirectory += "../";
+                }
+            }
+            workingDirectory += "generated/";
+            workingDirectory += directory;
+            compiler.WorkingDirectory = workingDirectory;
             var process = Process.Start(compiler);
             process.WaitForExit();
+
+            // Clear the static importedFileNames list
+            importedFilenames.Clear();
         }
     }
 }

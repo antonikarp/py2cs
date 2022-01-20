@@ -25,6 +25,9 @@ public class Class
     // This indicates how many functions returning bool which represent a chained
     // expression have been generated.
     public int currentGeneratedChainedComparisonNumber = -1;
+
+    public bool isStatic;
+    public bool isPartial;
     public Class(Output _output)
     {
         output = _output;
@@ -38,10 +41,20 @@ public class Class
         constructorSignatures = new Dictionary<int, Function>();
         libraryParentClassName = "";
         staticFieldDeclarations = new BlockModel();
+        isStatic = false;
     }
     public void CommitToOutput()
     {
-        string firstLine = "public class ";
+        string firstLine = "public ";
+        if (isStatic)
+        {
+            firstLine += "static ";
+        }
+        if (isPartial)
+        {
+            firstLine += "partial ";
+        }
+        firstLine += "class ";
         firstLine += name;
         if (parentClass != null)
         {

@@ -17,10 +17,14 @@ public class Output
     public HashSet<string> usingDirs;
     // This indicates whether the file is translated during processing an "import"
     // statement.
-    public string moduleName;
+    public List<string> moduleNames;
     // This class holds objects of type Class that will be added to the main file
     // For example: ConsoleExt.
     public Library library;
+
+    // This is a mapping from the name of the imported to used names throughout the program.
+    public Dictionary<string, List<string>> usedNamesFromImport;
+
     public Output()
     {
         internalLines = new List<IndentedLine>();
@@ -51,7 +55,9 @@ public class Output
         // Add System in using directives.
         usingDirs.Add("System");
 
+        usedNamesFromImport = new Dictionary<string, List<string>>();
         library = new Library(this);
+        moduleNames = new List<string>();
     }
 
     public override string ToString()
@@ -63,29 +69,53 @@ public class Output
         {
             outputBuilder.commitIndentedLine(new IndentedLine("using " + dir + ";", 0));
         }
-        if (moduleName != "")
+        if (moduleNames.Count > 0)
         {
-            Class moduleClass = new Class(this);
-            moduleClass.name = moduleName;
-
-            // Put each class into a module class.
+            Class lastModuleClass = new Class(this);
+            Class outerClassToAdd = lastModuleClass;
+            lastModuleClass.name = moduleNames[moduleNames.Count - 1];
+            lastModuleClass.isStatic = true;
+            lastModuleClass.isPartial = true;
+            // Put each class into the module class.
             foreach (var cls in classes)
             {
-                // Skip "Program" class containing an entry point if it comes from an import.
-                if (cls.name == "Program" && moduleName != "")
+                // Add each function from "Program" class to the moduleClass except
+                // "Main" method.
+                // But do not add the whole "Program" class itself.
+                if (cls.name == "Program")
                 {
+                    foreach (var func in cls.functions)
+                    {
+                        if (func.name != "Main")
+                        {
+                            lastModuleClass.functions.Add(func);
+                        }
+                    }
                     continue;
                 }
-                moduleClass.internalClasses.Add(cls);
+                lastModuleClass.internalClasses.Add(cls);
             }
+            
+            // Wrap the last module class in the classes that come before.
+            Class nextClass = lastModuleClass;
+            for (int i = moduleNames.Count - 2; i >= 0; --i)
+            {
+                Class curClass = new Class(this);
+                curClass.name = moduleNames[i];
+                curClass.isStatic = true;
+                curClass.isPartial = true;
+                curClass.internalClasses.Add(nextClass);
+                outerClassToAdd = curClass;
+            }
+            // Add only the outermost class.
             classes.Clear();
-            classes.Add(moduleClass);
-            allClassesNames.Add(moduleClass.name);
-            namesToClasses[moduleClass.name] = moduleClass;
+            classes.Add(outerClassToAdd);
+            allClassesNames.Add(outerClassToAdd.name);
+            namesToClasses[outerClassToAdd.name] = outerClassToAdd;
         }
 
         // Here we write the library functions to the main file.
-        if (moduleName == "")
+        if (moduleNames.Count == 0)
         {
             foreach (var text in library.toCommit)
             {
