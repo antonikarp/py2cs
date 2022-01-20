@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Tests with inputs:
+rm scripts/must_have/input/testnames.txt
+rm scripts_output/must_have/input/*
+rm generated/must_have/input/*
+rm generated_output/must_have/input/*
+
 # Tests with imports:
 rm scripts/must_have/import/1/testnames.txt
 rm scripts/must_have/import/2/testnames.txt

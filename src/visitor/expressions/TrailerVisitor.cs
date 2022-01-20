@@ -34,7 +34,10 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 funcName = "len";
             }
-
+            else if (state.funcCallState.funcName == "input")
+            {
+                funcName = "input";
+            }
 
             result.tokens.Add("(");
             // We assume that we have the following children:
@@ -44,19 +47,32 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             // ...
             int n = context.GetChild(1).ChildCount;
             int i = 0;
-            while (i < n)
+
+            // If we have the 'input' function, then we have only one argument:
+            // Save it to the inputState and not to result, because Console.ReadLine()
+            // does not take any arguments.
+            if (n == 1 && state.inputState.isActive)
             {
-                if (i != 0)
-                {
-                    result.tokens.Add(", ");
-                }
                 ArgumentVisitor newVisitor = new ArgumentVisitor(state);
-                context.GetChild(1).GetChild(i).Accept(newVisitor);
-                for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
+                context.GetChild(1).GetChild(0).Accept(newVisitor);
+                state.inputState.argument = newVisitor.result.ToString();
+            }
+            else
+            {
+                while (i < n)
                 {
-                    result.tokens.Add(newVisitor.result.tokens[j]);
+                    if (i != 0)
+                    {
+                        result.tokens.Add(", ");
+                    }
+                    ArgumentVisitor newVisitor = new ArgumentVisitor(state);
+                    context.GetChild(1).GetChild(i).Accept(newVisitor);
+                    for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
+                    {
+                        result.tokens.Add(newVisitor.result.tokens[j]);
+                    }
+                    i += 2;
                 }
-                i += 2;
             }
             result.tokens.Add(")");
 
@@ -72,7 +88,17 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(".Count");
             }
+            // If we have an expression coming from the input, it is string, and
+            // when we have an active conversion to bool, we need to append .Length > 0
+            // bool("False") == True, because "False".Length > 0
+            // Todo: do the same when the varState.Type is string.
+            else if (state.stmtState.persistentFuncName == "bool" && state.inputState.isActive)
+            {
+                result.tokens.Add(".Length > 0");
 
+                // We are done with this attribute.
+                state.stmtState.persistentFuncName = "";
+            }
 
             // We are done with FuncCall state. We need to flush it.
             state.funcCallState = new FuncCallState();

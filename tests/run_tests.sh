@@ -87,7 +87,24 @@ do
 	done
 done
 
+# Tests that take data to stdin from external files (.in)
+dir_names_5=(must_have/input)
 
+for dir_name in "${dir_names_5[@]}"
+do
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
+		# Run the test script with the provided file for stdin and get its output.
+		python3 scripts/"$dir_name"/"$name".py < scripts/"$dir_name"/"$name".in > scripts_output/"$dir_name"/"$name".txt
+		
+		# Run the compiled program supplying the input file and save its output.
+		mono generated/"$dir_name"/"$name".exe < scripts/"$dir_name"/"$name".in > generated_output/"$dir_name"/"$name".txt
+		
+		# Compare the two outputs. If they match, then the test passed.
+		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
+		
+	done
+done
 echo ""
 
 

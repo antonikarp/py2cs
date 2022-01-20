@@ -227,6 +227,14 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 name = "";
                 state.funcCallState.funcName = "len";
             }
+            // input() -> this is equivalent to Console.ReadLine()
+            // input(x) -> Console.Readline(); Console.Write(x) (another statement) 
+            else if (name == "input")
+            {
+                name = "Console.ReadLine";
+                state.inputState = new InputState();
+                state.inputState.isActive = true;
+            }
             // We have a type cast to int:
             // Or a cast to bool with an occurrence of an arithmetic expression ->
             // promotion to int.
@@ -281,6 +289,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                     // One argument, use TrailerVisitor, we have: "bool(a)".
                     result.tokens.Add("Convert.ToBoolean");
                     name = "";
+                    // Remember that we have a conversion to bool
+                    // bool("False") == True, because its "False".Length > 0
+                    state.stmtState.persistentFuncName = "bool";
                 }
             }
             // Append "_0" do that the name of the identifier is legal in C#.

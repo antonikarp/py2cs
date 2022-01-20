@@ -169,10 +169,6 @@ tests/scripts/should_have/testnames.txt
 tests/scripts/unit/__pycache__/*
 tests/scripts/unit/testnames.txt
 
-tests/generated/*
-tests/generated_output/*
-tests/scripts_output/*
-
 tests/scripts/must_have/import/1/__pycache__/*
 tests/scripts/must_have/import/1/testnames.txt
 
@@ -184,3 +180,11 @@ tests/scripts/must_have/import/3/testnames.txt
 
 tests/scripts/must_have/import/4/__pycache__/*
 tests/scripts/must_have/import/4/testnames.txt
+
+tests/scripts/must_have/input/__pycache__/*
+tests/scripts/must_have/input/testnames.txt
+
+tests/generated/*
+tests/generated_output/*
+tests/scripts_output/*
+

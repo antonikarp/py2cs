@@ -81,10 +81,10 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        //Directory.SetCurrentDirectory("../unit");
-        //RunTests("unit", "", false);
-        //Directory.SetCurrentDirectory("../must_have");
-        //RunTests("must_have", "", false);
+        Directory.SetCurrentDirectory("../unit");
+        RunTests("unit", "", false);
+        Directory.SetCurrentDirectory("../must_have");
+        RunTests("must_have", "", false);
         /*Directory.SetCurrentDirectory("../should_have");
         RunTests("should_have", "");
         Directory.SetCurrentDirectory("../difference");
@@ -93,7 +93,7 @@ public class AutoTests
         RunTests("not_implemented", "");
         Directory.SetCurrentDirectory("../error");
         RunTests("error", "");*/
-
+        
         Directory.SetCurrentDirectory("../must_have/import/1");
         RunTests("must_have/import/1", "import/1", true);
         Directory.SetCurrentDirectory("../../");
@@ -105,5 +105,8 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../");
         Directory.SetCurrentDirectory("../must_have/import/4");
         RunTests("must_have/import/4", "import/4", true);
+        Directory.SetCurrentDirectory("../../");
+        Directory.SetCurrentDirectory("../must_have/input");
+        RunTests("must_have/input", "input", false);
     }
 }
