@@ -35,6 +35,10 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 result.lines.Add(firstLine);
                 IndentedLine openingBraceLine = new IndentedLine("{", 1);
                 result.lines.Add(openingBraceLine);
+                // A new scope begins.
+                state.scopeState = new ScopeState();
+                state.scopeState.isActive = true;
+
                 SuiteVisitor suiteVisitor = new SuiteVisitor(state);
                 context.GetChild(i + 2).Accept(suiteVisitor);
                 int m = suiteVisitor.result.lines.Count;
@@ -55,12 +59,21 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 result.lines.Add(lastLine);
                 IndentedLine closingBraceLine = new IndentedLine("}", 0);
                 result.lines.Add(closingBraceLine);
+
+                // The scope ends here.
+                state.scopeState.isActive = false;
             }
             else if (context.GetChild(i).GetType().ToString() == "Python3Parser+Except_clauseContext")
             {
                 ExceptClauseVisitor newVisitor = new ExceptClauseVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
-                IndentedLine firstLine = new IndentedLine("catch (" + newVisitor.result.ToString() + ")", 0);
+                string classNameOfException = newVisitor.result.ToString();
+                // catch() -> catch(Exception) : this catches any exception.
+                if (classNameOfException == "")
+                {
+                    classNameOfException = "Exception";
+                }
+                IndentedLine firstLine = new IndentedLine("catch (" + classNameOfException + ")", 0);
                 result.lines.Add(firstLine);
                 IndentedLine openingBraceLine = new IndentedLine("{", 1);
                 result.lines.Add(openingBraceLine);

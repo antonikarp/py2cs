@@ -22,9 +22,13 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
         }
         else if (context.return_stmt() != null)
         {
-            result.tokens.Add("return");
+            // We have a case: "return". Transform it to "return null".
+            if (context.return_stmt().ChildCount == 1)
+            {
+                result.tokens.Add("return null");
+            }
             // We have a case: "return expr";
-            if (context.return_stmt().ChildCount == 2)
+            else if (context.return_stmt().ChildCount == 2)
             {
                 // This is not a standalone expression.
                 state.stmtState.isStandalone = false;
@@ -33,7 +37,7 @@ public class FlowStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 state.output.currentClasses.Peek().currentFunctions.Peek().isVoid = false;
                 TestVisitor newVisitor = new TestVisitor(state);
                 context.return_stmt().GetChild(1).Accept(newVisitor);
-                result.tokens.Add(" ");
+                result.tokens.Add("return ");
                 for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
                 {
                     result.tokens.Add(newVisitor.result.tokens[i]);

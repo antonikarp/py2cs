@@ -14,7 +14,9 @@ public class RaiseStmtVisitor : Python3ParserBaseVisitor<LineModel>
         // For now we assume that we have the following children:
         // Child #0: "raise"
         // Child #1: test -> name of the class
-        if (context.ChildCount == 2)
+        // (Child #2: from
+        // Child #3: test -> name of the previous exception) -- this is for now ignored.
+        if (context.ChildCount >= 2)
         {
             // raise A -> throw new A();
             // raise A() -> throw new A();
