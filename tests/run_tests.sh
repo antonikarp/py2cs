@@ -16,7 +16,7 @@ do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name 
 	do
 		# Run the test script and get its output.
-		python3 scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
+		python3 -O scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
 
 		# Run the compiled program and save its output.
 		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt
@@ -73,7 +73,6 @@ dir_names_4=(must_have/import/1 must_have/import/2 must_have/import/3 must_have/
 
 for dir_name in "${dir_names_4[@]}"
 do
-	echo "dir = $dir_name"
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do
 		# Run the test script and get its output.
@@ -81,9 +80,9 @@ do
 
 		# Run the compiled program and save its output.
 		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt
-
+		
 		# Compare the two outputs. If they match, then the test passed.
-		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "$name"
+		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
 		
 	done
 done

@@ -18,10 +18,10 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                if (!potentialFilename.StartsWith("must_have_exceptions"))
+                /*if (!potentialFilename.StartsWith("must_have_nested_class"))
                 {
                     continue;
-                }
+                }*/
 
                 // When importing, take only file that ends with "_0", which
                 // is the main file.
@@ -83,8 +83,8 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
         //Directory.SetCurrentDirectory("../unit");
         //RunTests("unit", "", false);
-        Directory.SetCurrentDirectory("../must_have");
-        RunTests("must_have", "", false);
+        //Directory.SetCurrentDirectory("../must_have");
+        //RunTests("must_have", "", false);
         /*Directory.SetCurrentDirectory("../should_have");
         RunTests("should_have", "");
         Directory.SetCurrentDirectory("../difference");
@@ -94,7 +94,7 @@ public class AutoTests
         Directory.SetCurrentDirectory("../error");
         RunTests("error", "");*/
 
-        /*Directory.SetCurrentDirectory("../must_have/import/1");
+        Directory.SetCurrentDirectory("../must_have/import/1");
         RunTests("must_have/import/1", "import/1", true);
         Directory.SetCurrentDirectory("../../");
         Directory.SetCurrentDirectory("../must_have/import/2");
@@ -104,6 +104,6 @@ public class AutoTests
         RunTests("must_have/import/3", "import/3", true);
         Directory.SetCurrentDirectory("../../");
         Directory.SetCurrentDirectory("../must_have/import/4");
-        RunTests("must_have/import/4", "import/4", true);*/
+        RunTests("must_have/import/4", "import/4", true);
     }
 }
