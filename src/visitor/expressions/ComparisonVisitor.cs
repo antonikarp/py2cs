@@ -41,6 +41,30 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(1).Accept(opVisitor);
             context.GetChild(2).Accept(rightVisitor);
+            if (opVisitor.result.value == "==")
+            {
+                // list_1==list_2 -> list_1.SequenceEqual(list_2)
+
+                string leftExpr = leftVisitor.result.ToString();
+                string rightExpr = rightVisitor.result.ToString();
+                if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(leftExpr) &&
+                    state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(rightExpr))
+                {
+                    VarState.Types leftExprType = state.output.currentClasses.Peek().currentFunctions.Peek().variables[leftExpr];
+                    VarState.Types rightExprType = state.output.currentClasses.Peek().currentFunctions.Peek().variables[leftExpr];
+                    if (leftExprType == VarState.Types.List && rightExprType == VarState.Types.List)
+                    {
+                        // We use SequenceEqual from System.Linq
+                        state.output.usingDirs.Add("System.Linq");
+
+                        result.tokens.Add(leftExpr);
+                        result.tokens.Add(".SequenceEqual(");
+                        result.tokens.Add(rightExpr);
+                        result.tokens.Add(")");
+                        return result;
+                    }
+                }
+            }
             if (opVisitor.result.value == "in")
             {
                 // Membership test for a set.
