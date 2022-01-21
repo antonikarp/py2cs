@@ -122,7 +122,12 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate the name.
             if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(potentialSubscriptionTokens[0])
-                && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
+                && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1]))))
+                // Exclude declaration of a variable whose identifier is for instance: 'Program.x'
+                && state.varReferringToGlobalState.isActive == false &&
+                // We exclude the situation where the function is "Main" and the such static field has already been declared.
+                (state.output.currentClasses.Peek().currentFunctions.Peek().name != "Main" ||
+                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0])))
             {
                 // This is a case of declaration with initialization. We cannot be inside the scope of any loop.
                 if (state.output.currentClasses.Peek().currentFunctions.Peek().name == "Main" &&
@@ -173,13 +178,12 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(lhs, state.varState.type);
                 }
-
             }
 
             result.tokens.Add(lhs);
 
             // Move the declaration to the field declarations.
-            if (isStaticMemberDeclaration)
+            if (isStaticMemberDeclaration && !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(lhs))
             {
                 StringBuilder fieldDeclLine = new StringBuilder();
                 fieldDeclLine.Append("static ");
@@ -187,10 +191,11 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     fieldDeclLine.Append(result.tokens[i]);
                 }
-                fieldDeclLine.Append(";");
+                fieldDeclLine.Append(" = null;");
                 IndentedLine fieldDeclIndentedLine = new IndentedLine(fieldDeclLine.ToString(), 0);
                 state.output.currentClasses.Peek().staticFieldDeclarations.lines.
                     Add(fieldDeclIndentedLine);
+                state.output.currentClasses.Peek().staticFieldIdentifiers.Add(lhs);
 
                 // We have moved this declaration. Change the declaration to intialization.
                 result = new LineModel();
@@ -248,6 +253,9 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             }
             result.tokens.Add(rhs);
+
+            
+
             return result;
         }
         // Chained assignment, for instance: 'x = y = z = 1' 

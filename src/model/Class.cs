@@ -21,6 +21,9 @@ public class Class
 
     // This is for variables defined in the main scope.
     public BlockModel staticFieldDeclarations;
+    // This set is used when there is a declaration of a variable in a function
+    // with the same identifier as some static field member.
+    public HashSet<string> staticFieldIdentifiers;
 
     // This indicates how many functions returning bool which represent a chained
     // expression have been generated.
@@ -41,6 +44,7 @@ public class Class
         constructorSignatures = new Dictionary<int, Function>();
         libraryParentClassName = "";
         staticFieldDeclarations = new BlockModel();
+        staticFieldIdentifiers = new HashSet<string>();
         isStatic = false;
     }
     public void CommitToOutput()

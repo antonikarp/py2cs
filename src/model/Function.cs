@@ -32,6 +32,10 @@ public class Function
     // This indicates how many temporarary bool variables for entry to else blocks.
     public int currentGeneratedElseBlockEntryNumber = -1;
 
+    // This set holds identifiers which refer to global variables.
+    // They are prepended by class name like: Program.x
+    public HashSet<string> identifiersReferringToGlobal;
+
     public Function(Output _output)
     {
         // By default this value is true, however when the visitor encounters
@@ -72,6 +76,8 @@ public class Function
         overridenReturnType = "";
 
         hiddenIdentifiers = new List<string>();
+
+        identifiersReferringToGlobal = new HashSet<string>();
 
         output = _output;
     }
@@ -299,13 +305,7 @@ public class Function
 
             output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
             output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
-            // Commit each internal function.
-            foreach (var internalFunc in internalFunctions)
-            {
-                // Internal functions are not public.
-                internalFunc.isPublic = false;
-                internalFunc.CommitToOutput();
-            }
+            
             // Declare the temporaries used for translation of the "else" block in for loops.
             for (int i = 0; i <= currentGeneratedElseBlockEntryNumber; ++i)
             {
@@ -317,6 +317,14 @@ public class Function
             {
                 output.outputBuilder.commitIndentedLine(indentedLine);
             }
+            // Commit each internal function (at the end).
+            foreach (var internalFunc in internalFunctions)
+            {
+                // Internal functions are not public.
+                internalFunc.isPublic = false;
+                internalFunc.CommitToOutput();
+            }
+
             output.outputBuilder.commitIndentedLine(new IndentedLine("", -1));
             output.outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
         }

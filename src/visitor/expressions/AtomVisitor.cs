@@ -57,16 +57,17 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // Function name
             else if (context.NAME() != null)
             {
+                string name = context.NAME().ToString();
                 // Replace the iteration variable with the generated name.
                 if (state.loopState.loopType == LoopState.LoopType.ForLoop &&
                     state.loopState.nameForGeneratedVariable != "" &&
-                    state.loopState.forStmtIterationVariable == context.NAME().ToString())
+                    state.loopState.forStmtIterationVariable == name)
                 {
                     result.tokens.Add(state.loopState.nameForGeneratedVariable);
                 }
                 else
                 {
-                    string name = context.NAME().ToString();
+                    
                     foreach (var kv in state.output.usedNamesFromImport)
                     {
                         var list = kv.Value;
@@ -74,6 +75,18 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                         {
                             // The alias needs to be updated to the last valid.
                             name = list[list.Count - 1];
+                        }
+                    }
+                    if (state.output.usedNamesFromImport.Count == 0)
+                    {
+                        if (state.output.currentClasses.Peek().currentFunctions.Count > 0 &&
+                            state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(name))
+                        {
+                            // Example: Program.x
+                            name = state.output.currentClasses.Peek().name + "." + name;
+                            // Activate the respective state (to be used in ExprStmt).
+                            state.varReferringToGlobalState = new VarReferringToGlobalState();
+                            state.varReferringToGlobalState.isActive = true;
                         }
                     }
                     result.tokens.Add(name);

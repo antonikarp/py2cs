@@ -9,6 +9,7 @@
     public PromoteBoolToIntState promoteBoolToIntState;
     public ScopeState scopeState;
     public InputState inputState;
+    public VarReferringToGlobalState varReferringToGlobalState;
     public Output output;
     public State()
     {
@@ -21,6 +22,7 @@
         promoteBoolToIntState = new PromoteBoolToIntState();
         scopeState = new ScopeState();
         inputState = new InputState();
+        varReferringToGlobalState = new VarReferringToGlobalState();
         output = new Output();
     }
 }
