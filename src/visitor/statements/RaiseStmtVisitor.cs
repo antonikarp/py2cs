@@ -11,13 +11,20 @@ public class RaiseStmtVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitRaise_stmt([NotNull] Python3Parser.Raise_stmtContext context)
     {
         result = new LineModel();
-        // For now we assume that we have the following children:
-        // Child #0: "raise"
-        // Child #1: test -> name of the class
-        // (Child #2: from
-        // Child #3: test -> name of the previous exception) -- this is for now ignored.
-        if (context.ChildCount >= 2)
+
+        if (context.ChildCount == 1)
         {
+            // 'raise' without arguments.
+            result.tokens.Add("throw");
+        }
+        else if (context.ChildCount >= 2)
+        {
+            // For now we assume that we have the following children:
+            // Child #0: "raise"
+            // Child #1: test -> name of the class
+            // (Child #2: from
+            // Child #3: test -> name of the previous exception) -- this is for now ignored.
+
             // raise A -> throw new A();
             // raise A() -> throw new A();
             result.tokens.Add("throw new ");
@@ -30,6 +37,7 @@ public class RaiseStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add("()");
             }
         }
+        
         return result;
     }
 
