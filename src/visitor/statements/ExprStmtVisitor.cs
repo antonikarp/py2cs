@@ -121,19 +121,13 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             string[] potentialSubscriptionTokens = lhs.Split("[");
 
             // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate the name.
-            // Check if we have declared the identifier. 
-            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(potentialSubscriptionTokens[0]) &&
-
-                // We decalare a variable if it refers to a global and it wasn't marked by 'global' statement/
-                (state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0]) &&
-                !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(potentialSubscriptionTokens[0]) &&
-                state.output.currentClasses.Peek().currentFunctions.Peek().name != "Main")
-                ||
-
-                // We declare a variable also when it does not refer to a global.
-                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0])
-
-                && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))))
+            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(potentialSubscriptionTokens[0])
+                && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1]))))
+                // Exclude declaration of a variable whose identifier is for instance: 'Program.x'
+                && state.varReferringToGlobalState.isActive == false &&
+                // We exclude the situation where the function is "Main" and the such static field has already been declared.
+                (state.output.currentClasses.Peek().currentFunctions.Peek().name != "Main" ||
+                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0])))
             {
                 // This is a case of declaration with initialization. We cannot be inside the scope of any loop.
                 if (state.output.currentClasses.Peek().currentFunctions.Peek().name == "Main" &&
@@ -170,15 +164,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         break;
 
                 }
-                // Rename a variable so that it does not conflict with the corresponding global variable.
-                if ((state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0]) &&
-                !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(potentialSubscriptionTokens[0])) &&
-                state.output.currentClasses.Peek().currentFunctions.Peek().name != "Main")
-                {
-                    state.output.currentClasses.Peek().currentFunctions.Peek().variablesConflictingWithGlobals.Add(lhs);
-                    lhs = lhs + "_0";
-                }
-
                 // Add the new variable to a respective scope.
                 // Todo: unify loopState and scopeState.
                 if (state.loopState.loopType != LoopState.LoopType.NoLoop)
@@ -193,7 +178,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(lhs, state.varState.type);
                 }
-
             }
 
             result.tokens.Add(lhs);
@@ -269,6 +253,9 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             }
             result.tokens.Add(rhs);
+
+            
+
             return result;
         }
         // Chained assignment, for instance: 'x = y = z = 1' 

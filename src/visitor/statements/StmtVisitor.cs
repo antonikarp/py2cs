@@ -86,6 +86,8 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 }
             }
 
+            // We are done with varReferringToGlobal state. We need to flush it.
+            state.varReferringToGlobalState = new VarReferringToGlobalState();
         }
         else if (context.compound_stmt() != null)
         {

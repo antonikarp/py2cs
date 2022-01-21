@@ -33,14 +33,8 @@ public class Function
     public int currentGeneratedElseBlockEntryNumber = -1;
 
     // This set holds identifiers which refer to global variables.
-    // If there is a decalration of a variable with the same identifier as a
-    // global variable but is not contained in this set, then it needs to be added
-    // to 'variablesConflictingWithGlobals'
+    // They are prepended by class name like: Program.x
     public HashSet<string> identifiersReferringToGlobal;
-
-    // This set holds identifiers, which needs to be appended by '_0' as to not
-    // collide with global identifiers.
-    public HashSet<string> variablesConflictingWithGlobals;
 
     public Function(Output _output)
     {
@@ -84,8 +78,6 @@ public class Function
         hiddenIdentifiers = new List<string>();
 
         identifiersReferringToGlobal = new HashSet<string>();
-
-        variablesConflictingWithGlobals = new HashSet<string>();
 
         output = _output;
     }
@@ -313,13 +305,7 @@ public class Function
 
             output.outputBuilder.commitIndentedLine(new IndentedLine(firstLine, 0));
             output.outputBuilder.commitIndentedLine(new IndentedLine("{", 1));
-            // Commit each internal function.
-            foreach (var internalFunc in internalFunctions)
-            {
-                // Internal functions are not public.
-                internalFunc.isPublic = false;
-                internalFunc.CommitToOutput();
-            }
+            
             // Declare the temporaries used for translation of the "else" block in for loops.
             for (int i = 0; i <= currentGeneratedElseBlockEntryNumber; ++i)
             {
@@ -331,6 +317,14 @@ public class Function
             {
                 output.outputBuilder.commitIndentedLine(indentedLine);
             }
+            // Commit each internal function (at the end).
+            foreach (var internalFunc in internalFunctions)
+            {
+                // Internal functions are not public.
+                internalFunc.isPublic = false;
+                internalFunc.CommitToOutput();
+            }
+
             output.outputBuilder.commitIndentedLine(new IndentedLine("", -1));
             output.outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
         }
