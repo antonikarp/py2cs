@@ -18,7 +18,7 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                if (!potentialFilename.StartsWith("should_have_exceptions09"))
+                if (!potentialFilename.StartsWith("should_have_global2"))
                 {
                     continue;
                 }

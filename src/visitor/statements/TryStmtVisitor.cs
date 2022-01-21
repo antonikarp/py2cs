@@ -67,13 +67,13 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             {
                 ExceptClauseVisitor newVisitor = new ExceptClauseVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
-                string classNameOfException = newVisitor.result.ToString();
+                string exceptClause = newVisitor.result.ToString();
                 // catch() -> catch(Exception) : this catches any exception.
-                if (classNameOfException == "")
+                if (exceptClause == "")
                 {
-                    classNameOfException = "Exception";
+                    exceptClause = "Exception";
                 }
-                IndentedLine firstLine = new IndentedLine("catch (" + classNameOfException + ")", 0);
+                IndentedLine firstLine = new IndentedLine("catch (" + exceptClause + ")", 0);
                 result.lines.Add(firstLine);
                 IndentedLine openingBraceLine = new IndentedLine("{", 1);
                 result.lines.Add(openingBraceLine);
