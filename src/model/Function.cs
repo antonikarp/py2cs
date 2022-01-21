@@ -32,6 +32,16 @@ public class Function
     // This indicates how many temporarary bool variables for entry to else blocks.
     public int currentGeneratedElseBlockEntryNumber = -1;
 
+    // This set holds identifiers which refer to global variables.
+    // If there is a decalration of a variable with the same identifier as a
+    // global variable but is not contained in this set, then it needs to be added
+    // to 'variablesConflictingWithGlobals'
+    public HashSet<string> identifiersReferringToGlobal;
+
+    // This set holds identifiers, which needs to be appended by '_0' as to not
+    // collide with global identifiers.
+    public HashSet<string> variablesConflictingWithGlobals;
+
     public Function(Output _output)
     {
         // By default this value is true, however when the visitor encounters
@@ -72,6 +82,10 @@ public class Function
         overridenReturnType = "";
 
         hiddenIdentifiers = new List<string>();
+
+        identifiersReferringToGlobal = new HashSet<string>();
+
+        variablesConflictingWithGlobals = new HashSet<string>();
 
         output = _output;
     }
