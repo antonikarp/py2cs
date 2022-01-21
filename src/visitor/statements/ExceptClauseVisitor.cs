@@ -13,11 +13,17 @@ public class ExceptClauseVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitExcept_clause([NotNull] Python3Parser.Except_clauseContext context)
     {
         result = new LineModel();
-        if (context.ChildCount == 2)
+        if (context.ChildCount >= 2)
         {
             // We have the following children:
             // Child #0: "except"
             // Child #1: test
+
+            // or:
+            // Child #0: "except"
+            // Child #1: test
+            // Child #2: "as"
+            // Child #3: <identifier>
             TestVisitor newVisitor = new TestVisitor(state);
             context.GetChild(1).Accept(newVisitor);
             string value = newVisitor.result.ToString();
@@ -35,6 +41,12 @@ public class ExceptClauseVisitor : Python3ParserBaseVisitor<LineModel>
                 default:
                     result.tokens.Add(value);
                     break;
+            }
+            if (context.ChildCount == 4)
+            {
+                // 'except A as a' -> 'catch(A a)'.
+                result.tokens.Add(" ");
+                result.tokens.Add(context.NAME().ToString());
             }
         }
         return result;
