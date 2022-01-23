@@ -18,7 +18,7 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (!potentialFilename.StartsWith("should_have_nonlocal") && !potentialFilename.StartsWith("should_have_global"))
+                /*if (!potentialFilename.StartsWith("should_have_scope2"))
                 {
                     continue;
                 }*/
@@ -31,7 +31,8 @@ public class AutoTests
                     "should_have_exceptions09.py", "should_have_fibonacci_yield1.py",
                     "should_have_fibonacci_yield2.py", "should_have_fibonacci.py",
                     "should_have_global1.py", "should_have_global2.py",
-                    "should_have_nonlocal.py", "should_have_tuple_assignment.py"
+                    "should_have_nonlocal.py", "should_have_scope2.py",
+                    "should_have_tuple_assignment.py"
 
                 };
                 if (!passingTests.Contains(potentialFilename))
