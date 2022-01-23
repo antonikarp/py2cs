@@ -29,6 +29,15 @@ public class Class
     // expression have been generated.
     public int currentGeneratedChainedComparisonNumber = -1;
 
+    // This is a mapping from an identifier to its current value representation.
+    // For example: x = 2 + 2 -> identifierToValueExpression["x"] = "2 + 2"
+    // Used for value type variables as default parameters.
+    public Dictionary<string, string> identifierToValueExpression;
+
+    // This is a mapping from an identifier to its type. It is used when processing
+    // default parameters;
+    public Dictionary<string, VarState.Types> identifierToType;
+
     public bool isStatic;
     public bool isPartial;
     public Class(Output _output)
@@ -46,6 +55,8 @@ public class Class
         staticFieldDeclarations = new BlockModel();
         staticFieldIdentifiers = new HashSet<string>();
         isStatic = false;
+        identifierToValueExpression = new Dictionary<string, string>();
+        identifierToType = new Dictionary<string, VarState.Types>();
     }
     public void CommitToOutput()
     {

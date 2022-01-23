@@ -18,12 +18,12 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (!potentialFilename.StartsWith("should_have_scope2"))
+                /*if (!potentialFilename.StartsWith("must_have_param"))
                 {
                     continue;
                 }*/
                 // Todo: remove
-                List<string> passingTests = new List<string>()
+                /*List<string> passingTests = new List<string>()
                 {
                     "should_have_assignment3.py", "should_have_comprehension_dict.py",
                     "should_have_comprehension_list.py", "should_have_comprehension_set.py",
@@ -32,13 +32,14 @@ public class AutoTests
                     "should_have_fibonacci_yield2.py", "should_have_fibonacci.py",
                     "should_have_global1.py", "should_have_global2.py",
                     "should_have_nonlocal.py", "should_have_scope2.py",
-                    "should_have_tuple_assignment.py"
+                    "should_have_tuple_assignment.py", "should_have_param2.py",
+                    "should_have_param3.py", "should_have_param5.py"
 
                 };
                 if (!passingTests.Contains(potentialFilename))
                 {
                     continue;
-                }
+                }*/
 
                 // When importing, take only file that ends with "_0", which
                 // is the main file.
@@ -98,12 +99,12 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        /*Directory.SetCurrentDirectory("../unit");
-        RunTests("unit", "", false);*/
+        //Directory.SetCurrentDirectory("../unit");
+        //RunTests("unit", "", false);
         //Directory.SetCurrentDirectory("../must_have");
         //RunTests("must_have", "", false);
-        Directory.SetCurrentDirectory("../should_have");
-        RunTests("should_have", "", false);
+        //Directory.SetCurrentDirectory("../should_have");
+        //RunTests("should_have", "", false);
         /*Directory.SetCurrentDirectory("../difference");
         RunTests("difference", "");
         Directory.SetCurrentDirectory("../not_implemented");

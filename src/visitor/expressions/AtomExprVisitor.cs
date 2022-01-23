@@ -90,8 +90,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
             // Method "append" on a list.
             // So far we don't consider nested expressions like a.b.append()
-            if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(varName) &&
-                state.output.currentClasses.Peek().currentFunctions.Peek().variables[varName] == VarState.Types.List &&
+            // Split by the dot and take the last segment.
+            // For instance -> Program.x -> x;
+            string[] splitAfterDotTokens = varName.Split(".");
+            string lastTokenAfterDot = splitAfterDotTokens[splitAfterDotTokens.Length - 1];
+            if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(lastTokenAfterDot) &&
+                state.output.currentClasses.Peek().currentFunctions.Peek().variables[lastTokenAfterDot] == VarState.Types.List &&
                 methodNameTrailerVisitors[0].result.ToString() == ".append")
             {
                 methodNameTrailerVisitors[0].result.tokens.Clear();

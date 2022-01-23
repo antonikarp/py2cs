@@ -254,9 +254,10 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             }
             result.tokens.Add(rhs);
-
-            
-
+            // Save the current value expression and its type. It can be used when there is a variable
+            // as a default parameter.
+            state.output.currentClasses.Peek().identifierToValueExpression[lhs] = rhs;
+            state.output.currentClasses.Peek().identifierToType[lhs] = state.varState.type;
             return result;
         }
         // Chained assignment, for instance: 'x = y = z = 1' 
