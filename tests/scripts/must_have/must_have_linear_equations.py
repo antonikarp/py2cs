@@ -21,5 +21,5 @@ else:
     x[1] = wx[1]/w
     print("x =",x[0])
     print("y =",x[1])
-    
+
 print("_TEST_UNORDERED_OFF")
