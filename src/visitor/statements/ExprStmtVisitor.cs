@@ -162,9 +162,13 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                     case VarState.Types.Tuple:
                     case VarState.Types.Other:
                         result.tokens.Add("dynamic ");
+                        // Try to check for type int/double/string
+                        state.varState.type = ParamTypeDeduction.Deduce(rhs);
                         break;
 
                 }
+                
+
                 // Add the new variable to a respective scope.
                 // Todo: unify loopState and scopeState.
                 if (state.loopState.loopType != LoopState.LoopType.NoLoop)

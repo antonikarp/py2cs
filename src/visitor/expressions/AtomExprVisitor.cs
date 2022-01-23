@@ -256,6 +256,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     // One argument, use TrailerVisitor, we have: "int(a)".
                     result.tokens.Add("Convert.ToInt32");
+                    state.floatToIntConversionState.isActive = true;
                     name = "";
                 }
             }

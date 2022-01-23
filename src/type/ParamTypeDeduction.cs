@@ -18,7 +18,7 @@ public class ParamTypeDeduction
         {
             return VarState.Types.Double;
         }
-        if (value.Length > 0 && value[0] == '\"' || value[0] == '\'')
+        if (value.Length > 0 && (value[0] == '\"' || value[0] == '\''))
         {
             return VarState.Types.String;
         }

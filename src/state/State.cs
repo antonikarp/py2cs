@@ -10,6 +10,7 @@
     public ScopeState scopeState;
     public InputState inputState;
     public VarReferringToGlobalState varReferringToGlobalState;
+    public FloatToIntConversionState floatToIntConversionState;
     public Output output;
     public State()
     {
@@ -23,6 +24,7 @@
         scopeState = new ScopeState();
         inputState = new InputState();
         varReferringToGlobalState = new VarReferringToGlobalState();
+        floatToIntConversionState = new FloatToIntConversionState();
         output = new Output();
     }
 }
