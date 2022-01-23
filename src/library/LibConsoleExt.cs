@@ -124,6 +124,13 @@ public static class ConsoleExt
         result.Append(""}"");
         return result.ToString();
     }
+    public static void WriteLine(List<dynamic> l1, List<dynamic> l2)
+    {
+        Console.Write(ToString(l1));
+        Console.Write("" "");
+        Console.Write(ToString(l2));
+        Console.WriteLine();
+    }
     public static void WriteLine(object obj1, object obj2, params object[] additional)
     {
         Console.Write(ToString(obj1));

@@ -58,6 +58,14 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             else if (context.NAME() != null)
             {
                 string name = context.NAME().ToString();
+
+                // Replace default variable identifier by a static field.
+                if (state.output.currentClasses.Peek().name == "Program" &&
+                    state.output.currentClasses.Peek().currentFunctions.Peek().defaultParameters.ContainsKey(name))
+                {
+                    name = "Program." + name;
+                }
+
                 // Replace the iteration variable with the generated name.
                 if (state.loopState.loopType == LoopState.LoopType.ForLoop &&
                     state.loopState.nameForGeneratedVariable != "" &&
@@ -91,6 +99,8 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                     }
                     result.tokens.Add(name);
                 }
+                
+
             }
             else if (context.TRUE() != null)
             {

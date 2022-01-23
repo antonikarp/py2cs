@@ -44,6 +44,63 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
             HandleInitMethod();
         }
 
+        // Resolve each defaultParameter by null coalescing operator.
+
+        if (state.output.currentClasses.Peek().name == "Program")
+        {
+            foreach (var defaultParameter in result.defaultParameters.Keys)
+            {
+                string nullCoalescingStr = "Program.";
+                nullCoalescingStr += defaultParameter;
+
+                // Declare defaultParameter as a static field.
+                StringBuilder fieldDeclLine = new StringBuilder();
+                fieldDeclLine.Append("static dynamic ");
+                fieldDeclLine.Append(defaultParameter);
+                fieldDeclLine.Append(" = null;");
+                IndentedLine fieldDeclIndentedLine = new IndentedLine(fieldDeclLine.ToString(), 0);
+                state.output.currentClasses.Peek().staticFieldDeclarations.lines.
+                    Add(fieldDeclIndentedLine);
+                state.output.currentClasses.Peek().staticFieldIdentifiers.Add(defaultParameter);
+
+
+                nullCoalescingStr += " = ";
+                nullCoalescingStr +=  defaultParameter;
+                nullCoalescingStr += " ?? ";
+                string value = result.defaultParameters[defaultParameter];
+                var type = result.defaultParameterTypes[defaultParameter];
+                if (type == VarState.Types.List || type == VarState.Types.ListComp || type == VarState.Types.ListInt)
+                {
+                    nullCoalescingStr += "Program.";
+                    nullCoalescingStr += defaultParameter;
+                    nullCoalescingStr += " ?? ";
+                    nullCoalescingStr += result.defaultParameters[defaultParameter];
+                }
+                else if (type == VarState.Types.Int || type == VarState.Types.Double || type == VarState.Types.String)
+                {
+                    nullCoalescingStr += result.defaultParameters[defaultParameter];
+                }
+                else if (state.output.currentClasses.Peek().identifierToType.ContainsKey(value))
+                {
+                    var typeFromClass = state.output.currentClasses.Peek().identifierToType[value];
+                    if (typeFromClass == VarState.Types.List || typeFromClass == VarState.Types.ListComp || typeFromClass == VarState.Types.ListInt)
+                    {
+                        nullCoalescingStr += "Program.";
+                        nullCoalescingStr += defaultParameter;
+                        nullCoalescingStr += " ?? ";
+                        nullCoalescingStr += value;
+
+                    }
+                    else if (state.output.currentClasses.Peek().identifierToValueExpression.ContainsKey(value))
+                    {
+                        nullCoalescingStr += state.output.currentClasses.Peek().identifierToValueExpression[value];
+                    }
+                }
+                nullCoalescingStr += ";";
+                IndentedLine nullCoalescingLine = new IndentedLine(nullCoalescingStr, 0);
+                result.statements.lines.Add(nullCoalescingLine);
+            }
+        }
 
         foreach (var line in suiteVisitor.result.lines)
         {

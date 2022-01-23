@@ -72,11 +72,8 @@ public class Function
         usedParameterTypesInConstructor = new List<List<VarState.Types>>();
 
         overridenParameterTypes = new Dictionary<string, string>();
-
         overridenReturnType = "";
-
         hiddenIdentifiers = new List<string>();
-
         identifiersReferringToGlobal = new HashSet<string>();
 
         output = _output;
@@ -242,24 +239,12 @@ public class Function
                 if (defaultParameters.ContainsKey(parameters[i]) &&
                     defaultParameterTypes.ContainsKey(parameters[i]))
                 {
-                    switch (defaultParameterTypes[parameters[i]])
-                    {
-                        case VarState.Types.Int:
-                            firstLine += "int ";
-                            break;
-                        case VarState.Types.Double:
-                            firstLine += "double ";
-                            break;
-                        case VarState.Types.String:
-                            firstLine += "string ";
-                            break;
-                        default:
-                            firstLine += "dynamic ";
-                            break;
-                    }
+                    // We assign 'null' to the variable so it must have
+                    // type 'dynamic'.
+                    firstLine += "dynamic ";
                     firstLine += parameters[i];
                     firstLine += " = ";
-                    firstLine += defaultParameters[parameters[i]];
+                    firstLine += "null";
                 }
                 // Case of a positional (usual) parameter.
                 // This is also a place where we place the used types in a parent

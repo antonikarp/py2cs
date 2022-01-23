@@ -22,6 +22,10 @@ public class ParamTypeDeduction
         {
             return VarState.Types.String;
         }
+        if (value.StartsWith("new List"))
+        {
+            return VarState.Types.List;
+        }
         return VarState.Types.Other;
     }
 }
