@@ -16,9 +16,19 @@ public class SuiteVisitor : Python3ParserBaseVisitor<Suite>
         for (int i = 0; i < context.ChildCount; ++i)
         {
             if (context.GetChild(i).GetType().ToString() == "Python3Parser+StmtContext")
-             {
+            {
                 // This means that the i-th child is a stmt node
                 StmtVisitor newVisitor = new StmtVisitor(state);
+                context.GetChild(i).Accept(newVisitor);
+                for (int j = 0; j < newVisitor.result.lines.Count; ++j)
+                {
+                    result.lines.Add(newVisitor.result.lines[j]);
+                }
+            }
+            else if (context.GetChild(i).GetType().ToString() == "Python3Parser+Simple_stmtContext")
+            {
+                // This means that the i-th child is a small_stmt node
+                SimpleStmtVisitor newVisitor = new SimpleStmtVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 for (int j = 0; j < newVisitor.result.lines.Count; ++j)
                 {
