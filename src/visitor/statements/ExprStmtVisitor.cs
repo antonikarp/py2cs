@@ -10,6 +10,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
     {
         state = _state;
     }
+
     public override LineModel VisitExpr_stmt([NotNull] Python3Parser.Expr_stmtContext context)
     {
         // If there is a declaration in the Main method it needs to be
@@ -280,8 +281,27 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 TestlistStarExprVisitor newVisitor = new TestlistStarExprVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
-                result.tokens.Add("dynamic ");
-                result.tokens.Add(newVisitor.result.expressions[0]);
+                string identifier = newVisitor.result.expressions[0];
+
+                // If there is a declaration in Main, move the declaration to the field declarations.
+                if (state.output.currentClasses.Peek().currentFunctions.Peek().name == "Main" &&
+                    state.loopState.loopType == LoopState.LoopType.NoLoop
+                    && !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(identifier))
+                {
+                    StringBuilder fieldDeclLine = new StringBuilder();
+                    fieldDeclLine.Append("static dynamic ");
+                    fieldDeclLine.Append(identifier);
+                    fieldDeclLine.Append(" = null;");
+                    IndentedLine fieldDeclIndentedLine = new IndentedLine(fieldDeclLine.ToString(), 0);
+                    state.output.currentClasses.Peek().staticFieldDeclarations.lines.
+                        Add(fieldDeclIndentedLine);
+                    state.output.currentClasses.Peek().staticFieldIdentifiers.Add(identifier);
+                }
+                else
+                {
+                    result.tokens.Add("dynamic ");
+                }
+                result.tokens.Add(identifier);
                 result.tokens.Add(" = ");
                 result.tokens.Add(rhsVisitor.result.expressions[0]);
                 result.tokens.Add(";");
