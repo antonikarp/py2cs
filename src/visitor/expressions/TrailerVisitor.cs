@@ -57,6 +57,25 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                 context.GetChild(1).GetChild(0).Accept(newVisitor);
                 state.inputState.argument = newVisitor.result.ToString();
             }
+            else if (n == 1 && state.floatToIntConversionState.isActive)
+            {
+                ArgumentVisitor newVisitor = new ArgumentVisitor(state);
+                context.GetChild(1).GetChild(0).Accept(newVisitor);
+                string value = newVisitor.result.ToString();
+                if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(value) &&
+                        state.output.currentClasses.Peek().currentFunctions.Peek().variables[value] == VarState.Types.Double)
+                {
+                    result.tokens.Add("Math.Floor(");
+                    result.tokens.Add(value);
+                    result.tokens.Add(")");
+                    newVisitor.result.ToString();
+                }
+                else
+                {
+                    result.tokens.Add(value);
+                }
+
+            }
             else
             {
                 while (i < n)
@@ -102,6 +121,9 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
 
             // We are done with FuncCall state. We need to flush it.
             state.funcCallState = new FuncCallState();
+
+            // Flush the FloatToIntConversionState
+            state.floatToIntConversionState = new FloatToIntConversionState();
 
         }
         // Subscription and slices
