@@ -75,7 +75,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                 }
                 else
                 {
-                    
+
                     foreach (var kv in state.output.usedNamesFromImport)
                     {
                         var list = kv.Value;
@@ -99,7 +99,7 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                     }
                     result.tokens.Add(name);
                 }
-                
+
 
             }
             else if (context.TRUE() != null)
@@ -186,6 +186,15 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             // We use List from System.Collections.Generic
             state.output.usingDirs.Add("System.Collections.Generic");
             result.tokens.Add("new List<dynamic> {}");
+        }
+        // Empty dictionary
+        else if (context.ChildCount == 2 &&
+            context.GetChild(0).ToString() == "{" &&
+            context.GetChild(1).ToString() == "}")
+        {
+            // We use Dictionary from System.Collections.Generic
+            state.output.usingDirs.Add("System.Collections.Generic");
+            result.tokens.Add("new Dictionary<dynamic, dynamic>{}");
         }
 
         // Dictionary or set
