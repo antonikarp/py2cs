@@ -31,6 +31,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             // Check if there is a tuple on the lhs. This bool value is set in AtomExprVisitor.
             bool isTupleOnLhs = state.lhsTupleState.isTupleOnLhs;
+
             // Flush the LhsTupleState.
             state.lhsTupleState = new LhsTupleState();
             context.GetChild(2).Accept(rightVisitor);
@@ -138,6 +139,15 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 }
                 switch (state.varState.type)
                 {
+                    case VarState.Types.ListFunc:
+                        string newToken = "List<";
+                        newToken += state.varState.funcSignature;
+                        newToken += ">";
+                        result.tokens.Add(newToken);
+                        // On the rhs we have: "new List<dynamic>". We need
+                        // to change it to: "new List<Func<...>>".
+                        rhs = rhs.Replace("List<dynamic>", newToken);
+                        break;
                     case VarState.Types.List:
                         result.tokens.Add("List<dynamic> ");
                         break;

@@ -126,6 +126,19 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
             state.output.currentClasses.Peek().functions.Add(result);
         }
         result.parentClass = state.output.currentClasses.Peek();
+
+        // Save the resulting function signature
+        // Examples:
+        // public dynamic foo() -> Func<dynamic>
+        // public dynamic foo(dynamic x) -> Func<dynamic, dynamic>
+        string signature = "Func<dynamic";
+        for (int i = 0; i < result.parameters.Count; ++i)
+        {
+            signature += ", dynamic";
+        }
+        signature += ">";
+        state.output.currentClasses.Peek().functionToSignature[result.name] = signature;
+
         return result;
     }
     public void HandleInitMethod()

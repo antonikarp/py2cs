@@ -17,6 +17,13 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
     public override LineModel VisitTrailer([NotNull] Python3Parser.TrailerContext context)
     {
         result = new LineModel();
+        // If the VarState.Type is ListFunc, change it to List, because it is a function call.
+        if (state.varState.type == VarState.Types.ListFunc)
+        {
+            state.varState.type = VarState.Types.List;
+            state.varState.funcSignature = "";
+        }
+
         // Function call - some parameters
         if (context.ChildCount == 3 && context.GetChild(0).ToString() == "(" &&
             context.GetChild(2).ToString() == ")" &&
