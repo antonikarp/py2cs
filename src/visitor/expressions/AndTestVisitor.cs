@@ -98,7 +98,7 @@ public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
             andExpressionFunction.statements.lines.Add(new IndentedLine
                 ("return var_0;", 0));
             Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
-            parentFunction.internalFunctions.Add(andExpressionFunction);
+            parentFunction.pendingGeneratedFunctionsInScope.Add(andExpressionFunction);
             andExpressionFunction.parentClass = state.output.currentClasses.Peek();
             result.tokens.Add("GeneratedAndExpression" + num + "()");
 

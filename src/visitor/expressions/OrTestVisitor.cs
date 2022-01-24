@@ -91,7 +91,7 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
             orExpressionFunction.statements.lines.Add(new IndentedLine
                 ("return " + rightVisitor.result.ToString() + ";", 0));
             Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
-            parentFunction.internalFunctions.Add(orExpressionFunction);
+            parentFunction.pendingGeneratedFunctionsInScope.Add(orExpressionFunction);
             orExpressionFunction.parentClass = state.output.currentClasses.Peek();
             result.tokens.Add("GeneratedOrExpression" + num + "()");
         }

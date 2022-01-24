@@ -36,6 +36,9 @@ public class Function
     // They are prepended by class name like: Program.x
     public HashSet<string> identifiersReferringToGlobal;
 
+    // This list holds functions which should be added at the end of current scope.
+    public List<Function> pendingGeneratedFunctionsInScope;
+
     public Function(Output _output)
     {
         // By default this value is true, however when the visitor encounters
@@ -75,6 +78,7 @@ public class Function
         overridenReturnType = "";
         hiddenIdentifiers = new List<string>();
         identifiersReferringToGlobal = new HashSet<string>();
+        pendingGeneratedFunctionsInScope = new List<Function>();
 
         output = _output;
     }
@@ -313,5 +317,35 @@ public class Function
             output.outputBuilder.commitIndentedLine(new IndentedLine("", -1));
             output.outputBuilder.commitIndentedLine(new IndentedLine("}", 0));
         }
+    }
+    public void CommitGeneratedFunctionInScope()
+    {
+        foreach (var func in pendingGeneratedFunctionsInScope)
+        {
+            statements.lines.Add(new IndentedLine("dynamic " + func.name + "()", 0));
+            statements.lines.Add(new IndentedLine("{", 1));
+            foreach (var line in func.statements.lines)
+            {
+                statements.lines.Add(line);
+            }
+            statements.lines.Add(new IndentedLine("", -1));
+            statements.lines.Add(new IndentedLine("}", 0));
+        }
+        pendingGeneratedFunctionsInScope.Clear();
+    }
+    public void CommitGeneratedFunctionInScope(BlockModel result)
+    {
+        foreach (var func in pendingGeneratedFunctionsInScope)
+        {
+            result.lines.Add(new IndentedLine("dynamic " + func.name + "()", 0));
+            result.lines.Add(new IndentedLine("{", 1));
+            foreach (var line in func.statements.lines)
+            {
+                result.lines.Add(line);
+            }
+            result.lines.Add(new IndentedLine("", -1));
+            result.lines.Add(new IndentedLine("}", 0));
+        }
+        pendingGeneratedFunctionsInScope.Clear();
     }
 }

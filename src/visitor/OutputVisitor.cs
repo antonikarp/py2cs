@@ -14,7 +14,12 @@ public class OutputVisitor : Python3ParserBaseVisitor<State> {
     }
     public override State VisitFile_input([NotNull] Python3Parser.File_inputContext context)
     {
-        return VisitChildren(context);
+        VisitChildren(context);
+
+        // Commit generated functions (for 'or', 'and' expressions).
+        state.output.currentClasses.Peek().currentFunctions.Peek().CommitGeneratedFunctionInScope();
+
+        return state;
     }
     public override State VisitStmt([NotNull] Python3Parser.StmtContext context)
     {
