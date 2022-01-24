@@ -19,7 +19,14 @@ public static class ConsoleExt
         for (int i = 0; i < list.Count; ++i)
         {
             if (i != 0) { result.Append("", ""); }
-            result.Append(ToString(list[i]));
+            if (list[i] is null)
+            {
+                result.Append(""None"");
+            }
+            else
+            {
+                result.Append(ToString(list[i]));
+            }
         }
         result.Append(""]"");
         return result.ToString();
@@ -92,6 +99,20 @@ public static class ConsoleExt
         result.Append(""}"");
         return result.ToString();
     }
+    public static string ToString(HashSet<dynamic> s)
+    {
+        StringBuilder result = new StringBuilder();
+        result.Append(""{"");
+        int i = 0;
+        foreach (var element in s)
+        {
+            if (i != 0) { result.Append("", ""); }
+            result.Append(element is null ? ""None"" : ToString(element));
+            ++i;
+        }
+        result.Append(""}"");
+        return result.ToString();
+    }
     public static string ToString(Dictionary<int, double> d)
     {
         StringBuilder result = new StringBuilder();
@@ -108,7 +129,7 @@ public static class ConsoleExt
         result.Append(""}"");
         return result.ToString();
     }
-    public static string ToString(Dictionary<object, object> d)
+    public static string ToString(Dictionary<dynamic, dynamic> d)
     {
         StringBuilder result = new StringBuilder();
         result.Append(""{"");
@@ -116,9 +137,9 @@ public static class ConsoleExt
         foreach (var kv in d)
         {
             if (i != 0) { result.Append("", ""); }
-            result.Append(ToString(kv.Key));
+            result.Append(kv.Key is null ? ""None"" : ToString(kv.Key));
             result.Append("": "");
-            result.Append(ToString(kv.Value));
+            result.Append(kv.Value is null ? ""None"" : ToString(kv.Value));
             ++i;
         }
         result.Append(""}"");
@@ -143,15 +164,44 @@ public static class ConsoleExt
         }
         Console.WriteLine();
     }
+    public static string HandleTuple(ValueTuple<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, ValueTuple<dynamic, dynamic>> tuple)
+    {
+        StringBuilder result = new StringBuilder();
+        result.Append(""("");
+        result.Append(tuple.Item1 is null ? ""None"" : ToString(tuple.Item1));
+        result.Append("", "");
+        result.Append(tuple.Item2 is null ? ""None"" : ToString(tuple.Item2));
+        result.Append("", "");
+        result.Append(tuple.Item3 is null ? ""None"" : ToString(tuple.Item3));
+        result.Append("", "");
+        result.Append(tuple.Item4 is null ? ""None"" : ToString(tuple.Item4));
+        result.Append("", "");
+        result.Append(tuple.Item5 is null ? ""None"" : ToString(tuple.Item5));
+        result.Append("", "");
+        result.Append(tuple.Item6 is null ? ""None"" : ToString(tuple.Item6));
+        result.Append("", "");
+        result.Append(tuple.Item7 is null ? ""None"" : ToString(tuple.Item7));
+        result.Append("", "");
+        result.Append(tuple.Item8 is null ? ""None"" : ToString(tuple.Item8));
+        result.Append("", "");
+        result.Append(tuple.Item9 is null ? ""None"" : ToString(tuple.Item9));
+        result.Append("")"");
+        return result.ToString();
+    }
+
     public static void WriteLine(dynamic obj)
     {
-        if (obj != null)
+        if (obj is null)
         {
-            Console.WriteLine(ToString(obj));
+            Console.WriteLine(""None"");
+        }
+        else if (obj.GetType().ToString().StartsWith(""System.ValueTuple`8""))
+        {
+            Console.WriteLine(HandleTuple((ValueTuple<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, ValueTuple<dynamic, dynamic>>)obj));
         }
         else
         {
-            Console.WriteLine(""None"");
+            Console.WriteLine(ToString(obj));
         }
     }
     public static void WriteLine()

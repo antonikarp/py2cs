@@ -52,7 +52,7 @@ for i in range(len(lines1)):
         elif lines1[i] == lines2[i] and lines1[i] == "_TEST_UNORDERED_OFF":
             print("********************")
             unordered = False
-        elif unordered:
+        elif unordered and len(lines1[i]) > 0 and len(lines2[i]) > 0:
             print("********************")
             print("line1 = ", lines1[i])
             print("line2 = ", lines2[i])

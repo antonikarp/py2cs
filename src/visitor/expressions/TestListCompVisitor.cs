@@ -8,9 +8,11 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
 {
     public LineModel result;
     public State state;
+    public bool isTuple;
     public TestListCompVisitor(State _state)
     {
         state = _state;
+        isTuple = false;
     }
     public override LineModel VisitTestlist_comp([NotNull] Python3Parser.Testlist_compContext context)
     {
@@ -27,6 +29,9 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     state.varState.type = VarState.Types.Tuple;
                     state.lhsTupleState.isTupleOnLhs = true;
+
+                    // Remember that this is a tuple.
+                    isTuple = true;
                 }
                 result.tokens.Add(", ");
             }
@@ -34,11 +39,29 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 TestVisitor newVisitor = new TestVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
-                for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
+                // When declaring a tuple, cast to a nullable type 'int?' when
+                // the value is a 'null'.
+                // To avoid extremely many names of types in the library function
+                // cast it to object.
+                // We don't perform any casts when we are on the left-hand side
+                // of an assignment.
+                if (isTuple && newVisitor.result.ToString() == "null" && !state.lhsState.isLhsState)
                 {
-                    result.tokens.Add(newVisitor.result.tokens[j]);
+                    result.tokens.Add("(object)(int?) null");
+                }
+                else if (isTuple && !state.lhsState.isLhsState)
+                {
+                    result.tokens.Add("(object)" + newVisitor.result.ToString());
+                }
+                else
+                {
+                    result.tokens.Add(newVisitor.result.ToString());
                 }
             }
+        }
+        if (isTuple && result.tokens.Count >= 1 && !state.lhsState.isLhsState)
+        {
+            result.tokens[0] = "(object)" + result.tokens[0];
         }
         return result;
     }
