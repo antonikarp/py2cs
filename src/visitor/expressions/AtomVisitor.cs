@@ -59,6 +59,15 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 string name = context.NAME().ToString();
 
+                // Check if we have a list of functions. First the type must be set to List.
+                // Then (here) we encounter a function and set the type to ListFunc
+                if (state.varState.type == VarState.Types.List &&
+                    state.output.currentClasses.Peek().functionToSignature.ContainsKey(name))
+                {
+                    state.varState.type = VarState.Types.ListFunc;
+                    state.varState.funcSignature = state.output.currentClasses.Peek().functionToSignature[name];
+                }
+
                 // Replace default variable identifier by a static field.
                 if (state.output.currentClasses.Peek().name == "Program" &&
                     state.output.currentClasses.Peek().currentFunctions.Peek().defaultParameters.ContainsKey(name))

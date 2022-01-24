@@ -18,10 +18,14 @@ public class AutoTests
             if (potentialFilename.EndsWith(".py"))
             {
                 // This is a temporary statement to reduce the number of test files.
-                /*if (!potentialFilename.StartsWith("must_have_dict"))
+                if (potentialFilename.StartsWith("must_have_indexing"))
                 {
                     continue;
-                }*/
+                }
+                if (!potentialFilename.StartsWith("must_have_exp_stmt"))
+                {
+                    continue;
+                }
                 // Todo: remove
                 /*List<string> passingTests = new List<string>()
                 {

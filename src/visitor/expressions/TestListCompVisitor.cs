@@ -22,7 +22,8 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 // The type of list would have been assigned already.
                 // The other case is Tuple.
-                if (state.varState.type != VarState.Types.List)
+                if (state.varState.type != VarState.Types.List &&
+                    state.varState.type != VarState.Types.ListFunc)
                 {
                     state.varState.type = VarState.Types.Tuple;
                     state.lhsTupleState.isTupleOnLhs = true;

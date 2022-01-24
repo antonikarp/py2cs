@@ -334,7 +334,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
         // Function call (ex. hello())
         // or field (ex. self.name)
         if (context.ChildCount == 2 && context.trailer() != null)
-        {
+        {   
             // Update each argument that is a function - it is Func<dynamic, dynamic>
             AtomVisitor atomVisitor = new AtomVisitor(state);
             context.GetChild(0).Accept(atomVisitor);

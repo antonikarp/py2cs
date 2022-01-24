@@ -68,7 +68,6 @@ public class ComparisonVisitor : Python3ParserBaseVisitor<LineModel>
             if (opVisitor.result.value == "in")
             {
                 // Membership test for a set.
-                // Todo: Handle dictionaries with ContainsKey method
                 for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
                 {
                     result.tokens.Add(rightVisitor.result.tokens[i]);

@@ -38,6 +38,10 @@ public class Class
     // default parameters;
     public Dictionary<string, VarState.Types> identifierToType;
 
+    // This is a mapping that provides a signature of a Func type related to function
+    // Example: public dynamic foo() -> functionToSignature["foo"] = "Func<dynamic>"
+    public Dictionary<string, string> functionToSignature;
+
     public bool isStatic;
     public bool isPartial;
     public Class(Output _output)
@@ -57,6 +61,7 @@ public class Class
         isStatic = false;
         identifierToValueExpression = new Dictionary<string, string>();
         identifierToType = new Dictionary<string, VarState.Types>();
+        functionToSignature = new Dictionary<string, string>();
     }
     public void CommitToOutput()
     {
