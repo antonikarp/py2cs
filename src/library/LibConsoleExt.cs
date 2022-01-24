@@ -145,7 +145,14 @@ public static class ConsoleExt
     }
     public static void WriteLine(dynamic obj)
     {
-        Console.WriteLine(ToString(obj));
+        if (obj != null)
+        {
+            Console.WriteLine(ToString(obj));
+        }
+        else
+        {
+            Console.WriteLine(""None"");
+        }
     }
     public static void WriteLine()
     {

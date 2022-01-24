@@ -139,6 +139,9 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         signature += ">";
         state.output.currentClasses.Peek().functionToSignature[result.name] = signature;
 
+        // Commit generated functions (for 'or', 'and' expressions).
+        result.CommitGeneratedFunctionInScope();
+
         return result;
     }
     public void HandleInitMethod()

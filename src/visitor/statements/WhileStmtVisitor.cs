@@ -92,6 +92,8 @@ public class WhileStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // Flush LoopState
         state.loopState = new LoopState();
 
+        // Commit generated functions (for 'or', 'and' expressions).
+        state.output.currentClasses.Peek().currentFunctions.Peek().CommitGeneratedFunctionInScope(result);
 
         return result;
     }

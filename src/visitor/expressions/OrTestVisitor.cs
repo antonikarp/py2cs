@@ -43,40 +43,57 @@ public class OrTestVisitor : Python3ParserBaseVisitor<LineModel>
             AndTestVisitor rightVisitor = new AndTestVisitor(state);
             context.GetChild(2).Accept(rightVisitor);
             VarState.Types leftType = ParamTypeDeduction.Deduce(leftVisitor.result.ToString());
-            // Left-hand side is either an int or double
-            // The expression "x or y" is equivalent to: x != 0 ? x : y
+
+            // a or b is translated into
+            //
+            // var var_0 = a;
+            // if (func(var_0))
+            // {
+            //      return var_0;
+            // }
+            // else
+            // {
+            //      return b;
+            // }
+            // where func is a type specific bool converter:
+            // for list: .Count > 0, for int: != 0
+
+            ++state.output.currentClasses.Peek().currentGeneratedOrExpressionNumber;
+            var num = state.output.currentClasses.Peek().currentGeneratedOrExpressionNumber;
+            Function orExpressionFunction = new Function(state.output);
+            orExpressionFunction.name = "GeneratedOrExpression" + num;
+            orExpressionFunction.isPublic = false;
+            orExpressionFunction.isVoid = false;
+            orExpressionFunction.isStatic = false;
+            orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("var var_0 = " + leftVisitor.result.ToString() + ";", 0));
             if (leftType == VarState.Types.Int || leftType == VarState.Types.Double)
             {
-
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(" != 0 ? ");
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(" : ");
-                result.tokens.Add(rightVisitor.result.ToString());
+                orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("if (var_0 != 0)", 0));
             }
-            // The expression "x or y" is equivalent to: x.Length != 0 ? x : y
             else if (leftType == VarState.Types.String)
             {
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(".Length != 0 ? ");
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(" : ");
-                result.tokens.Add(rightVisitor.result.ToString());
+                orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("if (var_0.Length != 0)", 0));
             }
-            // Default or expression
             else
             {
-                // Todo: Convert.ToBoolean() might be necessary.
-                for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
-                {
-                    result.tokens.Add(leftVisitor.result.tokens[i]);
-                }
-                result.tokens.Add("||");
-                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
-                {
-                    result.tokens.Add(rightVisitor.result.tokens[i]);
-                }
+                orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("if (var_0)", 0));
             }
+            orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("{", 1));
+            orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("return var_0;", -1));
+            orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("}", 0));
+            orExpressionFunction.statements.lines.Add(new IndentedLine
+                ("return " + rightVisitor.result.ToString() + ";", 0));
+            Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
+            parentFunction.pendingGeneratedFunctionsInScope.Add(orExpressionFunction);
+            orExpressionFunction.parentClass = state.output.currentClasses.Peek();
+            result.tokens.Add("GeneratedOrExpression" + num + "()");
         }
         else if (context.ChildCount > 3)
         {

@@ -43,40 +43,66 @@ public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
             NotTestVisitor rightVisitor = new NotTestVisitor(state);
             context.GetChild(2).Accept(rightVisitor);
             VarState.Types leftType = ParamTypeDeduction.Deduce(leftVisitor.result.ToString());
+
+            // Surround the expression with parentheses.
+            result.tokens.Add("(");
+
+            // a and b is translated into
+            //
+            // var var_0 = a;
+            // if (func(var_0))
+            // {
+            //      return b;
+            // }
+            // else
+            // {
+            //      return var_0;
+            // }
+            // where func is a type specific bool converter:
+            // for list: .Count > 0, for int: != 0
+
+
             // Left-hand side is either an int or double
             // The expression "x and y" is equivalent to: x != 0 ? y : x
+            ++state.output.currentClasses.Peek().currentGeneratedAndExpressionNumber;
+            var num = state.output.currentClasses.Peek().currentGeneratedAndExpressionNumber;
+            Function andExpressionFunction = new Function(state.output);
+            andExpressionFunction.name = "GeneratedAndExpression" + num;
+            andExpressionFunction.isPublic = false;
+            andExpressionFunction.isVoid = false;
+            andExpressionFunction.isStatic = false;
+            andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("var var_0 = " + leftVisitor.result.ToString() + ";", 0));
             if (leftType == VarState.Types.Int || leftType == VarState.Types.Double)
             {
-
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(" != 0 ? ");
-                result.tokens.Add(rightVisitor.result.ToString());
-                result.tokens.Add(" : ");
-                result.tokens.Add(leftVisitor.result.ToString());
+                andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("if (var_0 != 0)", 0));
             }
-            // The expression "x and y" is equivalent to: x.Length != 0 ? y : x
             else if (leftType == VarState.Types.String)
             {
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(".Length != 0 ? ");
-                result.tokens.Add(rightVisitor.result.ToString());
-                result.tokens.Add(" : ");
-                result.tokens.Add(leftVisitor.result.ToString());
+                andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("if (var_0.Length != 0)", 0));
             }
-            // Default or expression
             else
             {
-                // Todo: Convert.ToBoolean() might be necessary.
-                for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
-                {
-                    result.tokens.Add(leftVisitor.result.tokens[i]);
-                }
-                result.tokens.Add("&&");
-                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
-                {
-                    result.tokens.Add(rightVisitor.result.tokens[i]);
-                }
+                andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("if (var_0)", 0));
             }
+            andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("{", 1));
+            andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("return " + rightVisitor.result.ToString() + ";", -1));
+            
+            andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("}", 0));
+            andExpressionFunction.statements.lines.Add(new IndentedLine
+                ("return var_0;", 0));
+            Function parentFunction = state.output.currentClasses.Peek().currentFunctions.Peek();
+            parentFunction.pendingGeneratedFunctionsInScope.Add(andExpressionFunction);
+            andExpressionFunction.parentClass = state.output.currentClasses.Peek();
+            result.tokens.Add("GeneratedAndExpression" + num + "()");
+
+            result.tokens.Add(")");
         }
         else if (context.ChildCount > 3)
         {
