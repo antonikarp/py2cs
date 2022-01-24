@@ -28,12 +28,19 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             TestlistStarExprVisitor leftVisitor = new TestlistStarExprVisitor(state);
             TestlistStarExprVisitor rightVisitor = new TestlistStarExprVisitor(state);
             state.lhsTupleState = new LhsTupleState();
+
+            // Block casts to object if a tuple is on lhs.
+            state.lhsState = new LhsState();
+            state.lhsState.isLhsState = true;
+
             context.GetChild(0).Accept(leftVisitor);
             // Check if there is a tuple on the lhs. This bool value is set in AtomExprVisitor.
             bool isTupleOnLhs = state.lhsTupleState.isTupleOnLhs;
 
-            // Flush the LhsTupleState.
+            // Flush the LhsTupleState and LhsState
             state.lhsTupleState = new LhsTupleState();
+            state.lhsState = new LhsState();
+
             context.GetChild(2).Accept(rightVisitor);
             bool isTupleAssignment = false;
 

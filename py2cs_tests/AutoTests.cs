@@ -17,7 +17,11 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                // This is a temporary statement to reduce the number of test files.
+                /*if (!potentialFilename.StartsWith("must_have_sequences"))
+                {
+                    continue;
+                }*/
+                // This is a temporary statement to reduce the number of test files
                 if (potentialFilename.StartsWith("must_have_indexing"))
                 {
                     continue;
@@ -34,7 +38,6 @@ public class AutoTests
                     "should_have_nonlocal.py", "should_have_scope2.py",
                     "should_have_tuple_assignment.py", "should_have_param2.py",
                     "should_have_param3.py", "should_have_param5.py"
-
                 };
                 if (!passingTests.Contains(potentialFilename))
                 {

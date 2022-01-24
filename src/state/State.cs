@@ -11,6 +11,7 @@
     public InputState inputState;
     public VarReferringToGlobalState varReferringToGlobalState;
     public FloatToIntConversionState floatToIntConversionState;
+    public LhsState lhsState;
     public Output output;
     public State()
     {
@@ -25,6 +26,7 @@
         inputState = new InputState();
         varReferringToGlobalState = new VarReferringToGlobalState();
         floatToIntConversionState = new FloatToIntConversionState();
+        lhsState = new LhsState();
         output = new Output();
     }
 }
