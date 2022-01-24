@@ -22,10 +22,6 @@ public class AutoTests
                 {
                     continue;
                 }
-                if (!potentialFilename.StartsWith("must_have_exp_stmt"))
-                {
-                    continue;
-                }
                 // Todo: remove
                 /*List<string> passingTests = new List<string>()
                 {
