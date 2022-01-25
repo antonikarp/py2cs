@@ -17,15 +17,11 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("must_have_sequences"))
+                /*if (!potentialFilename.StartsWith("should_have_indexing"))
                 {
                     continue;
                 }*/
                 // This is a temporary statement to reduce the number of test files
-                if (potentialFilename.StartsWith("must_have_indexing"))
-                {
-                    continue;
-                }
                 // Todo: remove
                 /*List<string> passingTests = new List<string>()
                 {
@@ -102,14 +98,15 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        //Directory.SetCurrentDirectory("../unit");
-        //RunTests("unit", "", false);
-        Directory.SetCurrentDirectory("../must_have");
-        RunTests("must_have", "", false);
-        //Directory.SetCurrentDirectory("../should_have");
-        //RunTests("should_have", "", false);
-        /*Directory.SetCurrentDirectory("../difference");
-        RunTests("difference", "");
+        Directory.SetCurrentDirectory("../unit");
+        RunTests("unit", "", false);
+        //Directory.SetCurrentDirectory("../must_have");
+        //RunTests("must_have", "", false);
+        Directory.SetCurrentDirectory("../should_have");
+        RunTests("should_have", "", false);
+        //Directory.SetCurrentDirectory("../difference");
+        //RunTests("difference", "", false);
+        /*
         Directory.SetCurrentDirectory("../not_implemented");
         RunTests("not_implemented", "");
         Directory.SetCurrentDirectory("../error");

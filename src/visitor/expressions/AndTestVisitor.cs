@@ -30,7 +30,11 @@ public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
         // Child #1: and
         // Child #2: <expr2>
         // Child #3: ...
-        else if (context.ChildCount == 3)
+
+        // Generate a function only if we are not in the list comprehension, due
+        // to the fact that the variable used there will be outside of scope
+        // of the generated function.
+        else if (context.ChildCount == 3 && state.listCompState.isActive == false)
         {
             // Expression is standalone:
             if (!state.stmtState.isLocked)
@@ -104,7 +108,7 @@ public class AndTestVisitor : Python3ParserBaseVisitor<LineModel>
 
             result.tokens.Add(")");
         }
-        else if (context.ChildCount > 3)
+        else
         {
             // Expression is standalone:
             if (!state.stmtState.isLocked)

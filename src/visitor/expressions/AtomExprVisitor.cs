@@ -334,7 +334,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
         // Function call (ex. hello())
         // or field (ex. self.name)
         if (context.ChildCount == 2 && context.trailer() != null)
-        {   
+        {
             // Update each argument that is a function - it is Func<dynamic, dynamic>
             AtomVisitor atomVisitor = new AtomVisitor(state);
             context.GetChild(0).Accept(atomVisitor);
@@ -361,11 +361,35 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
             tempCurrentFunctions.Clear();
 
-            TrailerVisitor newVisitor = new TrailerVisitor(state);
-            context.GetChild(1).Accept(newVisitor);
-            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+            TrailerVisitor trailerVisitor = new TrailerVisitor(state);
+            context.GetChild(1).Accept(trailerVisitor);
+            if (trailerVisitor.isSlice)
             {
-                result.tokens.Add(newVisitor.result.tokens[i]);
+                // We have a slice:
+                // a[start:stop:stride] -> ListSlice.Get(a, start, stop, stride)
+                var identifier = result.ToString();
+                result.tokens.Clear();
+                result.tokens.Add("ListSlice.Get(");
+                result.tokens.Add(identifier);
+                result.tokens.Add(", ");
+                result.tokens.Add(trailerVisitor.sliceStart == null ? "null" : trailerVisitor.sliceStart);
+                result.tokens.Add(", ");
+                result.tokens.Add(trailerVisitor.sliceEnd == null ? "null" : trailerVisitor.sliceEnd);
+                result.tokens.Add(", ");
+                result.tokens.Add(trailerVisitor.sliceStride == null ? "null" : trailerVisitor.sliceStride);
+                result.tokens.Add(")");
+
+                for (int i = 0; i < trailerVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(trailerVisitor.result.tokens[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < trailerVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(trailerVisitor.result.tokens[i]);
+                }
             }
         }
 
