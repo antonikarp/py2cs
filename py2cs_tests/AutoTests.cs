@@ -98,18 +98,18 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        Directory.SetCurrentDirectory("../unit");
-        RunTests("unit", "", false);
+        //Directory.SetCurrentDirectory("../unit");
+        //RunTests("unit", "", false);
         //Directory.SetCurrentDirectory("../must_have");
         //RunTests("must_have", "", false);
-        Directory.SetCurrentDirectory("../should_have");
-        RunTests("should_have", "", false);
+        //Directory.SetCurrentDirectory("../should_have");
+        //RunTests("should_have", "", false);
         //Directory.SetCurrentDirectory("../difference");
         //RunTests("difference", "", false);
-        /*
+        
         Directory.SetCurrentDirectory("../not_implemented");
-        RunTests("not_implemented", "");
-        Directory.SetCurrentDirectory("../error");
+        RunTests("not_implemented", "", false);
+        /*Directory.SetCurrentDirectory("../error");
         RunTests("error", "");
         
         Directory.SetCurrentDirectory("../must_have/import/1");
