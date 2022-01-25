@@ -16,6 +16,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         // The function call can supply other functions as arguments, like:
         // "repeat(4)(myfunction)".
+
         if (context.ChildCount >= 3 &&
             context.GetChild(0).GetType().ToString() == "Python3Parser+AtomContext" &&
             context.GetChild(1).GetType().ToString() == "Python3Parser+TrailerContext" &&
@@ -36,15 +37,55 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
             int n = context.ChildCount;
             int i = 1;
+            // Check if we have multiple slices (like: L[1:][:2]).
+            bool areAllSlices = true;
+            List<TrailerVisitor> trailerVisitors = new List<TrailerVisitor>();
             while (i < n)
             {
                 TrailerVisitor newVisitor = new TrailerVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
-                for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
-                {
-                    result.tokens.Add(newVisitor.result.tokens[j]);
-                }
+                trailerVisitors.Add(newVisitor);
+                areAllSlices = areAllSlices && newVisitor.isSlice;
                 i += 1;
+            }
+            if (areAllSlices)
+            {
+                string identifier = atomVisitor.result.ToString();
+                result.tokens.Clear();
+                // Build expression like:
+                // L[1:][:2] -> ListSlice.Get(ListSlice.Get(L, 1, null, null), null, 2, null);
+                for (int j = 0; j < trailerVisitors.Count; ++j)
+                {
+                    result.tokens.Add("ListSlice.Get(");
+                }
+                for (int j = 0; j < trailerVisitors.Count; ++j)
+                {
+                    if (j == 0)
+                    {
+                        result.tokens.Add(identifier);
+                        result.tokens.Add(", ");
+                    }
+                    else
+                    {
+                        result.tokens.Add(", ");
+                    }
+                    result.tokens.Add(trailerVisitors[j].sliceStart == null ? "null" : trailerVisitors[j].sliceStart);
+                    result.tokens.Add(", ");
+                    result.tokens.Add(trailerVisitors[j].sliceEnd == null ? "null" : trailerVisitors[j].sliceEnd);
+                    result.tokens.Add(", ");
+                    result.tokens.Add(trailerVisitors[j].sliceStride == null ? "null" : trailerVisitors[j].sliceStride);
+                    result.tokens.Add(")");
+                }
+            }
+            else
+            {
+                for (int j = 0; j < trailerVisitors.Count; ++j)
+                {
+                    for (int k = 0; k < trailerVisitors[j].result.tokens.Count; ++k)
+                    {
+                        result.tokens.Add(trailerVisitors[j].result.tokens[k]);
+                    }
+                }
             }
             return result;
         }

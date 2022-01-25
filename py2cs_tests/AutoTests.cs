@@ -17,7 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("should_have_indexing"))
+                /*if (!potentialFilename.StartsWith("should_have_if_exp_types"))
                 {
                     continue;
                 }*/
@@ -30,10 +30,12 @@ public class AutoTests
                     "should_have_enumerate.py", "should_have_exceptions07.py",
                     "should_have_exceptions09.py", "should_have_fibonacci_yield1.py",
                     "should_have_fibonacci_yield2.py", "should_have_fibonacci.py",
-                    "should_have_global1.py", "should_have_global2.py",
-                    "should_have_nonlocal.py", "should_have_scope2.py",
+                    "should_have_fibonacci2.py", "should_have_global1.py", "should_have_global2.py",
+                    "should_have_if_exp_types.py", "should_have_indexing09.py",
+                    "should_have_indexing11.py", "should_have_nonlocal.py", "should_have_scope2.py",
                     "should_have_tuple_assignment.py", "should_have_param2.py",
-                    "should_have_param3.py", "should_have_param5.py"
+                    "should_have_param3.py", "should_have_param5.py",
+
                 };
                 if (!passingTests.Contains(potentialFilename))
                 {
@@ -100,15 +102,15 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
         //Directory.SetCurrentDirectory("../unit");
         //RunTests("unit", "", false);
-        //Directory.SetCurrentDirectory("../must_have");
-        //RunTests("must_have", "", false);
+        Directory.SetCurrentDirectory("../must_have");
+        RunTests("must_have", "", false);
         //Directory.SetCurrentDirectory("../should_have");
         //RunTests("should_have", "", false);
         //Directory.SetCurrentDirectory("../difference");
         //RunTests("difference", "", false);
         
-        Directory.SetCurrentDirectory("../not_implemented");
-        RunTests("not_implemented", "", false);
+        //Directory.SetCurrentDirectory("../not_implemented");
+        //RunTests("not_implemented", "", false);
         /*Directory.SetCurrentDirectory("../error");
         RunTests("error", "");
         
