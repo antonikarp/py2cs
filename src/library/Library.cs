@@ -7,6 +7,7 @@ public class Library
     public LibIsOperator libIsOperator;
     public LibModuloOperator libModuloOperator;
     public LibDivideByZero libDivideByZero;
+    public LibListSlice libListSlice;
     public Output output;
     public HashSet<string> toCommit;
     public Library(Output _output)
@@ -21,6 +22,7 @@ public class Library
         libIsOperator = new LibIsOperator(this);
         libModuloOperator = new LibModuloOperator(this);
         libDivideByZero = new LibDivideByZero(this);
+        libListSlice = new LibListSlice(this);
     }
     public void CommitConsoleExt()
     {
@@ -45,5 +47,10 @@ public class Library
     public void CommitDivideByZero()
     {
         toCommit.Add(availableClasses["DivideByZero"]);
+    }
+    public void CommitListSlice()
+    {
+        output.usingDirs.Add("System.Collections.Generic");
+        toCommit.Add(availableClasses["ListSlice"]);
     }
 }

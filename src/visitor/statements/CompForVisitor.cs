@@ -16,7 +16,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
     {
         visited = true;
         result = new LineModel();
-
+        state.listCompState.isActive = true;
         // In case of no "if" clause, we have the following children
         // Child #0: for
         // Child #1: exprlist (for now assume that it is a single expr)
@@ -70,6 +70,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
                 }
             }
         }
+        state.listCompState.isActive = false;
         return result;
     }
 }

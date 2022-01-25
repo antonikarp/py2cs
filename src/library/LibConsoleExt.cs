@@ -69,6 +69,18 @@ public static class ConsoleExt
         result.Append(""]"");
         return result.ToString();
     }
+    public static string ToString(List<ValueTuple<object, object>> l)
+    {
+        StringBuilder result = new StringBuilder();
+        result.Append(""["");
+        for (int i = 0; i < l.Count; ++i)
+        {
+            if (i != 0) { result.Append("", ""); }
+            result.Append(ToString(l[i]));
+        }
+        result.Append(""]"");
+        return result.ToString();
+    }
     public static string ToString(HashSet<double> s)
     {
         StringBuilder result = new StringBuilder();

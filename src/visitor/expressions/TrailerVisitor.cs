@@ -9,9 +9,17 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
 {
     public LineModel result;
     public State state;
+    public bool isSlice;
+    public string sliceStart;
+    public string sliceEnd;
+    public string sliceStride;
     public TrailerVisitor(State _state)
     {
         state = _state;
+        isSlice = false;
+        sliceStart = null;
+        sliceEnd = null;
+        sliceStride = null;
     }
 
     public override LineModel VisitTrailer([NotNull] Python3Parser.TrailerContext context)
@@ -106,7 +114,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             if (funcName == "enumerate")
             {
                 state.output.usingDirs.Add("System.Linq");
-                result.tokens.Add(".Select((p1, p2) => ValueTuple.Create(p2, p1))");
+                result.tokens.Add(".Select((p1, p2) => ValueTuple.Create((object)p2, (object)p1))");
 
             }
             // The case of 'len'. Use the Count property. For now we assume that the argument is a list.
@@ -145,172 +153,29 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             value = value.Replace("(", "");
             value = value.Replace(")", "");
             string[] parts = value.Split(':');
-            bool includeLinq = true;
 
             // We have the case of a subscription: (e.g. a[1])
             if (parts.Length == 1)
             {
-                includeLinq = false;
                 result.tokens.Add("[");
                 result.tokens.Add(value);
                 result.tokens.Add("]");
             }
-            // -------
-            // Case 1. a[:]
-            // Result: The whole array.
-            else if (parts.Length == 2 && parts[0].Length == 0 && parts[1].Length == 0)
+            else
             {
-                includeLinq = false;
-            }
-
-            // Case 2. a[low:] = [a[low], a[low+1], ..., a[len(a)-1]]
-            // Result: a.Skip(low);
-            else if (parts.Length == 2 && parts[0].Length != 0 && parts[1].Length == 0)
-            {
-                result.tokens.Add(".Skip(");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add(")");
-            }
-
-            // Case 3. a[:high] = [a[0], a[1], ..., a[high-1]]
-            // Result: a.Take(high);
-            else if (parts.Length == 2 && parts[0].Length == 0 && parts[1].Length != 0)
-            {
-                result.tokens.Add(".Take(");
-                result.tokens.Add(parts[1]);
-                result.tokens.Add(")");
-            }
-
-            // Case 4. a[low:high] = [a[low], a[low+1], ..., a[high-1]]
-            // Result: a.Skip(low).Take((high) - (low));
-            else if (parts.Length == 2 && parts[0].Length != 0 && parts[1].Length != 0)
-            {
-                result.tokens.Add(".Skip(");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add(").Take((");
-                result.tokens.Add(parts[1]);
-                result.tokens.Add(")-(");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add("))");
-            }
-
-            // -------
-            // stride > 0
-            // -------
-            // Case 5. a[::stride] = Case 1 (every n=stride)
-            // Result: a.Where((x, i) => (i % (stride) == 0));
-            else if (parts.Length == 3 && parts[0].Length == 0
-                && parts[1].Length == 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) > 0)
-            {
-                result.tokens.Add(".Where((x, i) => (i % (");
-                result.tokens.Add(parts[2]);
-                result.tokens.Add(") == 0))");
-            }
-
-            // Case 6. a[low::stride] = Case 2 (every n=stride)
-            // Result: a.Skip(low).Where((x, i) => (i % (stride) == 0));
-            else if (parts.Length == 3 && parts[0].Length != 0
-                && parts[1].Length == 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) > 0)
-            {
-                result.tokens.Add(".Skip(");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add(")");
-                result.tokens.Add(".Where((x, i) => (i % (");
-                result.tokens.Add(parts[2]);
-                result.tokens.Add(") == 0))");
-            }
-
-            // Case 7: a[:high:stride] = Case 3 (every n=stride)
-            // Result: a.Take(high).Where((x, i) => (i % (stride) == 0));
-            else if (parts.Length == 3 && parts[0].Length == 0
-                && parts[1].Length != 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) > 0)
-            {
-                result.tokens.Add(".Take(");
-                result.tokens.Add(parts[1]);
-                result.tokens.Add(")");
-                result.tokens.Add(".Where((x, i) => (i % (");
-                result.tokens.Add(parts[2]);
-                result.tokens.Add(") == 0))");
-            }
-
-            // Case 8: a[low:high:stride] = Case 4 (every n=stride)
-            // Result: a.Skip(low).Take((high) - (low)).Where((x, i) => (i % (stride) == 0));
-            else if (parts.Length == 3 && parts[0].Length != 0 &&
-                parts[1].Length != 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) > 0)
-            {
-                result.tokens.Add(".Skip(");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add(").Take((");
-                result.tokens.Add(parts[1]);
-                result.tokens.Add(")-(");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add("))");
-                result.tokens.Add(".Where((x, i) => (i % (");
-                result.tokens.Add(parts[2]);
-                result.tokens.Add(") == 0))");
-            }
-
-            // -------
-            // stride == -1
-            // -------
-            // Note: negative values of strides are so far handled only for -1.
-
-            // Case 9: a[::-1] = Case 1.Reverse()
-            // Result: a.AsEnumerable().Reverse().ToList()
-            else if (parts.Length == 3 && parts[0].Length == 0 &&
-                parts[1].Length == 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) == -1)
-            {
-                result.tokens.Add(".AsEnumerable().Reverse().ToList()");
-            }
-
-            // Case 10: a[high::-1] = Case 2.Reverse()
-            // Result: a.Take((high)+1).AsEnumerable().Reverse().ToList()
-            else if (parts.Length == 3 && parts[0].Length != 0 &&
-                parts[1].Length == 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) == -1)
-            {
-                result.tokens.Add(".Take((");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add(")+1)");
-                result.tokens.Add(".AsEnumerable().Reverse().ToList()");
-            }
-
-            // Case 11: a[:low:-1] = Case 3.Reverse()
-            // Result: a.Skip((low)+1).AsEnumerable().Reverse().ToList()
-            else if (parts.Length == 3 && parts[0].Length == 0 &&
-                parts[1].Length != 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) == -1)
-            {
-                result.tokens.Add(".Skip((");
-                result.tokens.Add(parts[1]);
-                result.tokens.Add(")+1)");
-                result.tokens.Add(".AsEnumerable().Reverse().ToList()");
-            }
-
-            // Case 12: a[high:low:-1] = Case 4.Reverse()
-            // Result: a.Skip((low)+1).Take((high)-1).AsEnumerable().Reverse().ToList()
-            else if (parts.Length == 3 && parts[0].Length != 0 &&
-                parts[1].Length != 0 && parts[2].Length != 0 &&
-                Int32.Parse(parts[2]) == -1)
-            {
-                result.tokens.Add(".Skip((");
-                result.tokens.Add(parts[1]);
-                result.tokens.Add(")+1)");
-                result.tokens.Add(".Take((");
-                result.tokens.Add(parts[0]);
-                result.tokens.Add(")-1)");
-                result.tokens.Add(".AsEnumerable().Reverse().ToList()");
-            }
-
-
-            if (includeLinq)
-            {
-                state.output.usingDirs.Add("System.Linq");
+                isSlice = true;
+                state.output.library.CommitListSlice();
+                if (parts.Length == 2)
+                {
+                    sliceStart = (parts[0] == "" ? null : parts[0]);
+                    sliceEnd = (parts[1] == "" ? null : parts[1]);
+                }
+                else if (parts.Length == 3)
+                {
+                    sliceStart = (parts[0] == "" ? null : parts[0]);
+                    sliceEnd = (parts[1] == "" ? null : parts[1]);
+                    sliceStride = (parts[2] == "" ? null : parts[2]);
+                }
             }
         }
         // Function call - no parameters

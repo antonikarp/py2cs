@@ -41,6 +41,23 @@ public class ArgumentVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(valueVisitor.result.tokens[i]);
             }
         }
+        // List comprehension.
+        else if (context.comp_for() != null)
+        {
+            // We assume that we have the following children:
+            // Child #0: test
+            // Child #1: comp_for
+            TestVisitor newVisitor = new TestVisitor(state);
+            context.GetChild(0).Accept(newVisitor);
+            CompForVisitor compForVisitor = new CompForVisitor(state);
+            context.GetChild(1).Accept(compForVisitor);
+            for (int i = 0; i < compForVisitor.result.tokens.Count; ++i)
+            {
+                result.tokens.Add(compForVisitor.result.tokens[i]);
+            }
+            // Add "select <(Child #0).ToString()>" at the end of the list comprehension
+            result.tokens.Add(" select " + newVisitor.result.ToString() + ")");
+        }
         
         return result;
     }
