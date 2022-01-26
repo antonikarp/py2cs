@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
+using System.Threading;
 namespace py2cs
 {
     public class Translator
@@ -14,17 +14,84 @@ namespace py2cs
         public static string output_path;
         public static List<string> importedFilenames = new List<string>();
 
+        public int CheckForErrorsInScript(string input_path)
+        {
+            // Returns 0 if the execution has succeeded.
+            // Returns -1 if the script writes anything to stderr.
+            // Returns -2 if the script runs out of memory during execution
+            ProcessStartInfo pythonShell = new ProcessStartInfo();
+            // This is the location of the python3 executable.
+            pythonShell.FileName = "/Users/antoni.karpinski/opt/anaconda3/bin/python3";
+            string arguments = input_path;
+            pythonShell.Arguments = arguments;
+            string workingDirectory = Directory.GetCurrentDirectory();
+            pythonShell.WorkingDirectory = workingDirectory;
+            // Check if there is anything on the stderr. If yes, then the script
+            // is incorrect.
+            pythonShell.RedirectStandardError = true;
+            // Ignore stdout.
+            pythonShell.RedirectStandardOutput = true;
+            var process = Process.Start(pythonShell);
+            bool outOfMemory = false;
+            while (!process.HasExited && !outOfMemory)
+            {
+                Thread.Sleep(100);
+                if (process.HasExited)
+                {
+                    continue;
+                }
+                else if (process.VirtualMemorySize64 > 10000000)
+                {
+                    outOfMemory = true;
+                    continue;
+                }
+            }
+            if (outOfMemory)
+            {
+                return -2;
+            }
+            StreamReader stderrReader = process.StandardError;
+            string stderr = stderrReader.ReadToEnd();
+            if (stderr != "")
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public bool Translate(string input_path, string output_path, List<string> moduleNames)
         {
             Translator.input_path = input_path;
             Translator.output_path = output_path;
+            // First, check if the script is correct
+            int resultCheckForErrors = CheckForErrorsInScript(input_path);
+            if (resultCheckForErrors < 0)
+            {
+                string textFilePath = output_path;
+                textFilePath = textFilePath.Replace(".cs", ".txt");
+                string content;
+                if (resultCheckForErrors == -1)
+                {
+                    content = "Error: the script is incorrect, unable to translate.";
+                }
+                else
+                {
+                    content = "Error: Out of memory.";
+                }
+                File.WriteAllText(textFilePath, content);
+                return false;
+            }
+
             string text = File.ReadAllText(input_path);
             ICharStream stream = CharStreams.fromString(text);
             ITokenSource lexer = new Python3Lexer(stream);
             ITokenStream tokens = new CommonTokenStream(lexer);
             Python3Parser parser = new Python3Parser(tokens);
             parser.BuildParseTree = true;
-            // Add a custome error listener for syntax errors.
+            // Add a custom error listener for syntax errors.
             parser.RemoveErrorListeners();
             SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
             parser.AddErrorListener(syntaxErrorListener);

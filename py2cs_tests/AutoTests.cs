@@ -17,12 +17,12 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("should_have_new_nonlocal2"))                {
+                /*if (!potentialFilename.StartsWith("incorrect_out_of_memory")){
                     continue;
                 }*/
                 // This is a temporary statement to reduce the number of test files
                 // Todo: remove
-                List<string> passingTests = new List<string>()
+                /*List<string> passingTests = new List<string>()
                 {
                     "should_have_assignment3.py", "should_have_comprehension_dict.py",
                     "should_have_comprehension_list.py", "should_have_comprehension_set.py",
@@ -39,7 +39,7 @@ public class AutoTests
                 if (!passingTests.Contains(potentialFilename))
                 {
                     continue;
-                }
+                }*/
 
                 // When importing, take only file that ends with "_0", which
                 // is the main file.
@@ -103,15 +103,16 @@ public class AutoTests
         //RunTests("unit", "", false);
         //Directory.SetCurrentDirectory("../must_have");
         //RunTests("must_have", "", false);
-        Directory.SetCurrentDirectory("../should_have");
-        RunTests("should_have", "", false);
+        //Directory.SetCurrentDirectory("../should_have");
+        //RunTests("should_have", "", false);
         //Directory.SetCurrentDirectory("../difference");
         //RunTests("difference", "", false);
         
         //Directory.SetCurrentDirectory("../not_implemented");
         //RunTests("not_implemented", "", false);
-        //Directory.SetCurrentDirectory("../error");
-        //RunTests("error", "");
+
+        Directory.SetCurrentDirectory("../error");
+        RunTests("error", "", false);
         
         /*Directory.SetCurrentDirectory("../must_have/import/1");
         RunTests("must_have/import/1", "import/1", true);
