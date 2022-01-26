@@ -84,13 +84,15 @@ public class AutoTests
                 }
             }
             output_path += "generated/";
+            string outputDirectory = output_path + directory;
+
             output_path += directory + "/" + name + ".cs";
-            Translator translator = new Translator();
+            Translator translator = new Translator(true);
             // We are not dealing with imported files so we set the moduleName
             // to empty.
             if (translator.Translate(input_path, output_path, new List<string>()))
             {
-                translator.Compile(name + ".cs", directory, subDirectory);
+                translator.Compile(outputDirectory, name + ".cs");
             }
         }
     }
@@ -106,8 +108,8 @@ public class AutoTests
 
 
         // ----Uncomment this block to run tests in scripts/must_have----
-        // Directory.SetCurrentDirectory("../must_have");
-        // RunTests("must_have", "", false);
+         Directory.SetCurrentDirectory("../must_have");
+         RunTests("must_have", "", false);
 
         // ----Uncomment this block to run tests in scripts/should_have----
         // Directory.SetCurrentDirectory("../should_have");

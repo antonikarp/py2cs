@@ -13,7 +13,12 @@ namespace py2cs
         public static string input_path;
         public static string output_path;
         public static List<string> importedFilenames = new List<string>();
+        public bool writeMessagesToFile;
 
+        public Translator(bool _writeMessagesToFile)
+        {
+            writeMessagesToFile = _writeMessagesToFile;
+        }
         public int CheckForErrorsInScript(string input_path)
         {
             // Returns 0 if the execution has succeeded.
@@ -70,8 +75,6 @@ namespace py2cs
             int resultCheckForErrors = CheckForErrorsInScript(input_path);
             if (resultCheckForErrors < 0)
             {
-                string textFilePath = output_path;
-                textFilePath = textFilePath.Replace(".cs", ".txt");
                 string content;
                 if (resultCheckForErrors == -1)
                 {
@@ -81,7 +84,17 @@ namespace py2cs
                 {
                     content = "Error: Out of memory.";
                 }
-                File.WriteAllText(textFilePath, content);
+
+                if (writeMessagesToFile)
+                {
+                    string textFilePath = output_path;
+                    textFilePath = textFilePath.Replace(".cs", ".txt");
+                    File.WriteAllText(textFilePath, content);
+                }
+                else
+                {
+                    Console.WriteLine(content);
+                }
                 return false;
             }
 
@@ -101,10 +114,17 @@ namespace py2cs
 
             if (syntaxErrorListener.isSyntaxError)
             {
-                string textFilePath = output_path;
-                textFilePath = textFilePath.Replace(".cs", ".txt");
                 string content = "Syntax error: Unable to parse the input.";
-                File.WriteAllText(textFilePath, content);
+                if (writeMessagesToFile)
+                {
+                    string textFilePath = output_path;
+                    textFilePath = textFilePath.Replace(".cs", ".txt");
+                    File.WriteAllText(textFilePath, content);
+                }
+                else
+                {
+                    Console.WriteLine(content);
+                }
                 return false;
             }
             outputVisitor = new OutputVisitor(moduleNames);
@@ -116,10 +136,17 @@ namespace py2cs
                 // We have a language feature not handled by the tool.
                 // Write a .txt file with a message to the user. It is used
                 // also by scripts which checks the results of tests.
-                string textFilePath = output_path;
-                textFilePath = textFilePath.Replace(".cs", ".txt");
                 string content = "Not handled: With used language constructs the translation couldn't be performed.";
-                File.WriteAllText(textFilePath, content);
+                if (writeMessagesToFile)
+                {
+                    string textFilePath = output_path;
+                    textFilePath = textFilePath.Replace(".cs", ".txt");
+                    File.WriteAllText(textFilePath, content);
+                }
+                else
+                {
+                    Console.WriteLine(content);
+                }
                 return false;
             }
 
@@ -136,6 +163,7 @@ namespace py2cs
                     string outputPathLib = output_path.Replace(".cs", "_lib.cs");
                     File.WriteAllText(outputPathLib, outputVisitor.state.output.ToStringLib());
                 }
+                Console.WriteLine("Translation successful.");
                 return true;
             }
             catch (Exception)
@@ -144,7 +172,7 @@ namespace py2cs
             }
             return false;
         }
-        public void Compile(string filename, string directory, string subDirectory)
+        public void Compile(string outputDirectory, string filename)
         {
             ProcessStartInfo compiler = new ProcessStartInfo();
             // This is for Mac OS X.
@@ -161,20 +189,7 @@ namespace py2cs
             }
             
             compiler.Arguments = arguments;
-            string workingDirectory = Directory.GetCurrentDirectory();
-            workingDirectory += "/../../";
-            string[] subDirectoryTokens = subDirectory.Split("/");
-            // Append additional "../" if we are deeper in the subdirectory.
-            if (subDirectory != "")
-            {
-                for (int i = 0; i < subDirectoryTokens.Length; ++i)
-                {
-                    workingDirectory += "../";
-                }
-            }
-            workingDirectory += "generated/";
-            workingDirectory += directory;
-            compiler.WorkingDirectory = workingDirectory;
+            compiler.WorkingDirectory = outputDirectory;
             var process = Process.Start(compiler);
             process.WaitForExit();
 

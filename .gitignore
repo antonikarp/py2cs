@@ -145,8 +145,8 @@ _NCrunch*
 .history/
 
 # Project specific directories/files.
-input/
-output/
+input/*
+output/*
 
 tests/scripts/difference/__pycache__/*
 tests/scripts/difference/testnames.txt
