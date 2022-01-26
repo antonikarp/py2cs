@@ -45,6 +45,11 @@ public class SmallStmtVisitor : Python3ParserBaseVisitor<LineModel>
             GlobalStmtVisitor newVisitor = new GlobalStmtVisitor(state);
             context.global_stmt().Accept(newVisitor);
         }
+        else if (context.nonlocal_stmt() != null)
+        {
+            NonlocalStmtVisitor newVisitor = new NonlocalStmtVisitor(state);
+            context.nonlocal_stmt().Accept(newVisitor);
+        }
         return result;
     }
 }
