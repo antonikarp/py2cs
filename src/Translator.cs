@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
+using System.Threading;
 namespace py2cs
 {
     public class Translator
@@ -13,18 +13,98 @@ namespace py2cs
         public static string input_path;
         public static string output_path;
         public static List<string> importedFilenames = new List<string>();
+        public bool writeMessagesToFile;
+
+        public Translator(bool _writeMessagesToFile)
+        {
+            writeMessagesToFile = _writeMessagesToFile;
+        }
+        public int CheckForErrorsInScript(string input_path)
+        {
+            // Returns 0 if the execution has succeeded.
+            // Returns -1 if the script writes anything to stderr.
+            // Returns -2 if the script runs out of memory during execution
+            ProcessStartInfo pythonShell = new ProcessStartInfo();
+            // This is the location of the python3 executable.
+            pythonShell.FileName = "/Users/antoni.karpinski/opt/anaconda3/bin/python3";
+            string arguments = input_path;
+            pythonShell.Arguments = arguments;
+            string workingDirectory = Directory.GetCurrentDirectory();
+            pythonShell.WorkingDirectory = workingDirectory;
+            // Check if there is anything on the stderr. If yes, then the script
+            // is incorrect.
+            pythonShell.RedirectStandardError = true;
+            // Ignore stdout.
+            pythonShell.RedirectStandardOutput = true;
+            var process = Process.Start(pythonShell);
+            bool outOfMemory = false;
+            while (!process.HasExited && !outOfMemory)
+            {
+                Thread.Sleep(100);
+                if (process.HasExited)
+                {
+                    continue;
+                }
+                else if (process.VirtualMemorySize64 > 10000000)
+                {
+                    outOfMemory = true;
+                    continue;
+                }
+            }
+            if (outOfMemory)
+            {
+                return -2;
+            }
+            StreamReader stderrReader = process.StandardError;
+            string stderr = stderrReader.ReadToEnd();
+            if (stderr != "")
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
         public bool Translate(string input_path, string output_path, List<string> moduleNames)
         {
             Translator.input_path = input_path;
             Translator.output_path = output_path;
+            // First, check if the script is correct
+            int resultCheckForErrors = CheckForErrorsInScript(input_path);
+            if (resultCheckForErrors < 0)
+            {
+                string content;
+                if (resultCheckForErrors == -1)
+                {
+                    content = "Error: the script is incorrect, unable to translate.";
+                }
+                else
+                {
+                    content = "Error: Out of memory.";
+                }
+
+                if (writeMessagesToFile)
+                {
+                    string textFilePath = output_path;
+                    textFilePath = textFilePath.Replace(".cs", ".txt");
+                    File.WriteAllText(textFilePath, content);
+                }
+                else
+                {
+                    Console.WriteLine(content);
+                }
+                return false;
+            }
+
             string text = File.ReadAllText(input_path);
             ICharStream stream = CharStreams.fromString(text);
             ITokenSource lexer = new Python3Lexer(stream);
             ITokenStream tokens = new CommonTokenStream(lexer);
             Python3Parser parser = new Python3Parser(tokens);
             parser.BuildParseTree = true;
-            // Add a custome error listener for syntax errors.
+            // Add a custom error listener for syntax errors.
             parser.RemoveErrorListeners();
             SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
             parser.AddErrorListener(syntaxErrorListener);
@@ -34,10 +114,17 @@ namespace py2cs
 
             if (syntaxErrorListener.isSyntaxError)
             {
-                string textFilePath = output_path;
-                textFilePath = textFilePath.Replace(".cs", ".txt");
                 string content = "Syntax error: Unable to parse the input.";
-                File.WriteAllText(textFilePath, content);
+                if (writeMessagesToFile)
+                {
+                    string textFilePath = output_path;
+                    textFilePath = textFilePath.Replace(".cs", ".txt");
+                    File.WriteAllText(textFilePath, content);
+                }
+                else
+                {
+                    Console.WriteLine(content);
+                }
                 return false;
             }
             outputVisitor = new OutputVisitor(moduleNames);
@@ -49,27 +136,43 @@ namespace py2cs
                 // We have a language feature not handled by the tool.
                 // Write a .txt file with a message to the user. It is used
                 // also by scripts which checks the results of tests.
-                string textFilePath = output_path;
-                textFilePath = textFilePath.Replace(".cs", ".txt");
                 string content = "Not handled: With used language constructs the translation couldn't be performed.";
-                File.WriteAllText(textFilePath, content);
+                if (writeMessagesToFile)
+                {
+                    string textFilePath = output_path;
+                    textFilePath = textFilePath.Replace(".cs", ".txt");
+                    File.WriteAllText(textFilePath, content);
+                }
+                else
+                {
+                    Console.WriteLine(content);
+                }
                 return false;
             }
-            // Translate the program.
-            outputVisitor.Visit(tree);
-            File.WriteAllText(output_path, outputVisitor.state.output.ToStringMain());
 
-            // Write used library classes to a separate file.
-            // Only when we are in the main file, so that it is not duplicated
-            // when performing imports.
-            if (outputVisitor.state.output.moduleNames.Count == 0)
+            try
             {
-                string outputPathLib = output_path.Replace(".cs", "_lib.cs");
-                File.WriteAllText(outputPathLib, outputVisitor.state.output.ToStringLib()); 
+                // Translate the program.
+                outputVisitor.Visit(tree);
+                File.WriteAllText(output_path, outputVisitor.state.output.ToStringMain());
+                // Write used library classes to a separate file.
+                // Only when we are in the main file, so that it is not duplicated
+                // when performing imports.
+                if (outputVisitor.state.output.moduleNames.Count == 0)
+                {
+                    string outputPathLib = output_path.Replace(".cs", "_lib.cs");
+                    File.WriteAllText(outputPathLib, outputVisitor.state.output.ToStringLib());
+                }
+                Console.WriteLine("Translation successful.");
+                return true;
             }
-            return true;
+            catch (Exception)
+            {
+                Console.WriteLine("Error in translating: " + output_path);
+            }
+            return false;
         }
-        public void Compile(string filename, string directory, string subDirectory)
+        public void Compile(string outputDirectory, string filename)
         {
             ProcessStartInfo compiler = new ProcessStartInfo();
             // This is for Mac OS X.
@@ -86,20 +189,7 @@ namespace py2cs
             }
             
             compiler.Arguments = arguments;
-            string workingDirectory = Directory.GetCurrentDirectory();
-            workingDirectory += "/../../";
-            string[] subDirectoryTokens = subDirectory.Split("/");
-            // Append additional "../" if we are deeper in the subdirectory.
-            if (subDirectory != "")
-            {
-                for (int i = 0; i < subDirectoryTokens.Length; ++i)
-                {
-                    workingDirectory += "../";
-                }
-            }
-            workingDirectory += "generated/";
-            workingDirectory += directory;
-            compiler.WorkingDirectory = workingDirectory;
+            compiler.WorkingDirectory = outputDirectory;
             var process = Process.Start(compiler);
             process.WaitForExit();
 

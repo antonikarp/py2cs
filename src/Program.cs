@@ -10,27 +10,84 @@ namespace py2cs
     {
         public static string input_path;
         public static string output_path;
+        static void PrintHelp()
+        {
+            Console.WriteLine(@"
+********************************************************************************
+py2cs - a source-to-source translator from Python to C# using ANTLR parser generator.
+
+To perform translation:
+1. Clean directories:
+    - make sure that the ./output directory is empty
+    - to clean directories from previous test runs, execute tests/clean_test_dirs.sh
+2. Copy all Python scripts that will be translated to ./input directory. If there are
+import dependencies, append ""_0"" to the name of the main file
+3. Run the translator by the following command:
+        $ dotnet run
+   If you wish to additionaly compile the obtained .cs sources run:
+        $ dotnet run compile
+4. Possible errors in translation will be displayed on the console.
+********************************************************************************
+");
+        }
         static void Main(string[] args)
         {
-            input_path = "../../../input/example.py";
-            output_path = "../../../output/example.cs";
-            if (args.Length == 2)
+            bool shouldBeCompiled = false;
+            if (args.Length == 1 && args[0] == "help")
             {
-                input_path = args[0];
-                output_path = args[1];
+                PrintHelp();
+                return;
             }
-            string text = File.ReadAllText(input_path);
-            ICharStream stream = CharStreams.fromString(text);
-            ITokenSource lexer = new Python3Lexer(stream);
-            ITokenStream tokens = new CommonTokenStream(lexer);
-            Python3Parser parser = new Python3Parser(tokens);
-            parser.BuildParseTree = true;
-            // Start at the root, which is a node 'file_input'
-            IParseTree tree = parser.file_input();
-            OutputVisitor outputVisitor = new OutputVisitor(new List<string>());
-            // Translate the program.
-            outputVisitor.Visit(tree);
-            File.WriteAllText(output_path, outputVisitor.state.output.ToString());
+            else if (args.Length == 1 && args[0] == "compile")
+            {
+                shouldBeCompiled = true;
+            }
+
+            List<string> cleanedScriptNames = new List<string>();
+            List<string> scriptNames = new List<string>();
+
+            string input_directory = Directory.GetCurrentDirectory() +  "/input/";
+            string output_directory = Directory.GetCurrentDirectory() + "/output/";
+
+            string[] paths = Directory.GetFiles(input_directory);
+
+            foreach (string path in paths)
+            {
+                string[] tokens = path.Split("/");
+                string potentialFilename = tokens[tokens.Length - 1];
+                if (potentialFilename.EndsWith(".py"))
+                {
+                    string[] beforeDot = potentialFilename.Split(".");
+                    scriptNames.Add(beforeDot[0]);
+                }
+            }
+
+            foreach (string scriptName in scriptNames)
+            {
+               
+                // If there are import dependencies between files,
+                // name of one of the files must end with "_0"
+                
+                if (scriptNames.Count > 1 && scriptName.Length >= 2 &&
+                    (scriptName[scriptName.Length - 2] != '_' ||
+                    scriptName[scriptName.Length - 1] != '0'))
+                {
+                    continue;
+                }
+                cleanedScriptNames.Add(scriptName);
+                    
+            }
+            foreach (string name in cleanedScriptNames)
+            {
+                string input_path = input_directory + name + ".py";
+                string output_path_cs = output_directory + name + ".cs";
+                string output_path_exe = output_directory + name + ".exe";
+                Translator translator = new Translator(false);
+                if (translator.Translate(input_path, output_path_cs, new List<string>()) && shouldBeCompiled)
+                {
+                    translator.Compile(output_directory, name + ".cs");
+                }
+            }
         }
     }
 }
