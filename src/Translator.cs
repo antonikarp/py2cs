@@ -57,7 +57,16 @@ namespace py2cs
             }
             // Translate the program.
             outputVisitor.Visit(tree);
-            File.WriteAllText(output_path, outputVisitor.state.output.ToString());
+            File.WriteAllText(output_path, outputVisitor.state.output.ToStringMain());
+
+            // Write used library classes to a separate file.
+            // Only when we are in the main file, so that it is not duplicated
+            // when performing imports.
+            if (outputVisitor.state.output.moduleNames.Count == 0)
+            {
+                string outputPathLib = output_path.Replace(".cs", "_lib.cs");
+                File.WriteAllText(outputPathLib, outputVisitor.state.output.ToStringLib()); 
+            }
             return true;
         }
         public void Compile(string filename, string directory, string subDirectory)
@@ -66,11 +75,16 @@ namespace py2cs
             // This is for Mac OS X.
             compiler.FileName = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/csc";
             string arguments = filename;
+            // Add the attached library file.
+            string libFilename = filename.Replace(".cs", "_lib.cs");
+            arguments += " ";
+            arguments += libFilename;
             foreach (var importedFilename in Translator.importedFilenames)
             {
                 arguments += " ";
                 arguments += importedFilename;
             }
+            
             compiler.Arguments = arguments;
             string workingDirectory = Directory.GetCurrentDirectory();
             workingDirectory += "/../../";
