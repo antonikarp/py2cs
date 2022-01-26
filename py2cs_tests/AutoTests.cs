@@ -17,7 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("should_have_if_exp_types"))
+                /*if (!potentialFilename.StartsWith("must_have_assignment"))
                 {
                     continue;
                 }*/
@@ -111,10 +111,10 @@ public class AutoTests
         
         //Directory.SetCurrentDirectory("../not_implemented");
         //RunTests("not_implemented", "", false);
-        /*Directory.SetCurrentDirectory("../error");
-        RunTests("error", "");
+        //Directory.SetCurrentDirectory("../error");
+        //RunTests("error", "");
         
-        Directory.SetCurrentDirectory("../must_have/import/1");
+        /*Directory.SetCurrentDirectory("../must_have/import/1");
         RunTests("must_have/import/1", "import/1", true);
         Directory.SetCurrentDirectory("../../");
         Directory.SetCurrentDirectory("../must_have/import/2");
@@ -125,7 +125,7 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../");
         Directory.SetCurrentDirectory("../must_have/import/4");
         RunTests("must_have/import/4", "import/4", true);
-        Directory.SetCurrentDirectory("../../");
+        /*Directory.SetCurrentDirectory("../../");
         Directory.SetCurrentDirectory("../must_have/input");
         RunTests("must_have/input", "input", false);*/
     }

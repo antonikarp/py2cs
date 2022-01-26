@@ -8,13 +8,17 @@ public class Output
     public List<IndentedLine> internalLines;
     public int indentationLevel = 0;
     public OutputBuilder outputBuilder;
+    public OutputBuilder outputBuilderLib;
     public Stack<Class> currentClasses;
     public List<Class> classes;
     // allClassesNames is for checking if we have a constructor call (we need to
     // take into account also the nested classes).
     public List<string> allClassesNames;
     public Dictionary<string, Class> namesToClasses;
+    // usingDirs - outside the library file
+    // usingDirsLib - for the library file
     public HashSet<string> usingDirs;
+    public HashSet<string> usingDirsLib;
     // This indicates whether the file is translated during processing an "import"
     // statement.
     public List<string> moduleNames;
@@ -29,8 +33,11 @@ public class Output
     {
         internalLines = new List<IndentedLine>();
         outputBuilder = new OutputBuilder();
+        outputBuilderLib = new OutputBuilder();
         currentClasses = new Stack<Class>();
         usingDirs = new HashSet<string>();
+        usingDirsLib = new HashSet<string>();
+
         classes = new List<Class>();
         allClassesNames = new List<string>();
         namesToClasses = new Dictionary<string, Class>();
@@ -60,7 +67,7 @@ public class Output
         moduleNames = new List<string>();
     }
 
-    public override string ToString()
+    public string ToStringMain()
     {
         // By default we include ConsoleExt.
         library.CommitConsoleExt();
@@ -95,7 +102,7 @@ public class Output
                 }
                 lastModuleClass.internalClasses.Add(cls);
             }
-            
+
             // Wrap the last module class in the classes that come before.
             Class nextClass = lastModuleClass;
             for (int i = moduleNames.Count - 2; i >= 0; --i)
@@ -114,19 +121,27 @@ public class Output
             namesToClasses[outerClassToAdd.name] = outerClassToAdd;
         }
 
-        // Here we write the library functions to the main file.
-        if (moduleNames.Count == 0)
-        {
-            foreach (var text in library.toCommit)
-            {
-                outputBuilder.commitRawCodeBlock(text);
-            }
-        }
-
         foreach (var cls in classes)
         {
             cls.CommitToOutput();
         }
         return outputBuilder.output.ToString();
+    }
+
+    public string ToStringLib()
+    {
+        // Here we write the library functions to the main file.
+        if (moduleNames.Count == 0)
+        {
+            foreach (var dir in usingDirsLib)
+            {
+                outputBuilderLib.commitIndentedLine(new IndentedLine("using " + dir + ";", 0));
+            }
+            foreach (var text in library.toCommit)
+            {
+                outputBuilderLib.commitRawCodeBlock(text);
+            }
+        }
+        return outputBuilderLib.output.ToString();
     }
 }

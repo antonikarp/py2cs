@@ -23,17 +23,20 @@ public class Library
         libModuloOperator = new LibModuloOperator(this);
         libDivideByZero = new LibDivideByZero(this);
         libListSlice = new LibListSlice(this);
+
+        // By default, include "System";
+        output.usingDirsLib.Add("System");
     }
     public void CommitConsoleExt()
     {
-        output.usingDirs.Add("System.Text");
-        output.usingDirs.Add("System.Collections.Generic");
+        output.usingDirsLib.Add("System.Text");
+        output.usingDirsLib.Add("System.Collections.Generic");
         toCommit.Add(availableClasses["ConsoleExt"]);
     }
     public void CommitOnceEnumerable()
     {
-        output.usingDirs.Add("System.Collections");
-        output.usingDirs.Add("System.Collections.Generic");
+        output.usingDirsLib.Add("System.Collections");
+        output.usingDirsLib.Add("System.Collections.Generic");
         toCommit.Add(availableClasses["OnceEnumerable"]);
     }
     public void CommitIsOperator()
@@ -50,7 +53,7 @@ public class Library
     }
     public void CommitListSlice()
     {
-        output.usingDirs.Add("System.Collections.Generic");
+        output.usingDirsLib.Add("System.Collections.Generic");
         toCommit.Add(availableClasses["ListSlice"]);
     }
 }
