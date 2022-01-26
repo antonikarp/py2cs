@@ -17,9 +17,9 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("incorrect_out_of_memory")){
+                if (!potentialFilename.StartsWith("should_have_temp")){
                     continue;
-                }*/
+                }
                 // This is a temporary statement to reduce the number of test files
                 // Todo: remove
                 /*List<string> passingTests = new List<string>()
@@ -108,12 +108,12 @@ public class AutoTests
 
 
         // ----Uncomment this block to run tests in scripts/must_have----
-         Directory.SetCurrentDirectory("../must_have");
-         RunTests("must_have", "", false);
+        // Directory.SetCurrentDirectory("../must_have");
+        // RunTests("must_have", "", false);
 
         // ----Uncomment this block to run tests in scripts/should_have----
-        // Directory.SetCurrentDirectory("../should_have");
-        // RunTests("should_have", "", false);
+         Directory.SetCurrentDirectory("../should_have");
+         RunTests("should_have", "", false);
 
         // ----Uncomment this block to run tests in scripts/nice_to_have----
         // Directory.SetCurrentDirectory("../nice_to_have");
