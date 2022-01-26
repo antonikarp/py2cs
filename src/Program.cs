@@ -10,8 +10,14 @@ namespace py2cs
     {
         public static string input_path;
         public static string output_path;
+        static void PrintHelp()
+        {
+
+
+        }
         static void Main(string[] args)
         {
+
             input_path = "../../../input/example.py";
             output_path = "../../../output/example.cs";
             if (args.Length == 2)

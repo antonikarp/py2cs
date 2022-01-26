@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # First delete the previous generated files.
-bash ./clean_dirs.sh
+bash ./clean_test_dirs.sh
 
 # Perform translation.
 cd ..
@@ -54,24 +54,35 @@ do
 		# There is no need to run scripts (which might not be correct), because we don't check its results. 
 
 		# Instead of .cs file there is a generated .txt file
-		python3 compare_results_not_implemented.py ./generated/"$dir_name"/"$name".txt "$name"
+		python3 validate_results_not_implemented.py ./generated/"$dir_name"/"$name".txt "$name"
 	done
 done
 
-# Tests of programs which generate error
-# The results of translation of an incorrect program could be the following:
-# a) error at parsing -> this is handled and a text file with message is created in 'generated'
-# b) code can't be compiled
-# c) code can be compiled, run and an output is produced
-# d) code can be compiled, but has a runtime error
-#
-# Due to these possibilities, it is hard to determine whether an 'error' test succeeded or not.
+# Tests of programs which generate an error
+# Currently the tool recognizes the following error:
+# 1. The execution of the script was unsuccessful. The script wrote error message to stderr
+#    This includes at runtime.
+# 2. The process running the script exceeded the memory limit
+# 3. The execution of the script was successful, but the source code is unable to be parsed
+#    By the current grammar. This might happen for some language features that were added after Python 3.6.
+# In each of these cases, a text file is generated which contains the description of the error.
+
+dir_names_4=(error)
+
+for dir_name in "${dir_names_4[@]}"
+do
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
+		# Instead of .cs file there is a generated .txt file
+		python3 validate_results_error.py ./generated/"$dir_name"/"$name".txt "$name"
+	done
+done
 
 
 # Tests checking the import mechanism
-dir_names_4=(must_have/import/1 must_have/import/2 must_have/import/3 must_have/import/4)
+dir_names_5=(must_have/import/1 must_have/import/2 must_have/import/3 must_have/import/4)
 
-for dir_name in "${dir_names_4[@]}"
+for dir_name in "${dir_names_5[@]}"
 do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do
@@ -88,9 +99,9 @@ do
 done
 
 # Tests that take data to stdin from external files (.in)
-dir_names_5=(must_have/input)
+dir_names_6=(must_have/input)
 
-for dir_name in "${dir_names_5[@]}"
+for dir_name in "${dir_names_6[@]}"
 do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do

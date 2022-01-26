@@ -122,19 +122,27 @@ namespace py2cs
                 File.WriteAllText(textFilePath, content);
                 return false;
             }
-            // Translate the program.
-            outputVisitor.Visit(tree);
-            File.WriteAllText(output_path, outputVisitor.state.output.ToStringMain());
 
-            // Write used library classes to a separate file.
-            // Only when we are in the main file, so that it is not duplicated
-            // when performing imports.
-            if (outputVisitor.state.output.moduleNames.Count == 0)
+            try
             {
-                string outputPathLib = output_path.Replace(".cs", "_lib.cs");
-                File.WriteAllText(outputPathLib, outputVisitor.state.output.ToStringLib()); 
+                // Translate the program.
+                outputVisitor.Visit(tree);
+                File.WriteAllText(output_path, outputVisitor.state.output.ToStringMain());
+                // Write used library classes to a separate file.
+                // Only when we are in the main file, so that it is not duplicated
+                // when performing imports.
+                if (outputVisitor.state.output.moduleNames.Count == 0)
+                {
+                    string outputPathLib = output_path.Replace(".cs", "_lib.cs");
+                    File.WriteAllText(outputPathLib, outputVisitor.state.output.ToStringLib());
+                }
+                return true;
             }
-            return true;
+            catch (Exception)
+            {
+                Console.WriteLine("Error in translating: " + output_path);
+            }
+            return false;
         }
         public void Compile(string filename, string directory, string subDirectory)
         {

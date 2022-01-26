@@ -99,34 +99,52 @@ public class AutoTests
     public void RunAllTests()
     {
         Directory.SetCurrentDirectory("../../../../tests/scripts/unit");
-        //Directory.SetCurrentDirectory("../unit");
-        //RunTests("unit", "", false);
-        //Directory.SetCurrentDirectory("../must_have");
-        //RunTests("must_have", "", false);
-        //Directory.SetCurrentDirectory("../should_have");
-        //RunTests("should_have", "", false);
-        //Directory.SetCurrentDirectory("../difference");
-        //RunTests("difference", "", false);
-        
-        //Directory.SetCurrentDirectory("../not_implemented");
-        //RunTests("not_implemented", "", false);
 
-        Directory.SetCurrentDirectory("../error");
-        RunTests("error", "", false);
-        
-        /*Directory.SetCurrentDirectory("../must_have/import/1");
-        RunTests("must_have/import/1", "import/1", true);
-        Directory.SetCurrentDirectory("../../");
-        Directory.SetCurrentDirectory("../must_have/import/2");
-        RunTests("must_have/import/2", "import/2", true);
-        Directory.SetCurrentDirectory("../../");
-        Directory.SetCurrentDirectory("../must_have/import/3");
-        RunTests("must_have/import/3", "import/3", true);
-        Directory.SetCurrentDirectory("../../");
-        Directory.SetCurrentDirectory("../must_have/import/4");
-        RunTests("must_have/import/4", "import/4", true);
-        /*Directory.SetCurrentDirectory("../../");
-        Directory.SetCurrentDirectory("../must_have/input");
-        RunTests("must_have/input", "input", false);*/
+        // ----Uncomment this block to run tests in scripts/unit----
+        // Directory.SetCurrentDirectory("../unit");
+        // RunTests("unit", "", false);
+
+
+        // ----Uncomment this block to run tests in scripts/must_have----
+        // Directory.SetCurrentDirectory("../must_have");
+        // RunTests("must_have", "", false);
+
+        // ----Uncomment this block to run tests in scripts/should_have----
+        // Directory.SetCurrentDirectory("../should_have");
+        // RunTests("should_have", "", false);
+
+        // ----Uncomment this block to run tests in scripts/nice_to_have----
+        // Directory.SetCurrentDirectory("../nice_to_have");
+        // RunTests("nice_to_have", "", false);
+
+        // ----Uncomment this block to run tests in scripts/difference----
+        // Directory.SetCurrentDirectory("../difference");
+        // RunTests("difference", "", false);
+
+        // ----Uncomment this block to run tests in scripts/not_implemented----
+        // Directory.SetCurrentDirectory("../not_implemented");
+        // RunTests("not_implemented", "", false);
+
+        // ----Uncomment this block to run tests in scripts/error----
+        // Directory.SetCurrentDirectory("../error");
+        // RunTests("error", "", false);
+
+        //  ----Uncomment this block to run tests in
+        //  scripts/must_have/import
+        //  scripts/must_have_input----
+        /* Directory.SetCurrentDirectory("../must_have/import/1");
+           RunTests("must_have/import/1", "import/1", true);
+           Directory.SetCurrentDirectory("../../");
+           Directory.SetCurrentDirectory("../must_have/import/2");
+           RunTests("must_have/import/2", "import/2", true);
+           Directory.SetCurrentDirectory("../../");
+           Directory.SetCurrentDirectory("../must_have/import/3");
+           RunTests("must_have/import/3", "import/3", true);
+           Directory.SetCurrentDirectory("../../");
+           Directory.SetCurrentDirectory("../must_have/import/4");
+           RunTests("must_have/import/4", "import/4", true);
+           Directory.SetCurrentDirectory("../../");
+           Directory.SetCurrentDirectory("../must_have/input");
+           RunTests("must_have/input", "input", false);*/
     }
 }
