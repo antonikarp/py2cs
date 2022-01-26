@@ -36,8 +36,14 @@ public class Function
     // They are prepended by class name like: Program.x
     public HashSet<string> identifiersReferringToGlobal;
 
+    // This set hold identifiers which refer to nonlocal variables.
+    // They won't be redeclared.
+    public HashSet<string> identifiersReferringToNonlocal;
+
     // This list holds functions which should be added at the end of current scope.
     public List<Function> pendingGeneratedFunctionsInScope;
+
+    
 
     public Function(Output _output)
     {
@@ -78,6 +84,7 @@ public class Function
         overridenReturnType = "";
         hiddenIdentifiers = new List<string>();
         identifiersReferringToGlobal = new HashSet<string>();
+        identifiersReferringToNonlocal = new HashSet<string>();
         pendingGeneratedFunctionsInScope = new List<Function>();
 
         output = _output;

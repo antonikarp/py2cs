@@ -136,7 +136,9 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 && state.varReferringToGlobalState.isActive == false &&
                 // We exclude the situation where the function is "Main" and the such static field has already been declared.
                 (state.output.currentClasses.Peek().currentFunctions.Peek().name != "Main" ||
-                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0])))
+                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0]))
+                // We do not redeclare identifiers marked as 'nonlocal'
+                && !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToNonlocal.Contains(potentialSubscriptionTokens[0]))
             {
                 // This is a case of declaration with initialization. We cannot be inside the scope of any loop.
                 if (state.output.currentClasses.Peek().currentFunctions.Peek().name == "Main" &&
