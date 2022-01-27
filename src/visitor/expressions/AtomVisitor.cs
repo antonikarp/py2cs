@@ -184,6 +184,8 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(exprVisitor.result.tokens[i]);
                 }
+                // Override type to be ListComp.
+                state.varState.type = VarState.Types.ListComp;
                 result.tokens.Add(").ToList()");
             }
         }

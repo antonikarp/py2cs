@@ -37,7 +37,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
         // [expr_x for x in y if expr_x_2] => (from x in y where expr_x_2 select expr_x).ToList();
         if (context.ChildCount >= 4)
         {
-            // Override the trype to be ListComp
+            // Override the type to be ListComp
             state.varState.type = VarState.Types.ListComp;
 
             result.tokens.Add("(from ");
