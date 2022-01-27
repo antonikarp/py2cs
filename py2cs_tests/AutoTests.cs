@@ -84,8 +84,8 @@ public class AutoTests
          RunTests("1_must_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/should_have----
-         Directory.SetCurrentDirectory("../2_should_have");
-         RunTests("2_should_have", "", "");
+        // Directory.SetCurrentDirectory("../2_should_have");
+        // RunTests("2_should_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/nice_to_have----
         // Directory.SetCurrentDirectory("../3_nice_to_have");

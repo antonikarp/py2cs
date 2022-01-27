@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Antlr4.Runtime.Misc;
 
 // This is a visitor to be used to compute a "for" loop
@@ -68,6 +69,7 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         else
         {
             line += "foreach (dynamic _tuple in " + collectionVisitor.result.ToString();
+
         }
 
         // Mark the variable as the iteration variable. It cannot be assigned to.
@@ -79,6 +81,23 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         {
             state.loopState.forStmtIterationVariable = "_tuple";
         }
+
+        // Declare a static field counterpart of the iteration variable.
+        // For now, we don't consider tuples.
+        string iteratorIdentifier = state.loopState.forStmtIterationVariable;
+        if (!state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(iteratorIdentifier))
+        {
+            StringBuilder fieldDeclLine = new StringBuilder();
+            fieldDeclLine.Append("static dynamic ");
+            fieldDeclLine.Append(iteratorIdentifier);
+            fieldDeclLine.Append(" = null;");
+            IndentedLine fieldDeclIndentedLine = new IndentedLine(fieldDeclLine.ToString(), 0);
+            state.output.currentClasses.Peek().staticFieldDeclarations.lines.
+                Add(fieldDeclIndentedLine);
+            state.output.currentClasses.Peek().staticFieldIdentifiers.Add(iteratorIdentifier);
+        }
+
+        
 
         // Check if the expression represents a dictionary:
         if (state.varState.type == VarState.Types.Dictionary)
@@ -110,6 +129,13 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         result.lines.Add(newLine);
         IndentedLine openingBraceLine = new IndentedLine("{", 1);
         result.lines.Add(openingBraceLine);
+
+        // Update the static field counterpart.
+        IndentedLine updateStaticFieldLine = new IndentedLine
+            (state.output.currentClasses.Peek().name + "." + iteratorIdentifier + " = " +
+            iteratorIdentifier + ";", 0);
+        result.lines.Add(updateStaticFieldLine);
+
 
         // Tuple unpacking - add additional variables
         if (iteratorVisitor.result.expressions.Count > 1)
