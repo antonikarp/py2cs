@@ -24,6 +24,10 @@ public class CompIterVisitor : Python3ParserBaseVisitor<LineModel>
         {
             result.tokens.Add(newVisitor.result.tokens[i]);
         }
+
+        // Handle a nested list comprehension.
+        VisitChildren(context);
+
         return result;
     }
     public override LineModel VisitComp_for([NotNull] Python3Parser.Comp_forContext context)
@@ -34,7 +38,8 @@ public class CompIterVisitor : Python3ParserBaseVisitor<LineModel>
         // Child #1: exprlist (for now assume that it is a single expr)
         // Child #2: in
         // Child #3: or_test
-        if (context.ChildCount == 4)
+        // (Child #4: comp_iter - optional)
+        if (context.ChildCount >= 4)
         {
             result.tokens.Add(" from ");
             ExprVisitor iteratorVisitor = new ExprVisitor(state);
@@ -49,6 +54,10 @@ public class CompIterVisitor : Python3ParserBaseVisitor<LineModel>
             for (int i = 0; i < collectionVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(collectionVisitor.result.tokens[i]);
+            }
+            if (context.ChildCount > 4)
+            {
+                VisitComp_iter(context.comp_iter());
             }
         }
         return result;

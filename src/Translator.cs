@@ -26,8 +26,11 @@ namespace py2cs
             // Returns -2 if the script runs out of memory during execution
             ProcessStartInfo pythonShell = new ProcessStartInfo();
             // This is the location of the python3 executable.
+            // Update it if necessary.
             pythonShell.FileName = "/Users/antoni.karpinski/opt/anaconda3/bin/python3";
-            string arguments = input_path;
+            // Remove assert statements.
+            string arguments = "-O ";
+            arguments += input_path;
             pythonShell.Arguments = arguments;
             string workingDirectory = Directory.GetCurrentDirectory();
             pythonShell.WorkingDirectory = workingDirectory;
