@@ -13,6 +13,7 @@
     public FloatToIntConversionState floatToIntConversionState;
     public LhsState lhsState;
     public ListCompState listCompState;
+    public TupleState tupleState;
     public Output output;
     public State()
     {
@@ -29,6 +30,7 @@
         floatToIntConversionState = new FloatToIntConversionState();
         lhsState = new LhsState();
         listCompState = new ListCompState();
+        tupleState = new TupleState();
         output = new Output();
     }
 }

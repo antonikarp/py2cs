@@ -188,3 +188,5 @@ tests/generated/*
 tests/generated_output/*
 tests/scripts_output/*
 
+tests/scripts/should_have/should_have_temp.py
+

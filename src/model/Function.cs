@@ -43,6 +43,9 @@ public class Function
     // This list holds functions which should be added at the end of current scope.
     public List<Function> pendingGeneratedFunctionsInScope;
 
+    // This maps the identifier of a tuple to its number of elements.
+    // Example: a = (1, 2, 3) -> tupleIdentifierToNumberOfElements["a"] = 3
+    public Dictionary<string, int> tupleIdentifierToNumberOfElements;
     
 
     public Function(Output _output)
@@ -86,6 +89,7 @@ public class Function
         identifiersReferringToGlobal = new HashSet<string>();
         identifiersReferringToNonlocal = new HashSet<string>();
         pendingGeneratedFunctionsInScope = new List<Function>();
+        tupleIdentifierToNumberOfElements = new Dictionary<string, int>();
 
         output = _output;
     }

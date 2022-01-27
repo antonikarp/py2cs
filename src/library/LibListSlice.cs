@@ -24,6 +24,48 @@ public static class ListSlice
         }
         return endpoint;
     }
+    public static List<dynamic> Get(List<int> list, int? start_nullable, int? stop_nullable, int? stride_nullable)
+    {
+        List<dynamic> result = new List<dynamic>();
+        int n = list.Count;
+        int stride = stride_nullable ?? 1;
+        int start, stop;
+        if (start_nullable == null)
+        {
+            start = stride < 0 ? n - 1 : 0;
+        }
+        else
+        {
+            start = AdjustEndpoint(n, (int)start_nullable, stride);
+        }
+        if (stop_nullable == null)
+        {
+            stop = stride < 0 ? -1 : n;
+        }
+        else
+        {
+            stop = AdjustEndpoint(n, (int)stop_nullable, stride);
+        }
+        int i = start;
+        if (stride < 0)
+        {
+            while (i > stop)
+            {
+                result.Add(list[i]);
+                i += stride;
+            }
+        }
+        else
+        {
+            while (i < stop)
+            {
+                result.Add(list[i]);
+                i += stride;
+            }
+        }
+        return result;
+    }
+
     public static List<dynamic> Get(List<dynamic> list, int? start_nullable, int? stop_nullable, int? stride_nullable)
     {
         List<dynamic> result = new List<dynamic>();
