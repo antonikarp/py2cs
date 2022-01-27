@@ -95,7 +95,8 @@ import dependencies, append ""_0"" to the name of the main file.
                 string output_path_cs = output_directory + name + ".cs";
                 string output_path_exe = output_directory + name + ".exe";
                 Translator translator = new Translator(false);
-                if (translator.Translate(input_path, output_path_cs, new List<string>()) && shouldBeCompiled)
+                if (translator.Translate(input_path, output_path_cs, new List<string>(), "")
+                    && shouldBeCompiled)
                 {
                     translator.Compile(output_directory, name + ".cs");
                 }

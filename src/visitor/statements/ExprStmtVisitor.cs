@@ -364,7 +364,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             }
             result.tokens.Add(" " + opVisitor.result.value + " ");
             // If we have a power assignment then:
-            // x **= y rbecomes
+            // x **= y becomes
             // x = Math.Pow(x, y);
             if (opVisitor.isPowerAssign)
             {

@@ -73,7 +73,7 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
         List<string> importedFileNamesCurrent = new List<string>(state.output.moduleNames);
         importedFileNamesCurrent.Add(name);
      
-        translator.Translate(new_input_path, new_output_path, importedFileNamesCurrent);
+        translator.Translate(new_input_path, new_output_path, importedFileNamesCurrent, "");
 
         // Add filenames as command line arguments for compilation.
         string commandLineArgument = filename + ".cs";
