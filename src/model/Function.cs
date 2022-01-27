@@ -21,6 +21,7 @@ public class Function
     public List<List<VarState.Types>> usedParameterTypesInConstructor;
     public bool isChainedComparison;
 
+
     // Hidden identifiers at the function scope.
     public List<string> hiddenIdentifiers;
 
@@ -46,7 +47,13 @@ public class Function
     // This maps the identifier of a tuple to its number of elements.
     // Example: a = (1, 2, 3) -> tupleIdentifierToNumberOfElements["a"] = 3
     public Dictionary<string, int> tupleIdentifierToNumberOfElements;
-    
+
+    // This maps the identifier of a list to a name of the class which is a type
+    // of its elements. It is useful while iterating over such collection, because
+    // if the iteration variable has type dynamic, it is impossible to
+    // perform LINQ queries on such variable.
+    public Dictionary<string, string> listIdentifiersToClassNames;
+
 
     public Function(Output _output)
     {
@@ -90,7 +97,7 @@ public class Function
         identifiersReferringToNonlocal = new HashSet<string>();
         pendingGeneratedFunctionsInScope = new List<Function>();
         tupleIdentifierToNumberOfElements = new Dictionary<string, int>();
-
+        listIdentifiersToClassNames = new Dictionary<string, string>();
         output = _output;
     }
     public string getDelegateType()
@@ -253,18 +260,48 @@ public class Function
                 // Case of a default parameter.
                 if (defaultParameters.ContainsKey(parameters[i]) &&
                     defaultParameterTypes.ContainsKey(parameters[i]))
-                {
-                    // We assign 'null' to the variable so it must have
-                    // type 'dynamic'.
-                    firstLine += "dynamic ";
-                    firstLine += parameters[i];
-                    firstLine += " = ";
-                    firstLine += "null";
+                {  
+                    if (parentClass.name == "Program")
+                    {
+                        // We assign 'null' to the variable. The coalescing operation
+                        // with the default parameter will be located at the beginning
+                        // of the function.
+                        firstLine += "dynamic ";
+                        firstLine += parameters[i];
+                        firstLine += " = ";
+                        firstLine += "null";
+                    }
+                    else
+                    {
+                        // We assign a static type to the default parameter
+                        // If we cannot recognize a type, then it is null, so
+                        // mark it as 'dynamic'. This is an oversimplification but
+                        // this tool lacks the proper type system.
+                        switch (defaultParameterTypes[parameters[i]])
+                        {
+
+                            case VarState.Types.Double:
+                                firstLine += "double ";
+                                break;
+                            case VarState.Types.String:
+                                firstLine += "string ";
+                                break;
+                            case VarState.Types.Int:
+                                firstLine += "int ";
+                                break;
+                            default:
+                                firstLine += "dynamic ";
+                                break;
+                        }
+                        firstLine += parameters[i];
+                        firstLine += " = ";
+                        firstLine += defaultParameters[parameters[i]];
+                    }
                 }
                 // Case of a positional (usual) parameter.
                 // This is also a place where we place the used types in a parent
                 // constructor call.
-                else 
+                else
                 {
                     switch (usedParameterTypes[i])
                     {

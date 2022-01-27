@@ -148,45 +148,42 @@ _NCrunch*
 input/*
 output/*
 
-tests/scripts/difference/__pycache__/*
-tests/scripts/difference/testnames.txt
+tests/scripts/6_differences/__pycache__/*
+tests/scripts/6_differences/testnames.txt
 
-tests/scripts/error/__pycache__/*
-tests/scripts/error/testnames.txt
+tests/scripts/5_error/__pycache__/*
+tests/scripts/5_error/testnames.txt
 
-tests/scripts/must_have/__pycache__/*
-tests/scripts/must_have/testnames.txt
+tests/scripts/1_must_have/__pycache__/*
+tests/scripts/1_must_have/testnames.txt
 
-tests/scripts/nice_to_have/__pycache__/*
-tests/scripts/nice_to_have/testnames.txt
+tests/scripts/3_nice_to_have/__pycache__/*
+tests/scripts/3_nice_to_have/testnames.txt
 
-tests/scripts/not_implemented/__pycache__/*
-tests/scripts/not_implemented/testnames.txt
+tests/scripts/4_not_implemented/__pycache__/*
+tests/scripts/4_not_implemented/testnames.txt
 
-tests/scripts/should_have/__pycache__/*
-tests/scripts/should_have/testnames.txt
+tests/scripts/2_should_have/__pycache__/*
+tests/scripts/2_should_have/testnames.txt
 
-tests/scripts/unit/__pycache__/*
-tests/scripts/unit/testnames.txt
+tests/scripts/1_must_have/import/1/__pycache__/*
+tests/scripts/1_must_have/import/1/testnames.txt
 
-tests/scripts/must_have/import/1/__pycache__/*
-tests/scripts/must_have/import/1/testnames.txt
+tests/scripts/1_must_have/import/2/__pycache__/*
+tests/scripts/1_must_have/import/2/testnames.txt
 
-tests/scripts/must_have/import/2/__pycache__/*
-tests/scripts/must_have/import/2/testnames.txt
+tests/scripts/1_must_have/import/3/__pycache__/*
+tests/scripts/1_must_have/import/3/testnames.txt
 
-tests/scripts/must_have/import/3/__pycache__/*
-tests/scripts/must_have/import/3/testnames.txt
+tests/scripts/1_must_have/import/4/__pycache__/*
+tests/scripts/1_must_have/import/4/testnames.txt
 
-tests/scripts/must_have/import/4/__pycache__/*
-tests/scripts/must_have/import/4/testnames.txt
-
-tests/scripts/must_have/input/__pycache__/*
-tests/scripts/must_have/input/testnames.txt
+tests/scripts/1_must_have/input/__pycache__/*
+tests/scripts/1_must_have/input/testnames.txt
 
 tests/generated/*
 tests/generated_output/*
 tests/scripts_output/*
 
-tests/scripts/should_have/should_have_temp.py
+tests/scripts/2_should_have/temp.py
 

@@ -242,52 +242,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // with initialization, assignment)
             result.tokens.Add(" = ");
 
-            // If it is a call to constructor, we need to add "new" keyword.
-            string potentialConstructorCall = rhs;
-            string[] splitBeforeLeftParan = potentialConstructorCall.Split('(');
-            string[] identifiers = splitBeforeLeftParan[0].Split(".");
-            bool isConstructorCall = true;
-            foreach (var token in identifiers)
-            {
-                // For it to be a constructor each token delimited by a dot must
-                // be a class name.
-                if (!state.output.allClassesNames.Contains(token))
-                {
-                    isConstructorCall = false;
-                }
-            }
-            if (isConstructorCall)
-            {
-                result.tokens.Add("new ");
-                // If it is a parent class, we need to generate a constructor.
-                // For now we assume that we don't have nested classes here:
-                // Only p = Parent(arg1, arg2)
-                // No: p = Module.Parent(arg1, arg2)
-                if (identifiers.Length == 1 &&
-                    state.output.namesToClasses[identifiers[0]].parentClass != null)
-                {
-                    // Remove the dangling right paran
-                    splitBeforeLeftParan[1] = splitBeforeLeftParan[1].Remove(splitBeforeLeftParan[1].Length - 1);
-                    // Remove spaces
-                    splitBeforeLeftParan[1] = splitBeforeLeftParan[1].Replace(" ", "");
-                    string[] arguments = splitBeforeLeftParan[1].Split(",");
-                    List<string> cleanedArguments = new List<string>();
-                    foreach (string arg in arguments)
-                    {
-                        if (arg != "")
-                        {
-                            cleanedArguments.Add(arg);
-                        }
-                    }
-                    List<VarState.Types> argumentTypes = new List<VarState.Types>();
-                    foreach (string arg in cleanedArguments)
-                    {
-                        argumentTypes.Add(ParamTypeDeduction.Deduce(arg));
-                    }
-                    state.output.namesToClasses[identifiers[0]].GenerateConstructor(argumentTypes);
-                }
-
-            }
+            
             result.tokens.Add(rhs);
             // Save the current value expression and its type. It can be used when there is a variable
             // as a default parameter.
@@ -364,7 +319,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             }
             result.tokens.Add(" " + opVisitor.result.value + " ");
             // If we have a power assignment then:
-            // x **= y rbecomes
+            // x **= y becomes
             // x = Math.Pow(x, y);
             if (opVisitor.isPowerAssign)
             {

@@ -14,16 +14,26 @@ namespace py2cs
         public static string output_path;
         public static List<string> importedFilenames = new List<string>();
         public bool writeMessagesToFile;
+        public string mode;
 
         public Translator(bool _writeMessagesToFile)
         {
             writeMessagesToFile = _writeMessagesToFile;
+            mode = "";
         }
         public int CheckForErrorsInScript(string input_path)
         {
             // Returns 0 if the execution has succeeded.
             // Returns -1 if the script writes anything to stderr.
             // Returns -2 if the script runs out of memory during execution
+
+            // In case of 'input', the program would hang, because there is no
+            // input provided. In case of 'differences' even when the script itself
+            // is not correct, the translation can produce a correct program.
+            if (mode == "input" || mode == "differences")
+            {
+                return 0;
+            }
             ProcessStartInfo pythonShell = new ProcessStartInfo();
             // This is the location of the python3 executable.
             // Update it if necessary.
@@ -48,7 +58,7 @@ namespace py2cs
                 {
                     continue;
                 }
-                else if (process.VirtualMemorySize64 > 10000000)
+                else if (process.VirtualMemorySize64 > 50000000)
                 {
                     outOfMemory = true;
                     continue;
@@ -70,10 +80,11 @@ namespace py2cs
             }
         }
 
-        public bool Translate(string input_path, string output_path, List<string> moduleNames)
+        public bool Translate(string input_path, string output_path, List<string> moduleNames, string _mode)
         {
             Translator.input_path = input_path;
             Translator.output_path = output_path;
+            mode = _mode;
             // First, check if the script is correct
             int resultCheckForErrors = CheckForErrorsInScript(input_path);
             if (resultCheckForErrors < 0)

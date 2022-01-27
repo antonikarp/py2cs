@@ -14,6 +14,31 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         result = new LineModel();
 
+        // Check if we have a constructor call
+        if (context.ChildCount >= 2)
+        {
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+
+            // We assume that 'atom' is the first child.
+            // Temporarily lock the expression so that it won't become standalone.
+            bool prevState = state.stmtState.isLocked;
+            state.stmtState.isLocked = true;
+            context.GetChild(0).Accept(atomVisitor);
+            state.stmtState.isLocked = prevState;
+
+            if (state.output.allClassesNames.Contains(atomVisitor.result.ToString()))
+            {
+                // We have a constructor call. Add 'new' to the resulting string.
+                result.tokens.Add("new ");
+                // Save the name of the class in the state. It will be potenetially
+                // used to give a type to a collection containing such elements.
+                // For now, we assume that are no collections of nested classes.
+                state.constructorCallState = new ConstructorCallState();
+                state.constructorCallState.isActive = true;
+                state.constructorCallState.name = atomVisitor.result.ToString();
+            }
+        }
+
         // The function call can supply other functions as arguments, like:
         // "repeat(4)(myfunction)".
 
@@ -141,6 +166,13 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 methodNameTrailerVisitors[0].result.tokens.Clear();
                 methodNameTrailerVisitors[0].result.tokens.Add(".Add");
+                // Remember the type of the list which is a collection of an objects
+                // of class defined in the source.
+                if (state.constructorCallState.isActive)
+                {
+                    state.output.currentClasses.Peek().currentFunctions.Peek().
+                        listIdentifiersToClassNames[atomVisitor.result.ToString()] = state.constructorCallState.name;
+                }
             }
 
 
