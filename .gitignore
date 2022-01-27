@@ -181,9 +181,40 @@ tests/scripts/1_must_have/import/4/testnames.txt
 tests/scripts/1_must_have/input/__pycache__/*
 tests/scripts/1_must_have/input/testnames.txt
 
-tests/generated/*
-tests/generated_output/*
-tests/scripts_output/*
+tests/scripts_output/1_must_have/import/1/*
+tests/scripts_output/1_must_have/import/2/*
+tests/scripts_output/1_must_have/import/3/*
+tests/scripts_output/1_must_have/import/4/*
+tests/scripts_output/1_must_have/input/*
+tests/scripts_output/2_should_have/*
+tests/scripts_output/3_nice_to_have/*
+tests/scripts_output/4_not_implemented/*
+tests/scripts_output/5_error/*
+tests/scripts_output/6_differences/*
+
+tests/generated/1_must_have/import/1/*
+tests/generated/1_must_have/import/2/*
+tests/generated/1_must_have/import/3/*
+tests/generated/1_must_have/import/4/*
+tests/generated/1_must_have/input/*
+tests/generated/2_should_have/*
+tests/generated/3_nice_to_have/*
+tests/generated/4_not_implemented/*
+tests/generated/5_error/*
+tests/generated/6_differences/*
+
+tests/generated_output/1_must_have/import/1/*
+tests/generated_output/1_must_have/import/2/*
+tests/generated_output/1_must_have/import/3/*
+tests/generated_output/1_must_have/import/4/*
+tests/generated_output/1_must_have/input/*
+tests/generated_output/2_should_have/*
+tests/generated_output/3_nice_to_have/*
+tests/generated_output/4_not_implemented/*
+tests/generated_output/5_error/*
+tests/generated_output/6_differences/*
 
 tests/scripts/2_should_have/temp.py
+
+
 
