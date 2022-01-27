@@ -14,6 +14,25 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
         result = new LineModel();
 
+        // Check if we have a constructor call
+        if (context.ChildCount >= 2)
+        {
+            AtomVisitor atomVisitor = new AtomVisitor(state);
+
+            // We assume that 'atom' is the first child.
+            // Temporarily lock the expression so that it won't become standalone.
+            bool prevState = state.stmtState.isLocked;
+            state.stmtState.isLocked = true;
+            context.GetChild(0).Accept(atomVisitor);
+            state.stmtState.isLocked = prevState;
+
+            if (state.output.allClassesNames.Contains(atomVisitor.result.ToString()))
+            {
+                // We have a constructor call. Add 'new' to the resulting string.
+                result.tokens.Add("new ");
+            }
+        }
+
         // The function call can supply other functions as arguments, like:
         // "repeat(4)(myfunction)".
 

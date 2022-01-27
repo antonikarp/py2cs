@@ -17,10 +17,11 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("BST"))
+                if (!potentialFilename.StartsWith("BST") && !potentialFilename.StartsWith("is")
+                    && !potentialFilename.StartsWith("nested_class"))
                 {
                     continue;
-                }*/
+                }
 
                 // This is a temporary statement to reduce the number of test files
                 // Todo: remove
@@ -105,12 +106,12 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../../../tests/scripts/1_must_have");
 
         // ----Uncomment this block to run tests in scripts/must_have----
-        // Directory.SetCurrentDirectory("../1_must_have");
-        // RunTests("1_must_have", "", "");
+         Directory.SetCurrentDirectory("../1_must_have");
+         RunTests("1_must_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/should_have----
-        // Directory.SetCurrentDirectory("../2_should_have");
-        // RunTests("2_should_have", "", "");
+         Directory.SetCurrentDirectory("../2_should_have");
+         RunTests("2_should_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/nice_to_have----
         // Directory.SetCurrentDirectory("../3_nice_to_have");
@@ -125,8 +126,8 @@ public class AutoTests
         // RunTests("5_error", "", "");
 
         // ----Uncomment this block to run tests in scripts/difference----
-         Directory.SetCurrentDirectory("../6_differences");
-         RunTests("6_differences", "", "differences");
+        // Directory.SetCurrentDirectory("../6_differences");
+        // RunTests("6_differences", "", "differences");
 
         //  ----Uncomment this block to run tests in
         //  scripts/must_have/import

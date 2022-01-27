@@ -32,6 +32,11 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
 
         result = new Class(state.output);
         result.name = context.GetChild(1).ToString();
+
+        // Save the name of the class.
+        state.output.allClassesNames.Add(result.name);
+        state.output.namesToClasses[result.name] = result;
+
         state.output.currentClasses.Push(result);
 
         // Check if there is inhertitance (one parent class):
@@ -70,9 +75,6 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
         {
             state.output.classes.Add(result);
         }
-        state.output.allClassesNames.Add(result.name);
-        state.output.namesToClasses[result.name] = result;
-
         return result;
     }
 
