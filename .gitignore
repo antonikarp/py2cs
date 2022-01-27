@@ -181,6 +181,7 @@ tests/scripts/1_must_have/import/4/testnames.txt
 tests/scripts/1_must_have/input/__pycache__/*
 tests/scripts/1_must_have/input/testnames.txt
 
+tests/scripts_output/1_must_have/*.txt
 tests/scripts_output/1_must_have/import/1/*
 tests/scripts_output/1_must_have/import/2/*
 tests/scripts_output/1_must_have/import/3/*
@@ -192,6 +193,8 @@ tests/scripts_output/4_not_implemented/*
 tests/scripts_output/5_error/*
 tests/scripts_output/6_differences/*
 
+tests/generated/1_must_have/*.cs
+tests/generated/1_must_have/*.exe
 tests/generated/1_must_have/import/1/*
 tests/generated/1_must_have/import/2/*
 tests/generated/1_must_have/import/3/*
@@ -203,6 +206,7 @@ tests/generated/4_not_implemented/*
 tests/generated/5_error/*
 tests/generated/6_differences/*
 
+tests/generated_output/1_must_have/*.txt
 tests/generated_output/1_must_have/import/1/*
 tests/generated_output/1_must_have/import/2/*
 tests/generated_output/1_must_have/import/3/*

@@ -36,7 +36,7 @@ namespace py2cs
             }
             ProcessStartInfo pythonShell = new ProcessStartInfo();
             // This is the location of the python3 executable.
-            // Update it if necessary.
+            // (1) -----> Important! Please update it so that the path is correct on your machine.
             pythonShell.FileName = "/Users/antoni.karpinski/opt/anaconda3/bin/python3";
             // Remove assert statements.
             string arguments = "-O ";
@@ -190,6 +190,7 @@ namespace py2cs
         {
             ProcessStartInfo compiler = new ProcessStartInfo();
             // This is for Mac OS X.
+            // (2) -----> Important! Please update it so that the path is correct on your machine.
             compiler.FileName = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/csc";
             string arguments = filename;
             // Add the attached library file.
