@@ -20,6 +20,9 @@ public class StmtVisitor : Python3ParserBaseVisitor<BlockModel>
             // Initialize stmt state for checking if there is a standalone expression.
             state.stmtState = new StmtState();
 
+            // Flush the constructorCall state
+            state.constructorCallState = new ConstructorCallState();
+
             SmallStmtVisitor newVisitor = new SmallStmtVisitor(state);
             // For now we assume that simple_stmt has one child: small_stmt
             context.simple_stmt().Accept(newVisitor);

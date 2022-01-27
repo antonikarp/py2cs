@@ -17,32 +17,15 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                if (!potentialFilename.StartsWith("BST") && !potentialFilename.StartsWith("is")
-                    && !potentialFilename.StartsWith("nested_class"))
-                {
-                    continue;
-                }
+                //if (!potentialFilename.StartsWith("BST"))
+                    //!potentialFilename.StartsWith("comprehension_list") &&
+                    //!potentialFilename.StartsWith("nested_comprehension") &&
+                    //!potentialFilename.StartsWith("fibonacci_yield"))
+                //{
+                //    continue;
+                //}
 
                 // This is a temporary statement to reduce the number of test files
-                // Todo: remove
-                /*List<string> passingTests = new List<string>()
-                {
-                    "should_have_assignment3.py", "should_have_comprehension_dict.py",
-                    "should_have_comprehension_list.py", "should_have_comprehension_set.py",
-                    "should_have_enumerate.py", "should_have_exceptions07.py",
-                    "should_have_exceptions09.py", "should_have_fibonacci_yield1.py",
-                    "should_have_fibonacci_yield2.py", "should_have_fibonacci.py",
-                    "should_have_fibonacci2.py", "should_have_global1.py", "should_have_global2.py",
-                    "should_have_if_exp_types.py", "should_have_indexing09.py",
-                    "should_have_indexing11.py", "should_have_nonlocal.py", "should_have_scope2.py",
-                    "should_have_tuple_assignment.py", "should_have_param2.py",
-                    "should_have_param3.py", "should_have_param5.py",
-                    "should_have_new_nonlocal2.py"
-                };
-                if (!passingTests.Contains(potentialFilename))
-                {
-                    continue;
-                }*/
 
                 // When importing, take only file that ends with "_0", which
                 // is the main file.

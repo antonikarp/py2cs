@@ -48,14 +48,21 @@ public class ForStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         state.varState = new VarState();
         TestVisitor collectionVisitor = new TestVisitor(state);
         context.GetChild(3).Accept(collectionVisitor);
-
         string line = "";
 
         // No tuple unpacking: there is only one expression in the list
         if (iteratorVisitor.result.expressions.Count == 1)
         {
-            line += "foreach (dynamic " + iteratorVisitor.result.expressions[0].ToString() + " in " +
-                collectionVisitor.result.ToString();
+            string collection = collectionVisitor.result.ToString();
+            if (state.output.currentClasses.Peek().currentFunctions.Peek().listIdentifiersToClassNames.ContainsKey(collection))
+            {
+                line += "foreach (" + state.output.currentClasses.Peek().currentFunctions.Peek().listIdentifiersToClassNames[collection] +
+                    " " + iteratorVisitor.result.expressions[0].ToString() + " in " + collection;
+            }
+            else
+            {
+                line += "foreach (dynamic " + iteratorVisitor.result.expressions[0].ToString() + " in " + collection;
+            }
         }
         // Tuple unpacking: declare a generated varibale: "_tuple"
         else

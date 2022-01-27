@@ -12,6 +12,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
         state = _state;
         visited = false;
     }
+
     public override LineModel VisitComp_for([NotNull] Python3Parser.Comp_forContext context)
     {
         visited = true;
@@ -51,7 +52,7 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
             state.compForState.iteratorExpr = iteratorVisitor.result.ToString();
 
             result.tokens.Add(" in ");
-            
+
             OrTestVisitor collectionVisitor = new OrTestVisitor(state);
             context.GetChild(3).Accept(collectionVisitor);
             for (int i = 0; i < collectionVisitor.result.tokens.Count; ++i)

@@ -27,14 +27,21 @@ public class RaiseStmtVisitor : Python3ParserBaseVisitor<LineModel>
 
             // raise A -> throw new A();
             // raise A() -> throw new A();
-            result.tokens.Add("throw new ");
+            // new is added when checking for constructor calls.
+            result.tokens.Add("throw ");
             TestVisitor nameVisitor = new TestVisitor(state);
             context.GetChild(1).Accept(nameVisitor);
             string name = nameVisitor.result.ToString();
-            result.tokens.Add(name);
+
             if ((name.Length < 2) || (name.Length >= 2 && !name.EndsWith(")")))
             {
+                result.tokens.Add("new ");
+                result.tokens.Add(name);
                 result.tokens.Add("()");
+            }
+            else
+            {
+                result.tokens.Add(name);
             }
         }
         

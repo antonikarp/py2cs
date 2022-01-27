@@ -30,6 +30,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 // We have a constructor call. Add 'new' to the resulting string.
                 result.tokens.Add("new ");
+                // Save the name of the class in the state. It will be potenetially
+                // used to give a type to a collection containing such elements.
+                // For now, we assume that are no collections of nested classes.
+                state.constructorCallState = new ConstructorCallState();
+                state.constructorCallState.isActive = true;
+                state.constructorCallState.name = atomVisitor.result.ToString();
             }
         }
 
@@ -160,6 +166,13 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 methodNameTrailerVisitors[0].result.tokens.Clear();
                 methodNameTrailerVisitors[0].result.tokens.Add(".Add");
+                // Remember the type of the list which is a collection of an objects
+                // of class defined in the source.
+                if (state.constructorCallState.isActive)
+                {
+                    state.output.currentClasses.Peek().currentFunctions.Peek().
+                        listIdentifiersToClassNames[atomVisitor.result.ToString()] = state.constructorCallState.name;
+                }
             }
 
 

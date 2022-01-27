@@ -49,8 +49,10 @@ public class CompIterVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(iteratorVisitor.result.tokens[i]);
             }
             result.tokens.Add(" in ");
+
             OrTestVisitor collectionVisitor = new OrTestVisitor(state);
             context.GetChild(3).Accept(collectionVisitor);
+
             for (int i = 0; i < collectionVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(collectionVisitor.result.tokens[i]);
