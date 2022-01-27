@@ -111,6 +111,17 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 lhs = leftVisitor.result.expressions[0].ToString();
             }
+
+            if (state.varState.type == VarState.Types.Tuple)
+            {
+                // If it is a tuple then store the number of elements to be
+                // used when computing slices.
+                state.output.currentClasses.Peek().currentFunctions.Peek().
+                    tupleIdentifierToNumberOfElements[lhs] = state.tupleState.numberOfElements;
+                // Flush the TupleState.
+                state.tupleState = new TupleState();
+            }
+
             // If we have an assignment to the iteration variable, we need to
             // create a new variable. Only in for loop.
             if (state.loopState.loopType == LoopState.LoopType.ForLoop &&
@@ -129,16 +140,18 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // by '[' and take the first token.
             string[] potentialSubscriptionTokens = lhs.Split("[");
 
+            string cleanedIdentifier = potentialSubscriptionTokens[0];
+
             // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate the name.
-            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(potentialSubscriptionTokens[0])
+            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(cleanedIdentifier)
                 && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1]))))
                 // Exclude declaration of a variable whose identifier is for instance: 'Program.x'
                 && state.varReferringToGlobalState.isActive == false &&
                 // We exclude the situation where the function is "Main" and the such static field has already been declared.
                 (state.output.currentClasses.Peek().currentFunctions.Peek().name != "Main" ||
-                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(potentialSubscriptionTokens[0]))
+                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(cleanedIdentifier))
                 // We do not redeclare identifiers marked as 'nonlocal'
-                && !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToNonlocal.Contains(potentialSubscriptionTokens[0]))
+                && !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToNonlocal.Contains(cleanedIdentifier))
             {
                 // This is a case of declaration with initialization. We cannot be inside the scope of any loop.
                 if (state.output.currentClasses.Peek().currentFunctions.Peek().name == "Main" &&
@@ -186,7 +199,6 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         break;
 
                 }
-                
 
                 // Add the new variable to a respective scope.
                 // Todo: unify loopState and scopeState.
@@ -281,6 +293,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // as a default parameter.
             state.output.currentClasses.Peek().identifierToValueExpression[lhs] = rhs;
             state.output.currentClasses.Peek().identifierToType[lhs] = state.varState.type;
+
             return result;
         }
         // Chained assignment, for instance: 'x = y = z = 1' 

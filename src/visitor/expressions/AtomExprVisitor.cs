@@ -404,7 +404,45 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
             TrailerVisitor trailerVisitor = new TrailerVisitor(state);
             context.GetChild(1).Accept(trailerVisitor);
-            if (trailerVisitor.isSlice)
+
+            // Tuple slice. Due to the fact that tuples are immutable, we need
+            // to compute indices and construct the expression in the tool.
+            // For instance: t[1:4] -> (t.Item2, t.Item3, t.Item4) 
+            if (trailerVisitor.isSlice &&
+                state.output.currentClasses.Peek().currentFunctions.Peek().tupleIdentifierToNumberOfElements.ContainsKey(name))
+            {
+                int numberOfElements = state.output.currentClasses.Peek().
+                    currentFunctions.Peek().tupleIdentifierToNumberOfElements[name];
+                
+                // So far, the slicing of tuples is handled only when the arguments in
+                // the slice expression (start, end, stride) are numerical literals.
+                int sliceStart, sliceEnd, sliceStride;
+                Int32.TryParse(trailerVisitor.sliceStart, out sliceStart);
+                Int32.TryParse(trailerVisitor.sliceEnd, out sliceEnd);
+                Int32.TryParse(trailerVisitor.sliceStride, out sliceStride);
+                int? sliceStartNullable, sliceEndNullable, sliceStrideNullable;
+                sliceStartNullable = trailerVisitor.sliceStart == null ? null : sliceStart;
+                sliceEndNullable = trailerVisitor.sliceEnd == null ? null : sliceEnd;
+                sliceStrideNullable = trailerVisitor.sliceStride == null ? null : sliceStride;
+                List<int> indices = GetIndicesTupleSlice.Get(numberOfElements,
+                    sliceStartNullable, sliceEndNullable, sliceStrideNullable);
+
+                result.tokens.Clear();
+                result.tokens.Add("(");
+                for (int i = 0; i < indices.Count; ++i)
+                {
+                    if (i != 0)
+                    {
+                        result.tokens.Add(", ");
+                    }
+                    // Index k corresponds to tuple item k+1
+                    int tupleItemNumber = indices[i] + 1;
+                    result.tokens.Add(name + ".Item" + tupleItemNumber);
+                }
+                result.tokens.Add(")");
+
+            }
+            else if (trailerVisitor.isSlice)
             {
                 // We have a slice:
                 // a[start:stop:stride] -> ListSlice.Get(a, start, stop, stride)

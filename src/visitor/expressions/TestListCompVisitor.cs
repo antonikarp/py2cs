@@ -9,14 +9,17 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
     public LineModel result;
     public State state;
     public bool isTuple;
+    public int numberOfElements;
     public TestListCompVisitor(State _state)
     {
         state = _state;
         isTuple = false;
+        numberOfElements = 0;
     }
     public override LineModel VisitTestlist_comp([NotNull] Python3Parser.Testlist_compContext context)
     {
         result = new LineModel();
+        int numberOfElements = 0;
         for (int i = 0; i < context.ChildCount; ++i)
         {
             // Case of lists or tuples. 
@@ -37,6 +40,7 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
             }
             else
             {
+                ++numberOfElements;
                 TestVisitor newVisitor = new TestVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 // When declaring a tuple, cast to a nullable type 'int?' when
@@ -62,6 +66,12 @@ public class TestListCompVisitor : Python3ParserBaseVisitor<LineModel>
         if (isTuple && result.tokens.Count >= 1 && !state.lhsState.isLhsState)
         {
             result.tokens[0] = "(object)" + result.tokens[0];
+        }
+        // If it is a tuple, store the number of elements which will come in
+        // handy when computing slices.
+        if (isTuple)
+        {
+            state.tupleState.numberOfElements = numberOfElements;
         }
         return result;
     }

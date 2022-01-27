@@ -17,16 +17,20 @@ namespace py2cs
 py2cs - a source-to-source translator from Python to C# using ANTLR parser generator.
 
 To perform translation:
-1. Clean directories:
+1. Set current working directory to the root directory of the repository.
+2. Clean directories:
     - make sure that the ./output directory is empty
-    - to clean directories from previous test runs, execute tests/clean_test_dirs.sh
-2. Copy all Python scripts that will be translated to ./input directory. If there are
-import dependencies, append ""_0"" to the name of the main file
-3. Run the translator by the following command:
+    - to clean directories from previous test runs, execute:
+        $ cd tests
+        $ ./clean_test_dirs.sh
+        $ cd ..
+3. Copy all Python scripts that will be translated to ./input directory. If there are
+import dependencies, append ""_0"" to the name of the main file.
+4. Run the translator by the following command:
         $ dotnet run
    If you wish to additionaly compile the obtained .cs sources run:
         $ dotnet run compile
-4. Possible errors in translation will be displayed on the console.
+5. Possible errors in translation will be displayed on the console.
 ********************************************************************************
 ");
         }
@@ -46,8 +50,16 @@ import dependencies, append ""_0"" to the name of the main file
             List<string> cleanedScriptNames = new List<string>();
             List<string> scriptNames = new List<string>();
 
-            string input_directory = Directory.GetCurrentDirectory() +  "/input/";
-            string output_directory = Directory.GetCurrentDirectory() + "/output/";
+            string currentDirectory = Directory.GetCurrentDirectory();
+
+            // Resolve paths if executed from Visual Studio
+            if (currentDirectory.EndsWith("/bin/Debug/net5.0"))
+            {
+                currentDirectory += "/../../..";
+            }
+
+            string input_directory = currentDirectory +  "/input/";
+            string output_directory = currentDirectory + "/output/";
 
             string[] paths = Directory.GetFiles(input_directory);
 
