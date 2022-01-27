@@ -17,15 +17,6 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                //if (!potentialFilename.StartsWith("BST"))
-                    //!potentialFilename.StartsWith("comprehension_list") &&
-                    //!potentialFilename.StartsWith("nested_comprehension") &&
-                    //!potentialFilename.StartsWith("fibonacci_yield"))
-                //{
-                //    continue;
-                //}
-
-                // This is a temporary statement to reduce the number of test files
 
                 // When importing, take only file that ends with "_0", which
                 // is the main file.

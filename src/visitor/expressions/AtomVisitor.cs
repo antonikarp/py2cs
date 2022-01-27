@@ -130,16 +130,45 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).ToString() == "(" &&
             context.GetChild(2).ToString() == ")")
         {
-            result.tokens.Add("(");
-            // This case handles also tuples.
-            TestListCompVisitor newVisitor = new TestListCompVisitor(state);
-            context.GetChild(1).Accept(newVisitor);
-            for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
-            {
-                result.tokens.Add(newVisitor.result.tokens[i]);
-            }
-            result.tokens.Add(")");
+            // If it exists, get a generator expression.
+            CompForVisitor compForVisitor = new CompForVisitor(state);
+            context.GetChild(1).Accept(compForVisitor);
 
+            // Generator expression not found.
+            if (compForVisitor.visited == false)
+            {
+                result.tokens.Add("(");
+                // This case handles also tuples.
+                TestListCompVisitor newVisitor = new TestListCompVisitor(state);
+                context.GetChild(1).Accept(newVisitor);
+                for (int i = 0; i < newVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(newVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(")");
+            }
+            else
+            {
+                // We use Linq for generators.
+                state.output.usingDirs.Add("System.Linq");
+                for (int i = 0; i < compForVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(compForVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(" select ");
+                TestVisitor exprVisitor = new TestVisitor(state);
+                // Force the collection of tokens only in the leftmost child where
+                // the expression in the list comprehension is located.
+                context.GetChild(1).GetChild(0).Accept(exprVisitor);
+                for (int i = 0; i < exprVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(exprVisitor.result.tokens[i]);
+                }
+                // Override the type. If tuple is returned, type 'Tuple'
+                // cannot propagate to the 'for' loop.
+                state.varState.type = VarState.Types.Other;
+                result.tokens.Add(")");
+            }
         }
         // Non-empty list
         else if (context.ChildCount == 3 &&

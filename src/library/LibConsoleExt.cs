@@ -206,8 +206,10 @@ public static class ConsoleExt
         if (obj is null)
         {
             Console.WriteLine(""None"");
+            return;
         }
-        else if (obj.GetType().ToString().StartsWith(""System.ValueTuple`8""))
+        string typeString = obj.GetType().ToString();
+        if (typeString.StartsWith(""System.ValueTuple`8"") && typeString.Contains(""System.ValueTuple`2""))
         {
             Console.WriteLine(HandleTuple((ValueTuple<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, ValueTuple<dynamic, dynamic>>)obj));
         }
