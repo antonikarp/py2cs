@@ -968,7 +968,6 @@
     <None Remove="src\visitor\import\" />
     <None Remove="src\library\" />
     <None Remove="src\error_listener\" />
-    <None Remove="src\not_implemented_check\" />
     <Compile Remove="py2cs_tests\AutoTests.cs" />
     <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.csproj.CoreCompileInputs.cache" />
     <None Remove="py2cs_tests\obj\Debug\net6.0\py2cs_tests.genruntimeconfig.cache" />
@@ -1113,6 +1112,5 @@
     <Folder Include="src\visitor\import\" />
     <Folder Include="src\library\" />
     <Folder Include="src\error_listener\" />
-    <Folder Include="src\not_implemented_check\" />
   </ItemGroup>
 </Project>

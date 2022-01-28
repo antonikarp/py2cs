@@ -17,7 +17,6 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-
                 // When importing, take only file that ends with "_0", which
                 // is the main file.
                 // It needs to end with "_0.py"
@@ -84,8 +83,8 @@ public class AutoTests
          RunTests("1_must_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/should_have----
-        // Directory.SetCurrentDirectory("../2_should_have");
-        // RunTests("2_should_have", "", "");
+         Directory.SetCurrentDirectory("../2_should_have");
+         RunTests("2_should_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/nice_to_have----
         // Directory.SetCurrentDirectory("../3_nice_to_have");

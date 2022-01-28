@@ -11,6 +11,8 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
     }
     public override Class VisitClassdef([NotNull] Python3Parser.ClassdefContext context)
     {
+        state.classDefState = new ClassDefState();
+        state.classDefState.isActive = true;
         // We assume that we have the following children
 
         // If no inheritance:
@@ -75,6 +77,9 @@ public class ClassdefVisitor : Python3ParserBaseVisitor<Class>
         {
             state.output.classes.Add(result);
         }
+
+        // Flush the ClassDefState.
+        state.classDefState = new ClassDefState();
         return result;
     }
 

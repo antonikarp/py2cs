@@ -141,16 +141,14 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
             int n = context.ChildCount;
             AtomVisitor atomVisitor = new AtomVisitor(state);
-            List<MethodNameTrailerVisitor> methodNameTrailerVisitors = new List<MethodNameTrailerVisitor>();
-            MethodArglistTrailerVisitor methodArglistTrailerVisitor = new MethodArglistTrailerVisitor(state);
+            List<MethodArglistTrailerVisitor> trailerVisitors = new List<MethodArglistTrailerVisitor>();
             context.GetChild(0).Accept(atomVisitor);
-            for (int i = 1; i < n - 1; ++i)
+            for (int i = 1; i < n; ++i)
             {
-                MethodNameTrailerVisitor newVisitor = new MethodNameTrailerVisitor(state);
+                MethodArglistTrailerVisitor newVisitor = new MethodArglistTrailerVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
-                methodNameTrailerVisitors.Add(newVisitor);
+                trailerVisitors.Add(newVisitor);
             }
-            context.GetChild(n - 1).Accept(methodArglistTrailerVisitor);
             string varName = atomVisitor.result.ToString();
 
 
@@ -162,11 +160,11 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             string lastTokenAfterDot = splitAfterDotTokens[splitAfterDotTokens.Length - 1];
             if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(lastTokenAfterDot) &&
                 state.output.currentClasses.Peek().currentFunctions.Peek().variables[lastTokenAfterDot] == VarState.Types.List &&
-                methodNameTrailerVisitors[0].result.ToString() == ".append")
+                trailerVisitors[0].result.ToString() == ".append")
             {
-                methodNameTrailerVisitors[0].result.tokens.Clear();
-                methodNameTrailerVisitors[0].result.tokens.Add(".Add");
-                // Remember the type of the list which is a collection of an objects
+                trailerVisitors[0].result.tokens.Clear();
+                trailerVisitors[0].result.tokens.Add(".Add");
+                // Remember the type of the list which is a collection of objects
                 // of class defined in the source.
                 if (state.constructorCallState.isActive)
                 {
@@ -175,52 +173,20 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 }
             }
 
-
-            if (varName == "self")
+            if (state.output.currentClasses.Peek().nameForSelf == varName && varName != "")
             {
-                varName = "";
-                // Case of the inner constructor
-                // self.B(arg)
-                if (state.output.allClassesNames.Contains(methodNameTrailerVisitors[0].result.ToString().Remove(0, 1)))
-                {
-                    result.tokens.Add("new ");
-                    // Drop the dot.
-                    methodNameTrailerVisitors[0].result.tokens.RemoveAt(0);
-                }
-                // Expressions with self on the rhs.
-                else
-                {
-                    result.tokens.Add("this");
-                }
+               
+                result.tokens.Add("this");
 
-                for (int j = 0; j < methodNameTrailerVisitors.Count; ++j)
+                for (int j = 0; j < trailerVisitors.Count; ++j)
                 {
-                    for (int i = 0; i < methodNameTrailerVisitors[j].result.tokens.Count; ++i)
+                    for (int i = 0; i <trailerVisitors[j].result.tokens.Count; ++i)
                     {
-                        result.tokens.Add(methodNameTrailerVisitors[j].result.tokens[i]);
+                        result.tokens.Add(trailerVisitors[j].result.tokens[i]);
                     }
                 }
-                for (int i = 0; i < methodArglistTrailerVisitor.result.tokens.Count; ++i)
-                {
-                    result.tokens.Add(methodArglistTrailerVisitor.result.tokens[i]);
-                }
             }
-            // Case: BaseClass.__init__(self, arg1, arg2, ...)
-            else if (state.output.currentClasses.Peek().parentClass != null &&
-                state.output.currentClasses.Peek().parentClass.name == varName &&
-                methodNameTrailerVisitors[0].result.ToString().Remove(0, 1) == "__init__")
-            {
-                // Copy each argument to the base constructor initializer list which
-                // is translated to ... : base(arg1, arg2)
-                // First arguments is skipped because it is "this"
-                for (int i = 1; i < methodArglistTrailerVisitor.arguments.Count; ++i)
-                {
-                    string arg = methodArglistTrailerVisitor.arguments[i];
-                    state.output.currentClasses.Peek().currentFunctions.Peek().
-                        baseConstructorInitializerList.Add(arg);
-
-                }
-            }
+            
             else
             {
 
@@ -228,16 +194,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     result.tokens.Add(atomVisitor.result.tokens[i]);
                 }
-                for (int j = 0; j < methodNameTrailerVisitors.Count; ++j)
+                for (int j = 0; j < trailerVisitors.Count; ++j)
                 {
-                    for (int i = 0; i < methodNameTrailerVisitors[j].result.tokens.Count; ++i)
+                    for (int i = 0; i < trailerVisitors[j].result.tokens.Count; ++i)
                     {
-                        result.tokens.Add(methodNameTrailerVisitors[j].result.tokens[i]);
+                        result.tokens.Add(trailerVisitors[j].result.tokens[i]);
                     }
-                }
-                for (int i = 0; i < methodArglistTrailerVisitor.result.tokens.Count; ++i)
-                {
-                    result.tokens.Add(methodArglistTrailerVisitor.result.tokens[i]);
                 }
             }
         }
@@ -288,7 +250,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 }
             }
             // Field.
-            else if (name == "self")
+            else if (state.output.currentClasses.Peek().nameForSelf == name && name != "")
             {
                 name = "this";
             }

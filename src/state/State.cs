@@ -15,6 +15,7 @@
     public ListCompState listCompState;
     public TupleState tupleState;
     public ConstructorCallState constructorCallState;
+    public ClassDefState classDefState;
     public Output output;
     public State()
     {
@@ -33,6 +34,7 @@
         listCompState = new ListCompState();
         tupleState = new TupleState();
         constructorCallState = new ConstructorCallState();
+        classDefState = new ClassDefState();
         output = new Output();
     }
 }
