@@ -75,6 +75,13 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                     name = "Program." + name;
                 }
 
+                // Rename the changed function identifier.
+                if (state.output.currentClasses.Peek().currentFunctions.Count > 0 &&
+                    state.output.currentClasses.Peek().currentFunctions.Peek().changedFunctionIdentifiers.Contains(name))
+                {
+                    name = name + "_0";
+                }
+
                 // Replace the iteration variable with the generated name.
                 if (state.loopState.loopType == LoopState.LoopType.ForLoop &&
                     state.loopState.nameForGeneratedVariable != "" &&

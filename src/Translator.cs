@@ -164,8 +164,8 @@ namespace py2cs
                 return false;
             }
 
-            //try
-            //{
+            try
+            {
                 // Translate the program.
                 outputVisitor.Visit(tree);
                 File.WriteAllText(output_path, outputVisitor.state.output.ToStringMain());
@@ -179,12 +179,12 @@ namespace py2cs
                 }
                 Console.WriteLine("Translation successful.");
                 return true;
-            //}
-            //catch (Exception)
-            //{
-            //    Console.WriteLine("Error in translating: " + output_path);
-            //}
-            //return false;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error in translating: " + output_path);
+            }
+            return false;
         }
         public void Compile(string outputDirectory, string filename)
         {
