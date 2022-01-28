@@ -54,6 +54,9 @@ public class Function
     // perform LINQ queries on such variable.
     public Dictionary<string, string> listIdentifiersToClassNames;
 
+    // If an indentifier of a defined function was assigned to on the lhs,
+    // we need to rename it.
+    public HashSet<string> changedFunctionIdentifiers;
 
     public Function(Output _output)
     {
@@ -98,6 +101,7 @@ public class Function
         pendingGeneratedFunctionsInScope = new List<Function>();
         tupleIdentifierToNumberOfElements = new Dictionary<string, int>();
         listIdentifiersToClassNames = new Dictionary<string, string>();
+        changedFunctionIdentifiers = new HashSet<string>();
         output = _output;
     }
     public string getDelegateType()

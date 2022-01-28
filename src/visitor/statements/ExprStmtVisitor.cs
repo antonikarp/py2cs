@@ -216,6 +216,17 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 }
             }
 
+            // Check if lhs is a function identifier. If so, it needs to be renamed
+            foreach (var func in state.output.currentClasses.Peek().functions)
+            {
+                if (lhs == func.name && state.output.currentClasses.Peek().currentFunctions.Count > 0)
+                {
+                    state.output.currentClasses.Peek().currentFunctions.Peek().changedFunctionIdentifiers.Add(lhs);
+                    lhs = lhs + "_0";
+                    break;
+                }
+            }
+
             result.tokens.Add(lhs);
 
             // Move the declaration to the field declarations.
@@ -238,6 +249,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(lhs);
             }
 
+            
             // The following instructions are common for both cases (declaration
             // with initialization, assignment)
             result.tokens.Add(" = ");
