@@ -50,6 +50,10 @@ public class Class
     // Example: public dynamic foo() -> functionToSignature["foo"] = "Func<dynamic>"
     public Dictionary<string, string> functionToSignature;
 
+    // The identifier which is the first argument of every method/constructor
+    // in class definition.
+    public string nameForSelf;
+
     public bool isStatic;
     public bool isPartial;
     public Class(Output _output)
@@ -70,6 +74,7 @@ public class Class
         identifierToValueExpression = new Dictionary<string, string>();
         identifierToType = new Dictionary<string, VarState.Types>();
         functionToSignature = new Dictionary<string, string>();
+        nameForSelf = "";
     }
     public void CommitToOutput()
     {

@@ -11,7 +11,8 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
     }
     public override Function VisitFuncdef([NotNull] Python3Parser.FuncdefContext context)
     {
-        state.output.currentClasses.Peek().currentFunctions.Push(new Function(state.output)); 
+        result = new Function(state.output);
+        state.output.currentClasses.Peek().currentFunctions.Push(result); 
 
         // We assume that we have the following children:
 
@@ -24,19 +25,23 @@ public class FuncdefVisitor : Python3ParserBaseVisitor<Function>
         TypedargslistVisitor parameterVisitor = new TypedargslistVisitor(state);
         context.GetChild(2).Accept(parameterVisitor);
 
+        // If the first paramter is "self" then we remove it. Only when we are
+        // in the class definition.
+        if (state.classDefState.isActive && result.parameters.Count > 0)
+        {
+            if (state.output.currentClasses.Peek().nameForSelf == "")
+            {
+                state.output.currentClasses.Peek().nameForSelf = result.parameters[0];
+            }
+            result.parameters.RemoveAt(0);
+        }
+
         SuiteVisitor suiteVisitor = new SuiteVisitor(state);
         context.GetChild(4).Accept(suiteVisitor);
 
-        result = state.output.currentClasses.Peek().currentFunctions.Pop();
+        state.output.currentClasses.Peek().currentFunctions.Pop();
 
         result.name = context.GetChild(1).ToString();
-
-        
-        // If the first paramter is "self" then we remove it.
-        if (result.parameters.Count > 0 && result.parameters[0] == "self")
-        {
-            result.parameters.RemoveAt(0);
-        }
 
         // Special case __init__ - constructor
         if (result.name == "__init__")

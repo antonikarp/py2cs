@@ -24,6 +24,12 @@ public class MethodArglistTrailerVisitor : Python3ParserBaseVisitor<LineModel>
             result.tokens.Add("()");
             return result;
         }
+        else if (context.ChildCount == 2 && context.GetChild(0).ToString() == ".")
+        {
+            result.tokens.Add(".");
+            result.tokens.Add(context.NAME().ToString());
+            return result;
+        }
 
         // We have the following children if there are arguments:
         // Child #0: "("
