@@ -36,15 +36,14 @@ import dependencies, append ""_0"" to the name of the main file.
         }
         static void Main(string[] args)
         {
-            bool shouldBeCompiled = false;
+            if (args.Length != 2)
+            {
+                return;
+            }
             if (args.Length == 1 && args[0] == "help")
             {
                 PrintHelp();
                 return;
-            }
-            else if (args.Length == 1 && args[0] == "compile")
-            {
-                shouldBeCompiled = true;
             }
 
             List<string> cleanedScriptNames = new List<string>();
@@ -52,51 +51,17 @@ import dependencies, append ""_0"" to the name of the main file.
 
             string currentDirectory = Directory.GetCurrentDirectory();
 
-            // Resolve paths if executed from Visual Studio
-            if (currentDirectory.EndsWith("/bin/Debug/net5.0"))
-            {
-                currentDirectory += "/../../..";
-            }
+            string input_path = args[0];
 
-            string input_directory = currentDirectory +  "/input/";
-            string output_directory = currentDirectory + "/output/";
+            string[] tokensSplitBySlash = input_path.Split('/');
+            string[] tokensSplitByDot = tokensSplitBySlash[tokensSplitBySlash.Length - 1].Split('.');
+            string name = tokensSplitByDot[0];
+            string output_path_cs = args[1] + "/" + name + ".cs";
 
-            string[] paths = Directory.GetFiles(input_directory);
+            Translator translator = new Translator(false);
 
-            foreach (string path in paths)
-            {
-                string[] tokens = path.Split("/");
-                string potentialFilename = tokens[tokens.Length - 1];
-                if (potentialFilename.EndsWith(".py"))
-                {
-                    string[] beforeDot = potentialFilename.Split(".");
-                    scriptNames.Add(beforeDot[0]);
-                }
-            }
-
-            foreach (string scriptName in scriptNames)
-            {
-               
-                // If there are import dependencies between files,
-                // name of one of the files must end with "_0"
-                
-                if (scriptNames.Count > 1 && scriptName.Length >= 2 &&
-                    (scriptName[scriptName.Length - 2] != '_' ||
-                    scriptName[scriptName.Length - 1] != '0'))
-                {
-                    continue;
-                }
-                cleanedScriptNames.Add(scriptName);
-                    
-            }
-            foreach (string name in cleanedScriptNames)
-            {
-                string input_path = input_directory + name + ".py";
-                string output_path_cs = output_directory + name + ".cs";
-                string output_path_exe = output_directory + name + ".exe";
-                Translator translator = new Translator(false);
-                translator.Translate(input_path, output_path_cs, new List<string>(), "");
-            }
+            translator.Translate(input_path, output_path_cs, new List<string>(), "");
+           
         }
     }
 }

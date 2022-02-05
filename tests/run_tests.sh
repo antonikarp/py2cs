@@ -18,16 +18,27 @@ do
 		# Run the test script and get its output.
 		python3 -O scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
 
+		cd ..
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		cd tests
+		
+		echo
+		
 		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe
 		
 		# Run the compiled program and save its output.
 		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt
-
+	done
+		
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
 		# Compare the two outputs. If they match, then the test passed.
 		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
-		
 	done
 done
+
+
+
 
 # Tests which give different results in Python and C#.
 dir_names_2=(6_differences)
