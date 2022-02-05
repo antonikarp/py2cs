@@ -17,11 +17,6 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                if (!potentialFilename.StartsWith("assignment"))
-                {
-                    continue;
-                }
-
                 // When importing, take only file that ends with "_0", which
                 // is the main file.
                 // It needs to end with "_0.py"
@@ -50,29 +45,6 @@ public class AutoTests
         // Write all eligible filenames to a file which will be read by a bash scipt
         // "run_tests.sh"
         File.WriteAllLines("testnames.txt", filenames);
-        /*foreach (string name in filenames)
-        {
-            string input_path = name + ".py";
-            string[] subDirectoryTokens = subDirectory.Split("/");
-
-            string output_path = "../../";
-            // Append additional "../" if we are deeper in the subdirectory.
-            if (subDirectory != "")
-            {
-                for (int i = 0; i < subDirectoryTokens.Length; ++i)
-                {
-                    output_path += "../";
-                }
-            }
-            output_path += "generated/";
-            string outputDirectory = output_path + directory;
-
-            output_path += directory + "/" + name + ".cs";
-            Translator translator = new Translator(true);
-            // We are not dealing with imported files so we set the moduleName
-            // to empty.
-            translator.Translate(input_path, output_path, new List<string>(), mode);
-        }*/
     }
 
     [Fact]
@@ -118,8 +90,8 @@ public class AutoTests
            Directory.SetCurrentDirectory("../../");
            Directory.SetCurrentDirectory("../1_must_have/import/4");
            RunTests("1_must_have/import/4", "import/4", "import");
-           Directory.SetCurrentDirectory("../../");
-           Directory.SetCurrentDirectory("../1_must_have/input");
-           RunTests("1_must_have/input", "input", "input");*/
+           Directory.SetCurrentDirectory("../../"); */
+        //   Directory.SetCurrentDirectory("../1_must_have/input");
+        //   RunTests("1_must_have/input", "input", "input");
     }
 }

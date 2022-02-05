@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+	<StartupObject>py2cs.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -1332,6 +1333,49 @@
     <None Remove="tests\generated_output\1_must_have\assignment1.txt" />
     <None Remove="tests\scripts_output\1_must_have\assignment2.txt" />
     <None Remove="tests\generated_output\1_must_have\assignment2.txt" />
+    <Compile Remove="tests\generated\1_must_have\import\1\second1.cs" />
+    <Compile Remove="tests\generated\1_must_have\import\1\main1_0.cs" />
+    <Compile Remove="tests\generated\1_must_have\import\1\main1_0_lib.cs" />
+    <None Remove="tests\run_tests.sh" />
+    <None Remove="tests\scripts\1_must_have\import\1\testnames.txt" />
+    <None Remove="tests\scripts\1_must_have\import\2\testnames.txt" />
+    <None Remove="tests\scripts\1_must_have\import\3\testnames.txt" />
+    <None Remove="tests\scripts\1_must_have\import\4\testnames.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\1\main1_0.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\1\main1_0.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\2\main2_0.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\2\main2_0.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\3\main3_0.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\3\main3_0.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\4\main4_0.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\4\main4_0.txt" />
+    <Compile Remove="tests\generated\1_must_have\import\2\main2_0.cs" />
+    <Compile Remove="tests\generated\1_must_have\import\2\second2.cs" />
+    <Compile Remove="tests\generated\1_must_have\import\2\main2_0_lib.cs" />
+    <None Remove="tests\scripts\1_must_have\import\1\testnames.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\1\main1_0.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\2\main2_0.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\3\main3_0.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\4\main4_0.txt" />
+    <Compile Remove="tests\generated\1_must_have\import\1\main1.cs" />
+    <Compile Remove="tests\generated\1_must_have\import\1\main1_lib.cs" />
+    <None Remove="tests\scripts\1_must_have\import\1\.DS_Store" />
+    <None Remove="tests\scripts\1_must_have\import\1\main1.py" />
+    <None Remove="tests\scripts\1_must_have\import\4\.DS_Store" />
+    <None Remove="tests\scripts\1_must_have\import\4\main4.py" />
+    <None Remove="tests\scripts\1_must_have\import\3\main3.py" />
+    <None Remove="tests\scripts\1_must_have\import\3\.DS_Store" />
+    <None Remove="tests\scripts\1_must_have\import\2\.DS_Store" />
+    <None Remove="tests\scripts\1_must_have\import\2\main2.py" />
+    <None Remove="tests\run_tests.sh" />
+    <None Remove="tests\scripts_output\1_must_have\import\1\main1.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\1\main1.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\2\main2.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\2\main2.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\3\main3.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\3\main3.txt" />
+    <None Remove="tests\scripts_output\1_must_have\import\4\main4.txt" />
+    <None Remove="tests\generated_output\1_must_have\import\4\main4.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1348,4 +1392,9 @@
     <Folder Include="src\library\" />
     <Folder Include="src\error_listener\" />
   </ItemGroup>
+  
+  <ItemGroup>
+  	<Compile Remove="tests\**" />
+  </ItemGroup>
+  
 </Project>
