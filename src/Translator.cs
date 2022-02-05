@@ -82,6 +82,7 @@ namespace py2cs
 
         public bool Translate(string input_path, string output_path, List<string> moduleNames, string _mode)
         {
+            Console.WriteLine(input_path + ":");
             Translator.input_path = input_path;
             Translator.output_path = output_path;
             mode = _mode;
@@ -185,31 +186,6 @@ namespace py2cs
                 Console.WriteLine("Error in translating: " + output_path);
             }
             return false;
-        }
-        public void Compile(string outputDirectory, string filename)
-        {
-            ProcessStartInfo compiler = new ProcessStartInfo();
-            // This is for Mac OS X.
-            // (2) -----> Important! Please update it so that the path is correct on your machine.
-            compiler.FileName = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/csc";
-            string arguments = filename;
-            // Add the attached library file.
-            string libFilename = filename.Replace(".cs", "_lib.cs");
-            arguments += " ";
-            arguments += libFilename;
-            foreach (var importedFilename in Translator.importedFilenames)
-            {
-                arguments += " ";
-                arguments += importedFilename;
-            }
-            
-            compiler.Arguments = arguments;
-            compiler.WorkingDirectory = outputDirectory;
-            var process = Process.Start(compiler);
-            process.WaitForExit();
-
-            // Clear the static importedFileNames list
-            importedFilenames.Clear();
         }
     }
 }

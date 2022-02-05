@@ -18,6 +18,8 @@ do
 		# Run the test script and get its output.
 		python3 -O scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
 
+		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe
+		
 		# Run the compiled program and save its output.
 		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt
 
