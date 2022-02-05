@@ -18,14 +18,27 @@ do
 		# Run the test script and get its output.
 		python3 -O scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
 
+		cd ..
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		cd tests
+		
+		echo
+		
+		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe
+		
 		# Run the compiled program and save its output.
 		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt
-
+	done
+		
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
 		# Compare the two outputs. If they match, then the test passed.
 		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
-		
 	done
 done
+
+
+
 
 # Tests which give different results in Python and C#.
 dir_names_2=(6_differences)
@@ -80,22 +93,26 @@ done
 
 
 # Tests checking the import mechanism
-dir_names_5=(1_must_have/import/1 1_must_have/import/2 1_must_have/import/3 1_must_have/import/4)
+dir_names_5=(1 2 3 4)
 
 for dir_name in "${dir_names_5[@]}"
 do
-	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
-	do
-		# Run the test script and get its output.
-		python3 scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
+	# Run the test script and get its output.
+	python3 scripts/1_must_have/import/"$dir_name"/main"$dir_name".py > scripts_output/1_must_have/import/"$dir_name"/main"$dir_name".txt
+		
+	cd ..
+	dotnet run tests/scripts/1_must_have/import/"$dir_name"/main"$dir_name".py tests/generated/1_must_have/import/"$dir_name"
+	cd tests
+		
+	echo
+		
+	csc generated/1_must_have/import/"$dir_name"/*.cs /out:generated/1_must_have/import/"$dir_name"/main"$dir_name".exe
 
-		# Run the compiled program and save its output.
-		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt
+	# Run the compiled program and save its output.
+	mono generated/1_must_have/import/"$dir_name"/main"$dir_name".exe > generated_output/1_must_have/import/"$dir_name"/main"$dir_name".txt
 		
-		# Compare the two outputs. If they match, then the test passed.
-		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
-		
-	done
+	# Compare the two outputs. If they match, then the test passed.
+	python3 compare_results_identical.py ./generated_output/"$dir_name"/main"$dir_name".txt ./scripts_output/"$dir_name"/main"$dir_name".txt "1_must_have/import/${name}"
 done
 
 # Tests that take data to stdin from external files (.in)
