@@ -28,14 +28,30 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
 
             if (state.output.allClassesNames.Contains(atomVisitor.result.ToString()))
             {
-                // We have a constructor call. Add 'new' to the resulting string.
-                result.tokens.Add("new ");
-                // Save the name of the class in the state. It will be potenetially
-                // used to give a type to a collection containing such elements.
-                // For now, we assume that are no collections of nested classes.
-                state.constructorCallState = new ConstructorCallState();
-                state.constructorCallState.isActive = true;
-                state.constructorCallState.name = atomVisitor.result.ToString();
+                bool isConstructorCall = true;
+                if (context.ChildCount >= 3)
+                {
+                    int i = 1;
+                    int n = context.ChildCount;
+                    while (i < n - 1)
+                    {
+                        TrailerConstructorCheckVisitor newVisitor = new TrailerConstructorCheckVisitor(state);
+                        context.GetChild(i).Accept(newVisitor);
+                        isConstructorCall = isConstructorCall && newVisitor.isConstructor;
+                        ++i;
+                    }
+                }
+                if (isConstructorCall)
+                {
+                    // We have a constructor call. Add 'new' to the resulting string.
+                    result.tokens.Add("new ");
+                    // Save the name of the class in the state. It will be potentially
+                    // used to give a type to a collection containing such elements.
+                    // For now, we assume that are no collections of nested classes.
+                    state.constructorCallState = new ConstructorCallState();
+                    state.constructorCallState.isActive = true;
+                    state.constructorCallState.name = atomVisitor.result.ToString();
+                }
             }
         }
 

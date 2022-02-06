@@ -17,23 +17,11 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                // When importing, take only file that ends with "_0", which
-                // is the main file.
-                // It needs to end with "_0.py"
-
-                // If it is the directory /import/* any file which does not end
-                // with _0 is skipped.
-                if (mode == "import" && potentialFilename.Length >= 5 &&
-                    (potentialFilename[potentialFilename.Length - 5] != '_' ||
-                    potentialFilename[potentialFilename.Length - 4] != '0'))
+                if (!potentialFilename.StartsWith("BST"))
                 {
                     continue;
                 }
-                // If it is in different directory (like 'unit'), any file which
-                // ends with '_<char>' and char is not '0' is skipped.
-                if (mode == "import" && potentialFilename.Length >= 5 &&
-                    potentialFilename[potentialFilename.Length - 5] == '_' &&
-                    potentialFilename[potentialFilename.Length - 4] != '0')
+                if (mode == "import" && !potentialFilename.StartsWith("main"))
                 {
                     continue;
                 }
@@ -53,12 +41,12 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../../../tests/scripts/1_must_have");
 
         // ----Uncomment this block to run tests in scripts/must_have----
-         Directory.SetCurrentDirectory("../1_must_have");
-         RunTests("1_must_have", "", "");
+        // Directory.SetCurrentDirectory("../1_must_have");
+        // RunTests("1_must_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/should_have----
-        // Directory.SetCurrentDirectory("../2_should_have");
-        // RunTests("2_should_have", "", "");
+         Directory.SetCurrentDirectory("../2_should_have");
+         RunTests("2_should_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/nice_to_have----
         // Directory.SetCurrentDirectory("../3_nice_to_have");
@@ -79,7 +67,7 @@ public class AutoTests
         //  ----Uncomment this block to run tests in
         //  scripts/must_have/import
         //  scripts/must_have_input----
-        /* Directory.SetCurrentDirectory("../1_must_have/import/1");
+        /*   Directory.SetCurrentDirectory("../1_must_have/import/1");
            RunTests("1_must_have/import/1", "import/1", "import");
            Directory.SetCurrentDirectory("../../");
            Directory.SetCurrentDirectory("../1_must_have/import/2");
