@@ -97,22 +97,32 @@ dir_names_5=(1 2 3 4)
 
 for dir_name in "${dir_names_5[@]}"
 do
-	# Run the test script and get its output.
-	python3 scripts/1_must_have/import/"$dir_name"/main"$dir_name".py > scripts_output/1_must_have/import/"$dir_name"/main"$dir_name".txt
+	cat scripts/1_must_have/import/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
+		# Run the test script and get its output.
+	
+		python3 scripts/1_must_have/import/"$dir_name"/"$name".py > scripts_output/1_must_have/import/"$dir_name"/"$name".txt
 		
-	cd ..
-	dotnet run tests/scripts/1_must_have/import/"$dir_name"/main"$dir_name".py tests/generated/1_must_have/import/"$dir_name"
-	cd tests
+		cd ..
+		dotnet run tests/scripts/1_must_have/import/"$dir_name"/"$name".py tests/generated/1_must_have/import/"$dir_name"
+		cd tests
 		
-	echo
+		echo
 		
-	csc generated/1_must_have/import/"$dir_name"/*.cs /out:generated/1_must_have/import/"$dir_name"/main"$dir_name".exe
+		csc generated/1_must_have/import/"$dir_name"/*.cs /out:generated/1_must_have/import/"$dir_name"/"$name".exe
 
-	# Run the compiled program and save its output.
-	mono generated/1_must_have/import/"$dir_name"/main"$dir_name".exe > generated_output/1_must_have/import/"$dir_name"/main"$dir_name".txt
-		
-	# Compare the two outputs. If they match, then the test passed.
-	python3 compare_results_identical.py ./generated_output/"$dir_name"/main"$dir_name".txt ./scripts_output/"$dir_name"/main"$dir_name".txt "1_must_have/import/${name}"
+		# Run the compiled program and save its output.
+		mono generated/1_must_have/import/"$dir_name"/"$name".exe > generated_output/1_must_have/import/"$dir_name"/"$name".txt
+	done	
+done
+
+for dir_name in "${dir_names_5[@]}"
+do
+	cat scripts/1_must_have/import/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
+		# Compare the two outputs. If they match, then the test passed.
+		python3 compare_results_identical.py ./generated_output/1_must_have/import/"$dir_name"/"$name".txt ./scripts_output/1_must_have/import/"$dir_name"/"$name".txt "1_must_have/import/${dir_name}"
+	done
 done
 
 # Tests that take data to stdin from external files (.in)
@@ -121,17 +131,28 @@ dir_names_6=(1_must_have/input)
 for dir_name in "${dir_names_6[@]}"
 do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
-	do
+	do	
 		# Run the test script with the provided file for stdin and get its output.
 		python3 scripts/"$dir_name"/"$name".py < scripts/"$dir_name"/"$name".in > scripts_output/"$dir_name"/"$name".txt
 		
+		cd ..
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		cd tests
+		
+		echo
+		
+		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe
+		
 		# Run the compiled program supplying the input file and save its output.
 		mono generated/"$dir_name"/"$name".exe < scripts/"$dir_name"/"$name".in > generated_output/"$dir_name"/"$name".txt
-		
+	done
+	
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
 		# Compare the two outputs. If they match, then the test passed.
 		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
-		
 	done
+	
 done
 echo ""
 
