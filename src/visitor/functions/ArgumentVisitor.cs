@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using System;
+using Antlr4.Runtime.Misc;
 
 // This visitor is used in translating arguments of a function call.
 
@@ -27,10 +28,16 @@ public class ArgumentVisitor : Python3ParserBaseVisitor<LineModel>
         // Named argument (aka keyword argument)
         else if (context.ChildCount == 3 && context.GetChild(1).ToString() == "=")
         {
+            // We have encountered illegal keyword documents. Throw an exception.
+            if (state.illegalKeywordArgumentsState.isActive)
+            {
+                throw new IncorrectInputException();
+            }
             TestVisitor keyVisitor = new TestVisitor(state);
             TestVisitor valueVisitor = new TestVisitor(state);
             context.GetChild(0).Accept(keyVisitor);
             context.GetChild(2).Accept(valueVisitor);
+            
             for (int i = 0; i < keyVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(keyVisitor.result.tokens[i]);

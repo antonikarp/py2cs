@@ -58,7 +58,7 @@ import dependencies, append ""_0"" to the name of the main file.
             string name = tokensSplitByDot[0];
             string output_path_cs = args[1] + "/" + name + ".cs";
 
-            Translator translator = new Translator(false);
+            Translator translator = new Translator();
 
             translator.Translate(input_path, output_path_cs, new List<string>());
         }

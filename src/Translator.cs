@@ -13,14 +13,6 @@ namespace py2cs
         public static string input_path;
         public static string output_path;
         public static List<string> importedFilenames = new List<string>();
-        public bool writeMessagesToFile;
-        public string mode;
-
-        public Translator(bool _writeMessagesToFile)
-        {
-            writeMessagesToFile = _writeMessagesToFile;
-            mode = "";
-        }
 
         public bool Translate(string input_path, string output_path, List<string> moduleNames)
         {
@@ -45,16 +37,11 @@ namespace py2cs
             if (syntaxErrorListener.isSyntaxError)
             {
                 string content = "Syntax error: Unable to parse the input.";
-                if (writeMessagesToFile)
-                {
-                    string textFilePath = output_path;
-                    textFilePath = textFilePath.Replace(".cs", ".txt");
-                    File.WriteAllText(textFilePath, content);
-                }
-                else
-                {
-                    Console.WriteLine(content);
-                }
+                string textFilePath = output_path;
+                textFilePath = textFilePath.Replace(".cs", ".txt");
+                File.WriteAllText(textFilePath, content);
+                Console.WriteLine(content);
+
                 return false;
             }
             outputVisitor = new OutputVisitor(moduleNames);
@@ -67,21 +54,16 @@ namespace py2cs
                 // Write a .txt file with a message to the user. It is used
                 // also by scripts which checks the results of tests.
                 string content = "Not handled: With used language constructs the translation couldn't be performed.";
-                if (writeMessagesToFile)
-                {
-                    string textFilePath = output_path;
-                    textFilePath = textFilePath.Replace(".cs", ".txt");
-                    File.WriteAllText(textFilePath, content);
-                }
-                else
-                {
-                    Console.WriteLine(content);
-                }
+                string textFilePath = output_path;
+                textFilePath = textFilePath.Replace(".cs", ".txt");
+                File.WriteAllText(textFilePath, content);
+                Console.WriteLine(content);
+
                 return false;
             }
 
-            //try
-            //{
+            try
+            {
                 // Translate the program.
                 outputVisitor.Visit(tree);
                 File.WriteAllText(output_path, outputVisitor.state.output.ToStringMain());
@@ -95,11 +77,19 @@ namespace py2cs
                 }
                 Console.WriteLine("Translation successful.");
                 return true;
-            //}
-            //catch (Exception)
-            //{
+            }
+            catch (IncorrectInputException)
+            {
+                string content = "Error: incorrect input.";
+                string textFilePath = output_path;
+                textFilePath = textFilePath.Replace(".cs", ".txt");
+                File.WriteAllText(textFilePath, content);
+                Console.WriteLine(content);
+            }
+            catch (Exception)
+            {
                 Console.WriteLine("Error in translating: " + output_path);
-            //}
+            }
             return false;
         }
     }

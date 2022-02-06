@@ -16,6 +16,8 @@
     public TupleState tupleState;
     public ConstructorCallState constructorCallState;
     public ClassDefState classDefState;
+    public TrailerConstructorCheckState trailerConstructorCheckState;
+    public IllegalKeywordArgumentsState illegalKeywordArgumentsState;
     public Output output;
     public State()
     {
@@ -35,6 +37,8 @@
         tupleState = new TupleState();
         constructorCallState = new ConstructorCallState();
         classDefState = new ClassDefState();
+        trailerConstructorCheckState = new TrailerConstructorCheckState();
+        illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
         output = new Output();
     }
 }

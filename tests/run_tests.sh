@@ -86,6 +86,10 @@ for dir_name in "${dir_names_4[@]}"
 do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do
+		cd ..
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		cd tests
+		
 		# Instead of .cs file there is a generated .txt file
 		python3 validate_results_error.py ./generated/"$dir_name"/"$name".txt "${dir_name}/${name}"
 	done
