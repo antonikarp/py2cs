@@ -60,8 +60,7 @@ import dependencies, append ""_0"" to the name of the main file.
 
             Translator translator = new Translator(false);
 
-            translator.Translate(input_path, output_path_cs, new List<string>(), "");
-           
+            translator.Translate(input_path, output_path_cs, new List<string>());
         }
     }
 }

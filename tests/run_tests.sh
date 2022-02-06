@@ -131,17 +131,28 @@ dir_names_6=(1_must_have/input)
 for dir_name in "${dir_names_6[@]}"
 do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
-	do
+	do	
 		# Run the test script with the provided file for stdin and get its output.
 		python3 scripts/"$dir_name"/"$name".py < scripts/"$dir_name"/"$name".in > scripts_output/"$dir_name"/"$name".txt
 		
+		cd ..
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		cd tests
+		
+		echo
+		
+		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe
+		
 		# Run the compiled program supplying the input file and save its output.
 		mono generated/"$dir_name"/"$name".exe < scripts/"$dir_name"/"$name".in > generated_output/"$dir_name"/"$name".txt
-		
+	done
+	
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
 		# Compare the two outputs. If they match, then the test passed.
 		python3 compare_results_identical.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
-		
 	done
+	
 done
 echo ""
 

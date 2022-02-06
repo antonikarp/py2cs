@@ -26,7 +26,9 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(atomVisitor);
             state.stmtState.isLocked = prevState;
 
-            if (state.output.allClassesNames.Contains(atomVisitor.result.ToString()))
+            // When throwing an object of type Exception, this is also a constructor call.
+            if (state.output.allClassesNames.Contains(atomVisitor.result.ToString()) ||
+                atomVisitor.result.ToString() == "Exception")
             {
                 bool isConstructorCall = true;
                 if (context.ChildCount >= 3)
