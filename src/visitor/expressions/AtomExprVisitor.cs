@@ -30,6 +30,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             if (state.output.allClassesNames.Contains(atomVisitor.result.ToString()) ||
                 atomVisitor.result.ToString() == "Exception")
             {
+                state.trailerConstructorCheckState = new TrailerConstructorCheckState();
                 bool isConstructorCall = true;
                 if (context.ChildCount >= 3)
                 {
@@ -54,6 +55,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                     state.constructorCallState.isActive = true;
                     state.constructorCallState.name = atomVisitor.result.ToString();
                 }
+                // We are done with checking for a constructor call.
+                state.trailerConstructorCheckState = new TrailerConstructorCheckState();
             }
         }
 
@@ -241,6 +244,18 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // Reserved words, which cannot be used as identifiers.
             HashSet<string> reservedIdentifiers = new HashSet<string> { "private" };
 
+            state.illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
+            bool arePotentialIllegalKeywordArguments = true;
+            foreach (var func in state.output.currentClasses.Peek().functions)
+            {
+                if (func.name == name && func.defaultParameters.Count > 0)
+                {
+                    arePotentialIllegalKeywordArguments = false;
+                    break;
+                }
+            }
+            state.illegalKeywordArgumentsState.isActive = arePotentialIllegalKeywordArguments;
+
             // Function call or field.         
             if (name == "print")
             {
@@ -248,7 +263,6 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 // TrailerVisitor for arguments. See one of the cases in this file.
                 // (the one with "function call or field")
                 name = "ConsoleExt.WriteLine";
-
             }
             else if (name == "range")
             {
@@ -483,6 +497,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 }
             }
         }
+        // We are done with the function call. Flush the IllegalKeywordArgumentsState
+        state.illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
 
         return result;
     }

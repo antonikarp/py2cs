@@ -35,7 +35,7 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
             // Child #2: <alias>
             name = context.GetChild(2).ToString();
         }
-        py2cs.Translator translator = new py2cs.Translator(false);
+        py2cs.Translator translator = new py2cs.Translator();
         string input_path;
         string output_path;
         if (py2cs.Program.input_path != null && py2cs.Program.output_path != null)

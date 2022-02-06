@@ -205,6 +205,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 if (state.loopState.loopType != LoopState.LoopType.NoLoop)
                 {
                     state.loopState.declaredIdentifiers.Add(lhs);
+                    state.output.currentClasses.Peek().currentFunctions.Peek().hiddenIdentifiers.Add(lhs);
                 }
                 else if (state.scopeState.isActive)
                 {
@@ -325,6 +326,18 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(1).Accept(opVisitor);
             context.GetChild(2).Accept(rightVisitor);
+            string identifier = leftVisitor.result.ToString();
+            string[] tokens = identifier.Split(".");
+            string rawIdentifier = tokens[tokens.Length - 1];
+            // We cannot have augumented assignment to a variable we haven't declared.
+            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(rawIdentifier) &&
+                !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(rawIdentifier) &&
+                !state.output.currentClasses.Peek().currentFunctions.Peek().hiddenIdentifiers.Contains(rawIdentifier) &&
+                !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(rawIdentifier) &&
+                !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToNonlocal.Contains(rawIdentifier))
+            {
+                throw new IncorrectInputException("Illegal augumented assignment.");
+            }
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(leftVisitor.result.tokens[i]);

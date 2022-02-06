@@ -17,6 +17,10 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
+                if (!potentialFilename.StartsWith("incorrect_asgn"))
+                {
+                    continue;
+                }
                 if (mode == "import" && !potentialFilename.StartsWith("main"))
                 {
                     continue;
