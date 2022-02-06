@@ -78,9 +78,9 @@ namespace py2cs
                 Console.WriteLine("Translation successful.");
                 return true;
             }
-            catch (IncorrectInputException)
+            catch (IncorrectInputException ex)
             {
-                string content = "Error: incorrect input.";
+                string content = "Error: incorrect input. " + ex.message;
                 string textFilePath = output_path;
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);

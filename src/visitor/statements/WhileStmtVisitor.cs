@@ -89,6 +89,7 @@ public class WhileStmtVisitor : Python3ParserBaseVisitor<BlockModel>
             result.lines.Add(closingBraceLineElse);
 
         }
+
         // Flush LoopState
         state.loopState = new LoopState();
 
