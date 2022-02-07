@@ -25,6 +25,13 @@ public class TestVisitor : Python3ParserBaseVisitor<LineModel>
 
         if (context.ChildCount == 5)
         {
+            // Expression is standalone:
+            if (!state.stmtState.isLocked)
+            {
+                state.stmtState.isStandalone = true;
+                state.stmtState.isLocked = true;
+            }
+
             OrTestVisitor trueValueVisitor = new OrTestVisitor(state);
             context.GetChild(0).Accept(trueValueVisitor);
             TestVisitor falseValueVisitor = new TestVisitor(state);

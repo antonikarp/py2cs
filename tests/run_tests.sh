@@ -48,11 +48,20 @@ do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do
 		# Run the test script and get its output.
-		python3 scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
+		python3 scripts/"$dir_name"/"$name".py 1> scripts_output/"$dir_name"/"$name".txt 2> /dev/null
+		
+		cd ..
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		cd tests
+		
+		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe
 
 		# Run the compiled program and save its output.
 		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt
-		
+	done
+	
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do	
 		# Compare the two outputs. They are expected to be different
 		python3 compare_results_different.py ./generated_output/"$dir_name"/"$name".txt ./scripts_output/"$dir_name"/"$name".txt "${dir_name}/${name}"
 	done
@@ -65,7 +74,14 @@ do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do
 		# There is no need to run scripts (which might not be correct), because we don't check its results. 
-
+		cd ..
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		cd tests
+		
+		echo
+	done
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
 		# Instead of .cs file there is a generated .txt file
 		python3 validate_results_not_implemented.py ./generated/"$dir_name"/"$name".txt "${dir_name}/${name}"
 	done
@@ -89,7 +105,9 @@ do
 		cd ..
 		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
 		cd tests
-		
+	done
+	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
+	do
 		# Instead of .cs file there is a generated .txt file
 		python3 validate_results_error.py ./generated/"$dir_name"/"$name".txt "${dir_name}/${name}"
 	done
@@ -158,6 +176,6 @@ do
 	done
 	
 done
-echo ""
+echo
 
 
