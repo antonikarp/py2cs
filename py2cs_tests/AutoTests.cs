@@ -17,7 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                if (!potentialFilename.StartsWith("incorrect_indexing"))
+                if (!potentialFilename.StartsWith("incorrect_global"))
                 {
                     continue;
                 }
