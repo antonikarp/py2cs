@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 // This class is a model for a function.
@@ -102,6 +103,7 @@ public class Function
         tupleIdentifierToNumberOfElements = new Dictionary<string, int>();
         listIdentifiersToClassNames = new Dictionary<string, string>();
         changedFunctionIdentifiers = new HashSet<string>();
+
         output = _output;
     }
     public string getDelegateType()
@@ -187,12 +189,37 @@ public class Function
             curIndentation += statements.lines[i].increment;
         }
     }
+    public void ResolveGlobalVariables()
+    {
+        HashSet<string> staticFieldIdentifiers = parentClass.staticFieldIdentifiers;
+        string className = parentClass.name;
+
+        for (int i = 0; i < statements.lines.Count; ++i)
+        {
+            Regex rx = new Regex("@@@{(.*)}");
+            MatchCollection matches = rx.Matches(statements.lines[i].line);
+            foreach (Match match in matches)
+            {
+                if (!staticFieldIdentifiers.Contains(match.Groups[1].Value))
+                {
+                    throw new IncorrectInputException("Invalid global statement.");
+                }
+                else
+                {
+                    string newLine = statements.lines[i].line;
+                    newLine = newLine.Replace("@@@{" + match.Groups[1].Value + "}", className + "." + match.Groups[1].Value);
+                    statements.lines[i].line = newLine;
+                }
+            }
+        }
+    }
 
     public void CommitToOutput()
     {
 
         ReturnNullIfVoid();
         CheckForCollidingDeclarations();
+        ResolveGlobalVariables();
 
         // Handle the default case (if this is not a constructor of the parent class
         // or even if it is not constructor) by storing a list of "dynamic" types.
@@ -361,6 +388,8 @@ public class Function
             // Commit each internal function (at the end).
             foreach (var internalFunc in internalFunctions)
             {
+                internalFunc.ResolveGlobalVariables();
+
                 // Internal functions are not public.
                 internalFunc.isPublic = false;
                 internalFunc.CommitToOutput();

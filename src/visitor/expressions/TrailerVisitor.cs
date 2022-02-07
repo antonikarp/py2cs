@@ -38,8 +38,9 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(1).GetType().ToString() == "Python3Parser+ArglistContext")
         {
             string funcName = "";
+            bool isTypeCastFromNullCheck = state.typeCastFromNullCheckState.isActive;
             // Remember funcName here. When creating new ArgumentVisitor in the following code
-            // the state is flushed.
+            // the state is flushed, because there is 'atom_expr' as a child of argument.
             if (state.funcCallState.funcName == "enumerate")
             {
                 funcName = "enumerate";
@@ -77,6 +78,12 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                 ArgumentVisitor newVisitor = new ArgumentVisitor(state);
                 context.GetChild(1).GetChild(0).Accept(newVisitor);
                 string value = newVisitor.result.ToString();
+
+                // Conversions: int(None), float(None) are illegal.
+                if (value == "null" && isTypeCastFromNullCheck)
+                {
+                    throw new IncorrectInputException("Illegal cast from None.");
+                }
                 if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(value) &&
                         state.output.currentClasses.Peek().currentFunctions.Peek().variables[value] == VarState.Types.Double)
                 {
@@ -104,6 +111,13 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                     for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
                     {
                         result.tokens.Add(newVisitor.result.tokens[j]);
+                    }
+
+                    // Conversions: int(None), float(None) are illegal.
+                    string value = newVisitor.result.ToString();
+                    if (value == "null" && isTypeCastFromNullCheck)
+                    {
+                        throw new IncorrectInputException("Illegal cast from None.");
                     }
                     i += 2;
                 }
@@ -158,6 +172,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             if (parts.Length == 1)
             {
                 result.tokens.Add("[");
+                CheckForIllegalDoubleIndex(value);
                 result.tokens.Add(value);
                 result.tokens.Add("]");
             }
@@ -175,6 +190,18 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                     sliceStart = (parts[0] == "" ? null : parts[0]);
                     sliceEnd = (parts[1] == "" ? null : parts[1]);
                     sliceStride = (parts[2] == "" ? null : parts[2]);
+                }
+                if (sliceStart != null)
+                {
+                    CheckForIllegalDoubleIndex(sliceStart);
+                }
+                if (sliceEnd != null)
+                {
+                    CheckForIllegalDoubleIndex(sliceEnd);
+                }
+                if (sliceStride != null)
+                {
+                    CheckForIllegalDoubleIndex(sliceStride);
                 }
             }
         }
@@ -214,6 +241,15 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
         }
 
         return result;
+    }
+    private void CheckForIllegalDoubleIndex(string value)
+    {
+        int intValue;
+        double doubleValue;
+        if (!Int32.TryParse(value, out intValue) && Double.TryParse(value, out doubleValue))
+        {
+            throw new IncorrectInputException("Illegal double index.");
+        }
     }
 
 }

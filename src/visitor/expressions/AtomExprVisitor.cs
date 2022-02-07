@@ -241,6 +241,10 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // Flush the FuncCallState
             state.funcCallState = new FuncCallState();
 
+            // We might encounter a type cast (ex. int(), float()).
+            // Flush the TypeCastFromNullCheckState
+            state.typeCastFromNullCheckState = new TypeCastFromNullCheckState();
+
             // Reserved words, which cannot be used as identifiers.
             HashSet<string> reservedIdentifiers = new HashSet<string> { "private" };
 
@@ -311,6 +315,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // promotion to int.
             else if (name == "int" || (name == "bool" && state.promoteBoolToIntState.isAritmExpr))
             {
+                state.typeCastFromNullCheckState.isActive = true;
+
                 // Child #0: atom
                 // Child #1: trailer
                 if (context.GetChild(1).ChildCount == 2)
@@ -330,6 +336,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // We have a type cast to float:
             else if (name == "float")
             {
+                state.typeCastFromNullCheckState.isActive = true;
+
                 // Child #0: atom
                 // Child #1: trailer
                 if (context.GetChild(1).ChildCount == 2)
@@ -499,6 +507,8 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
         }
         // We are done with the function call. Flush the IllegalKeywordArgumentsState
         state.illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
+        // The same with TypeCastFromNullCheckState
+        state.typeCastFromNullCheckState = new TypeCastFromNullCheckState();
 
         return result;
     }

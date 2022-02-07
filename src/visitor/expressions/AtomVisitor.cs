@@ -106,12 +106,14 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                         if (state.output.currentClasses.Peek().currentFunctions.Count > 0 &&
                             state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(name))
                         {
-                            // Example: Program.x
-                            name = state.output.currentClasses.Peek().name + "." + name;
+                            // Example: @@@{x}
+                            // Resolve "@@@" later.
+                            name = "@@@{" + name + "}";
                             // Activate the respective state (to be used in ExprStmt).
                             state.varReferringToGlobalState = new VarReferringToGlobalState();
                             state.varReferringToGlobalState.isActive = true;
                         }
+                        
                     }
                     result.tokens.Add(name);
                 }

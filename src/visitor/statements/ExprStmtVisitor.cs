@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
 {
@@ -326,9 +327,15 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             context.GetChild(0).Accept(leftVisitor);
             context.GetChild(1).Accept(opVisitor);
             context.GetChild(2).Accept(rightVisitor);
-            string identifier = leftVisitor.result.ToString();
-            string[] tokens = identifier.Split(".");
-            string rawIdentifier = tokens[tokens.Length - 1];
+            string rawIdentifier = leftVisitor.result.ToString();
+            // There is a possibility that the identifer has a form: @@@{x}.
+            // We need to strip these extra characters, so that we get 'x'.
+            Regex rx = new Regex("@@@{(.*)}");
+            MatchCollection matches = rx.Matches(rawIdentifier);
+            if (matches.Count > 0)
+            {
+                rawIdentifier = matches[0].Groups[1].Value;
+            }
             // We cannot have augumented assignment to a variable we haven't declared.
             if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(rawIdentifier) &&
                 !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(rawIdentifier) &&

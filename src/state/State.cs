@@ -18,6 +18,7 @@
     public ClassDefState classDefState;
     public TrailerConstructorCheckState trailerConstructorCheckState;
     public IllegalKeywordArgumentsState illegalKeywordArgumentsState;
+    public TypeCastFromNullCheckState typeCastFromNullCheckState;
     public Output output;
     public State()
     {
@@ -39,6 +40,7 @@
         classDefState = new ClassDefState();
         trailerConstructorCheckState = new TrailerConstructorCheckState();
         illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
+        typeCastFromNullCheckState = new TypeCastFromNullCheckState();
         output = new Output();
     }
 }

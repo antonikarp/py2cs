@@ -48,8 +48,23 @@ public class ShiftExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(rightVisitor.result.tokens[i]);
             }
+            string rhsValue = rightVisitor.result.ToString();
+            CheckForIllegalShiftArgument(rhsValue);
         }
         return result;
+    }
+    private void CheckForIllegalShiftArgument(string value)
+    {
+        // Remove any parentheses.
+        value = value.Replace("(", "").Replace(")", ""); 
+        int intValue;
+        double doubleValue;
+        bool intResult = Int32.TryParse(value, out intValue);
+        bool doubleResult = Double.TryParse(value, out doubleValue);
+        if ((!intResult && doubleResult) || (intResult && intValue < 0))
+        {
+            throw new IncorrectInputException("Shift operator argument is negative or a double.");
+        }
     }
 
 

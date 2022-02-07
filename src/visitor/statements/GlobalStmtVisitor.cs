@@ -23,13 +23,6 @@ public class GlobalStmtVisitor : Python3ParserBaseVisitor<LineModel>
         while (i < n)
         {
             string identifier = context.GetChild(i).ToString();
-            // Make a new declaration only if there is no such exisiting one.
-            if (!state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(identifier))
-            {
-                IndentedLine declLine = new IndentedLine("static dynamic " + identifier + " = null;", 0);
-                state.output.currentClasses.Peek().staticFieldDeclarations.lines.Add(declLine);
-                state.output.currentClasses.Peek().staticFieldIdentifiers.Add(identifier);
-            }
             // We mark that in this function, this identifier refers to a global variable.
             state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Add(identifier);
             i += 2;
