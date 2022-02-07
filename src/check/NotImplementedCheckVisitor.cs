@@ -96,6 +96,15 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
             isNotImplemented = true;
             return new Empty();
         }
+        // Tuple comprehension is not handled.
+        else if (context.atom() != null && context.atom().NAME() != null &&
+            context.atom().NAME().ToString() == "tuple")
+        {
+            isNotImplemented = true;
+            return new Empty();
+        }
+
+
         return VisitChildren(context);
     }
     public override Empty VisitTrailer([NotNull] Python3Parser.TrailerContext context)
