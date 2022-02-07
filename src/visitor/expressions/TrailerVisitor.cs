@@ -172,6 +172,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             if (parts.Length == 1)
             {
                 result.tokens.Add("[");
+                CheckForIllegalDoubleIndex(value);
                 result.tokens.Add(value);
                 result.tokens.Add("]");
             }
@@ -189,6 +190,18 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                     sliceStart = (parts[0] == "" ? null : parts[0]);
                     sliceEnd = (parts[1] == "" ? null : parts[1]);
                     sliceStride = (parts[2] == "" ? null : parts[2]);
+                }
+                if (sliceStart != null)
+                {
+                    CheckForIllegalDoubleIndex(sliceStart);
+                }
+                if (sliceEnd != null)
+                {
+                    CheckForIllegalDoubleIndex(sliceEnd);
+                }
+                if (sliceStride != null)
+                {
+                    CheckForIllegalDoubleIndex(sliceStride);
                 }
             }
         }
@@ -228,6 +241,15 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
         }
 
         return result;
+    }
+    private void CheckForIllegalDoubleIndex(string value)
+    {
+        int intValue;
+        double doubleValue;
+        if (!Int32.TryParse(value, out intValue) && Double.TryParse(value, out doubleValue))
+        {
+            throw new IncorrectInputException("Illegal double index.");
+        }
     }
 
 }
