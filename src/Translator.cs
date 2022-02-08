@@ -14,7 +14,7 @@ namespace py2cs
         public static string output_path;
         public static List<string> importedFilenames = new List<string>();
 
-        public bool Translate(string input_path, string output_path, List<string> moduleNames)
+        public void Translate(string input_path, string output_path, List<string> moduleNames)
         {
             Console.WriteLine(input_path + ":");
             Translator.input_path = input_path;
@@ -41,25 +41,26 @@ namespace py2cs
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);
                 Console.WriteLine(content);
-
-                return false;
+                return;
             }
             outputVisitor = new OutputVisitor(moduleNames);
             // Check if there are any not implemented features.
             NotImplementedCheckVisitor notImplementedCheckVisitor = new NotImplementedCheckVisitor();
-            notImplementedCheckVisitor.Visit(tree);
-            if (notImplementedCheckVisitor.isNotImplemented)
+            try
+            {
+                notImplementedCheckVisitor.Visit(tree);
+            }
+            catch (NotImplementedException ex)
             {
                 // We have a language feature not handled by the tool.
                 // Write a .txt file with a message to the user. It is used
                 // also by scripts which checks the results of tests.
-                string content = "Not handled: With used language constructs the translation couldn't be performed.";
+                string content = "Not handled: " + ex.message;
                 string textFilePath = output_path;
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);
                 Console.WriteLine(content);
-
-                return false;
+                return;
             }
 
             try
@@ -76,7 +77,7 @@ namespace py2cs
                     File.WriteAllText(outputPathLib, outputVisitor.state.output.ToStringLib());
                 }
                 Console.WriteLine("Translation successful.");
-                return true;
+                return;
             }
             catch (IncorrectInputException ex)
             {
@@ -86,11 +87,22 @@ namespace py2cs
                 File.WriteAllText(textFilePath, content);
                 Console.WriteLine(content);
             }
+            catch (NotImplementedException ex)
+            {
+                // We have a language feature not handled by the tool.
+                // Write a .txt file with a message to the user. It is used
+                // also by scripts which checks the results of tests.
+                string content = "Not handled: " + ex.message;
+                string textFilePath = output_path;
+                textFilePath = textFilePath.Replace(".cs", ".txt");
+                File.WriteAllText(textFilePath, content);
+                Console.WriteLine(content);
+                return;
+            }
             catch (Exception)
             {
                 Console.WriteLine("Error in translating: " + output_path);
             }
-            return false;
         }
     }
 }

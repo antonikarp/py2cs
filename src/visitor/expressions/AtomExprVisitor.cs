@@ -445,12 +445,33 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             if (trailerVisitor.isSlice &&
                 state.output.currentClasses.Peek().currentFunctions.Peek().tupleIdentifierToNumberOfElements.ContainsKey(name))
             {
+                // We are not handling assignments where on the lhs there is a slice.
+                if (state.lhsState.isLhsState)
+                {
+                    throw new NotImplementedException("Slice on the left-hand side of the assignment.");
+                }
+
                 int numberOfElements = state.output.currentClasses.Peek().
                     currentFunctions.Peek().tupleIdentifierToNumberOfElements[name];
                 
                 // So far, the slicing of tuples is handled only when the arguments in
                 // the slice expression (start, end, stride) are numerical literals.
                 int sliceStart, sliceEnd, sliceStride;
+
+                // Remove any parentheses.
+                if (trailerVisitor.sliceStart != null)
+                {
+                    trailerVisitor.sliceStart = trailerVisitor.sliceStart.Replace("(", "").Replace(")", "");
+                }
+                if (trailerVisitor.sliceEnd != null)
+                {
+                    trailerVisitor.sliceEnd = trailerVisitor.sliceEnd.Replace("(", "").Replace(")", "");
+                }
+                if (trailerVisitor.sliceStride != null)
+                {
+                    trailerVisitor.sliceStride = trailerVisitor.sliceStride.Replace("(", "").Replace(")", "");
+                }
+
                 Int32.TryParse(trailerVisitor.sliceStart, out sliceStart);
                 Int32.TryParse(trailerVisitor.sliceEnd, out sliceEnd);
                 Int32.TryParse(trailerVisitor.sliceStride, out sliceStride);
@@ -478,6 +499,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
             else if (trailerVisitor.isSlice)
             {
+                // We are not handling assignments where on the lhs there is a slice.
+                if (state.lhsState.isLhsState)
+                {
+                    throw new NotImplementedException("Slice on the left-hand side of the assignment.");
+                }
+
                 // We have a slice:
                 // a[start:stop:stride] -> ListSlice.Get(a, start, stop, stride)
                 var identifier = result.ToString();
