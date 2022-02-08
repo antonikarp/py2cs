@@ -47,18 +47,20 @@ namespace py2cs
             outputVisitor = new OutputVisitor(moduleNames);
             // Check if there are any not implemented features.
             NotImplementedCheckVisitor notImplementedCheckVisitor = new NotImplementedCheckVisitor();
-            notImplementedCheckVisitor.Visit(tree);
-            if (notImplementedCheckVisitor.isNotImplemented)
+            try
+            {
+                notImplementedCheckVisitor.Visit(tree);
+            }
+            catch (NotImplementedException ex)
             {
                 // We have a language feature not handled by the tool.
                 // Write a .txt file with a message to the user. It is used
                 // also by scripts which checks the results of tests.
-                string content = "Not handled: With used language constructs the translation couldn't be performed.";
+                string content = "Not handled: " + ex.message;
                 string textFilePath = output_path;
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);
                 Console.WriteLine(content);
-
                 return false;
             }
 

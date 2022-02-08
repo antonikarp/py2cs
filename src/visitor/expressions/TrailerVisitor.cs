@@ -159,13 +159,9 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
         else if (context.ChildCount == 3 && context.GetChild(0).ToString() == "[" &&
             context.GetChild(2).ToString() == "]")
         {
-
             Subscript_Visitor newVisitor = new Subscript_Visitor(state);
             context.GetChild(1).Accept(newVisitor);
             string value = newVisitor.result.ToString();
-            // Remove any parentheses.
-            value = value.Replace("(", "");
-            value = value.Replace(")", "");
             string[] parts = value.Split(':');
 
             // We have the case of a subscription: (e.g. a[1])

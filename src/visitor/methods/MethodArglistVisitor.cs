@@ -28,7 +28,7 @@ public class MethodArglistVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(", ");
             }
-            TestVisitor newVisitor = new TestVisitor(state);
+            ArgumentVisitor newVisitor = new ArgumentVisitor(state);
             context.GetChild(i).Accept(newVisitor);
             for (int j = 0; j < newVisitor.result.tokens.Count; ++j)
             {

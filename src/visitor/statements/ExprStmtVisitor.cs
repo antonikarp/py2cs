@@ -90,13 +90,26 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                             lhs += ", ";
                         }
                         // Initialize new variables.
+
+                        // The expression can have a form: 'a[2]'. To get the name of the variable, we need to split it
+                        // by '[' and take the first token.
+                        string[] potentialSubscriptionTokensTuple = leftVisitor.result.expressions[i].Split("[");
+
+                        string cleanedIdentifierTuple = potentialSubscriptionTokensTuple[0];
+
                         if (!state.output.currentClasses.Peek().currentFunctions.Peek().
-                            variables.ContainsKey(leftVisitor.result.expressions[i]))
+                            variables.ContainsKey(cleanedIdentifierTuple))
                         {
                             lhs += "dynamic ";
-                            state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(leftVisitor.result.expressions[i], VarState.Types.Other);
+                            state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(cleanedIdentifierTuple, VarState.Types.Other);
+                            lhs += cleanedIdentifierTuple;
                         }
-                        lhs += leftVisitor.result.expressions[i];
+                        // We don't declare the variable. The subscription (ex. 'a[2]') must remain.
+                        else
+                        {
+                            lhs += leftVisitor.result.expressions[i];
+                        }
+                        
                     }
                     lhs += ")";
                 }
