@@ -24,7 +24,7 @@ do
 		
 		echo
 		
-		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe
+		csc generated/"$dir_name"/"$name"*.cs /out:generated/"$dir_name"/"$name".exe /langversion:8.0
 		
 		# Run the compiled program and save its output.
 		mono generated/"$dir_name"/"$name".exe > generated_output/"$dir_name"/"$name".txt

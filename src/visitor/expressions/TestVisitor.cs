@@ -50,12 +50,16 @@ public class TestVisitor : Python3ParserBaseVisitor<LineModel>
             result.tokens.Add(")");
 
             result.tokens.Add(" ? ");
+            // Cast to 'dynamic' to make branches with different types work
+            // with C# 8.0
+            result.tokens.Add("((dynamic)");
             for (int i = 0; i < trueValueVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(trueValueVisitor.result.tokens[i]);
             }
+            result.tokens.Add(")");
             result.tokens.Add(" : ");
-            result.tokens.Add("(");
+            result.tokens.Add("((dynamic)");
             for (int i = 0; i < falseValueVisitor.result.tokens.Count; ++i)
             {
                 result.tokens.Add(falseValueVisitor.result.tokens[i]);

@@ -17,7 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("if_exp_types2"))
+                /*if (!potentialFilename.StartsWith("if_exp_types"))
                 {
                     continue;
                 }*/
@@ -49,8 +49,8 @@ public class AutoTests
          RunTests("2_should_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/nice_to_have----
-         Directory.SetCurrentDirectory("../3_nice_to_have");
-         RunTests("3_nice_to_have", "", "");
+        // Directory.SetCurrentDirectory("../3_nice_to_have");
+        // RunTests("3_nice_to_have", "", "");
 
         // ----Uncomment this block to run tests in scripts/not_implemented----
          Directory.SetCurrentDirectory("../4_not_implemented");
