@@ -1,14 +1,16 @@
 ﻿using Antlr4.Runtime.Misc;
-
+using System.Collections.Generic;
 // This is a visitor to be used to compute a "try" block.
 
 public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
 {
     public BlockModel result;
     public State state;
+    public HashSet<string> exceptionTypesSoFar;
     public TryStmtVisitor(State _state)
     {
         state = _state;
+        exceptionTypesSoFar = new HashSet<string>();
     }
     public override BlockModel VisitTry_stmt([NotNull] Python3Parser.Try_stmtContext context)
     {
@@ -68,35 +70,70 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 ExceptClauseVisitor newVisitor = new ExceptClauseVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 string exceptClause = newVisitor.result.ToString();
-                // catch() -> catch(Exception) : this catches any exception.
-                if (exceptClause == "")
+                // Add the except clause only if the type of the exception haven't appeared before in
+                // this 'try' block.
+                if (!exceptionTypesSoFar.Contains(exceptClause))
                 {
-                    exceptClause = "Exception";
+                    exceptionTypesSoFar.Add(exceptClause);
+                    // Handle multiple types in a tuple:
+                    // except (B, C) --> catch (Exception ex) when (ex is B || ex is C)
+                    if (exceptClause.Length >= 2 && exceptClause[0] == '(' && exceptClause[exceptClause.Length - 1] == ')')
+                    {
+                        // Remove not important characters.
+                        string newExceptClause = exceptClause.Replace("(", "").Replace(")", "").
+                            Replace("object", "").Replace(" ", "");
+
+                        string[] types = newExceptClause.Split(",");
+                        newExceptClause = "(Exception ex) when (";
+                        for (int j = 0; j < types.Length; ++j)
+                        {
+                            if (j != 0)
+                            {
+                                newExceptClause += " || ";
+                            }
+                            newExceptClause += ("ex is " + types[j]); 
+                        }
+                        newExceptClause += ")";
+                        exceptClause = newExceptClause;
+                    }
+
+                    // catch() -> catch(Exception) : this catches any exception.
+                    else if (exceptClause == "")
+                    {
+                        exceptClause = "(Exception)";
+                    }
+                    else
+                    {
+                        exceptClause = "(" + exceptClause + ")";
+                    }
+                    IndentedLine firstLine = new IndentedLine("catch " + exceptClause + "", 0);
+                    result.lines.Add(firstLine);
+                    IndentedLine openingBraceLine = new IndentedLine("{", 1);
+                    result.lines.Add(openingBraceLine);
+                    SuiteVisitor suiteVisitor = new SuiteVisitor(state);
+                    context.GetChild(i + 2).Accept(suiteVisitor);
+                    int m = suiteVisitor.result.lines.Count;
+                    for (int j = 0; j < m - 1; ++j)
+                    {
+                        result.lines.Add(suiteVisitor.result.lines[j]);
+                    }
+                    // Indent back after the last line.
+                    IndentedLine lastLine;
+                    if (m - 1 >= 0)
+                    {
+                        lastLine = new IndentedLine(suiteVisitor.result.lines[m - 1].line, -1);
+                    }
+                    else // No lines in the suite.
+                    {
+                        lastLine = new IndentedLine("", -1);
+                    }
+                    result.lines.Add(lastLine);
+                    IndentedLine closingBraceLine = new IndentedLine("}", 0);
+                    result.lines.Add(closingBraceLine);
+
+                    // Flush the ExceptionAttributeState
+                    state.exceptionAttributeState = new ExceptionAttributeState();
                 }
-                IndentedLine firstLine = new IndentedLine("catch (" + exceptClause + ")", 0);
-                result.lines.Add(firstLine);
-                IndentedLine openingBraceLine = new IndentedLine("{", 1);
-                result.lines.Add(openingBraceLine);
-                SuiteVisitor suiteVisitor = new SuiteVisitor(state);
-                context.GetChild(i + 2).Accept(suiteVisitor);
-                int m = suiteVisitor.result.lines.Count;
-                for (int j = 0; j < m - 1; ++j)
-                {
-                    result.lines.Add(suiteVisitor.result.lines[j]);
-                }
-                // Indent back after the last line.
-                IndentedLine lastLine;
-                if (m - 1 >= 0)
-                {
-                    lastLine = new IndentedLine(suiteVisitor.result.lines[m - 1].line, -1);
-                }
-                else // No lines in the suite.
-                {
-                    lastLine = new IndentedLine("", -1);
-                }
-                result.lines.Add(lastLine);
-                IndentedLine closingBraceLine = new IndentedLine("}", 0);
-                result.lines.Add(closingBraceLine);
             }
             else if (context.GetChild(i).ToString() == "finally")
             {

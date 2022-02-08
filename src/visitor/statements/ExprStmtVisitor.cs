@@ -157,7 +157,8 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             string cleanedIdentifier = potentialSubscriptionTokens[0];
 
             // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate the name.
-            if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(cleanedIdentifier)
+            if (state.output.currentClasses.Peek().currentFunctions.Count > 0 &&
+                !state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(cleanedIdentifier)
                 && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1]))))
                 // Exclude declaration of a variable whose identifier is for instance: 'Program.x'
                 && state.varReferringToGlobalState.isActive == false &&

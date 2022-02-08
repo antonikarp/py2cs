@@ -45,8 +45,13 @@ public class ExceptClauseVisitor : Python3ParserBaseVisitor<LineModel>
             if (context.ChildCount == 4)
             {
                 // 'except A as a' -> 'catch(A a)'.
+                string identifier = context.NAME().ToString();
                 result.tokens.Add(" ");
-                result.tokens.Add(context.NAME().ToString());
+                result.tokens.Add(identifier);
+                // Remember the identifier in the ExceptionAttributeState.
+                state.exceptionAttributeState = new ExceptionAttributeState();
+                state.exceptionAttributeState.isActive = true;
+                state.exceptionAttributeState.exceptionName = identifier;
             }
         }
         return result;
