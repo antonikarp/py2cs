@@ -145,4 +145,14 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
     {
         throw new NotImplementedException("Decorators.");
     }
+
+    // Try-else block is not handled.
+    public override Empty VisitTry_stmt([NotNull] Python3Parser.Try_stmtContext context)
+    {
+        if (context.ELSE() != null)
+        {
+            throw new NotImplementedException("Try-else block.");
+        }
+        return VisitChildren(context);
+    }
 }

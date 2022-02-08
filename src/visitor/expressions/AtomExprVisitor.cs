@@ -445,6 +445,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             if (trailerVisitor.isSlice &&
                 state.output.currentClasses.Peek().currentFunctions.Peek().tupleIdentifierToNumberOfElements.ContainsKey(name))
             {
+                // We are not handling assignments where on the lhs there is a slice.
+                if (state.lhsState.isLhsState)
+                {
+                    throw new NotImplementedException("Slice on the left-hand side of the assignment.");
+                }
+
                 int numberOfElements = state.output.currentClasses.Peek().
                     currentFunctions.Peek().tupleIdentifierToNumberOfElements[name];
                 
@@ -493,6 +499,12 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
             else if (trailerVisitor.isSlice)
             {
+                // We are not handling assignments where on the lhs there is a slice.
+                if (state.lhsState.isLhsState)
+                {
+                    throw new NotImplementedException("Slice on the left-hand side of the assignment.");
+                }
+
                 // We have a slice:
                 // a[start:stop:stride] -> ListSlice.Get(a, start, stop, stride)
                 var identifier = result.ToString();
