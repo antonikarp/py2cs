@@ -379,8 +379,20 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 name += "_0";
             }
+            // Object or class attribute, we have the expression like,
+            // for instance: 'A.x' or 'b.y'
+            // Allow it only in case if we have an exception attribute.
+            else if (context.ChildCount == 2 && context.trailer() != null &&
+                context.GetChild(1).ChildCount >= 2 &&
+                context.GetChild(1).GetChild(0).ToString() == "." &&
+                (!state.exceptionAttributeState.isActive ||
+                state.exceptionAttributeState.exceptionName != name))
+            {
+                throw new NotImplementedException("Object attribute or class attribute.");
+            }
             else
             {
+
                 // Check if the name of the function is the name of a previously defined
                 // iterator.
                 foreach (var func in state.output.currentClasses.Peek().functions)

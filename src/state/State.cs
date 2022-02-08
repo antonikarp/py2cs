@@ -19,6 +19,7 @@
     public TrailerConstructorCheckState trailerConstructorCheckState;
     public IllegalKeywordArgumentsState illegalKeywordArgumentsState;
     public TypeCastFromNullCheckState typeCastFromNullCheckState;
+    public ExceptionAttributeState exceptionAttributeState;
     public Output output;
     public State()
     {
@@ -41,6 +42,7 @@
         trailerConstructorCheckState = new TrailerConstructorCheckState();
         illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
         typeCastFromNullCheckState = new TypeCastFromNullCheckState();
+        exceptionAttributeState = new ExceptionAttributeState();
         output = new Output();
     }
 }

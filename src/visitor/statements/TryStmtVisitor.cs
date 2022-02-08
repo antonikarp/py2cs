@@ -130,6 +130,9 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                     result.lines.Add(lastLine);
                     IndentedLine closingBraceLine = new IndentedLine("}", 0);
                     result.lines.Add(closingBraceLine);
+
+                    // Flush the ExceptionAttributeState
+                    state.exceptionAttributeState = new ExceptionAttributeState();
                 }
             }
             else if (context.GetChild(i).ToString() == "finally")
