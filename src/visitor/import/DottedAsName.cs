@@ -35,7 +35,6 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
             // Child #2: <alias>
             name = context.GetChild(2).ToString();
         }
-        py2cs.Translator translator = new py2cs.Translator();
         string input_path;
         string output_path;
         if (py2cs.Program.input_path != null && py2cs.Program.output_path != null)
@@ -72,20 +71,10 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
         // Add the name to the importedFilenames.
         List<string> importedFileNamesCurrent = new List<string>(state.output.moduleNames);
         importedFileNamesCurrent.Add(name);
-     
-        translator.Translate(new_input_path, new_output_path, importedFileNamesCurrent);
 
-        // Add filenames as command line arguments for compilation.
-        string commandLineArgument = filename + ".cs";
-        py2cs.Translator.importedFilenames.Add(commandLineArgument);
-        List<string> allClassesFromModule = translator.outputVisitor.state.output.allClassesNames;
-        for (int i = 0; i < allClassesFromModule.Count; ++i)
-        {
-            if (!state.output.allClassesNames.Contains(allClassesFromModule[i]))
-            {
-                state.output.allClassesNames.Add(allClassesFromModule[i]);
-            }
-        }
+        // Save the arguments that will be used at the end of parsing to invoke the translator.
+        state.translateImportedModulesState.inputPathToOutputPath[new_input_path] = new_output_path;
+        state.translateImportedModulesState.inputPathToImportedFileNames[new_input_path] = importedFileNamesCurrent;
 
         // Save the alias only if hasn't been saved before.
         if (!state.output.usedNamesFromImport.ContainsKey(filename))

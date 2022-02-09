@@ -20,6 +20,7 @@
     public IllegalKeywordArgumentsState illegalKeywordArgumentsState;
     public TypeCastFromNullCheckState typeCastFromNullCheckState;
     public ExceptionAttributeState exceptionAttributeState;
+    public TranslateImportedModulesState translateImportedModulesState;
     public Output output;
     public State()
     {
@@ -43,6 +44,7 @@
         illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
         typeCastFromNullCheckState = new TypeCastFromNullCheckState();
         exceptionAttributeState = new ExceptionAttributeState();
+        translateImportedModulesState = new TranslateImportedModulesState();
         output = new Output();
     }
 }
