@@ -106,9 +106,11 @@ public class AtomVisitor : Python3ParserBaseVisitor<LineModel>
                         if (state.output.currentClasses.Peek().currentFunctions.Count > 0 &&
                             state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(name))
                         {
-                            // Example: @@@{x}
-                            // Resolve "@@@" later.
-                            name = "@@@{" + name + "}";
+                            // Example: @@@{x, <line_number>}
+                            // Resolve identifier with "@@@" later.
+                            // If it cannot be resolved then use <line_number> for the
+                            // error message.
+                            name = "@@@{" + name + "," + context.Start.Line + "}";
                             // Activate the respective state (to be used in ExprStmt).
                             state.varReferringToGlobalState = new VarReferringToGlobalState();
                             state.varReferringToGlobalState.isActive = true;

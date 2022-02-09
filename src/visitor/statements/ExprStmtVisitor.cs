@@ -357,7 +357,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(rawIdentifier) &&
                 !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToNonlocal.Contains(rawIdentifier))
             {
-                throw new IncorrectInputException("Illegal augumented assignment.");
+                throw new IncorrectInputException("Illegal augumented assignment.", context.Start.Line);
             }
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
             {

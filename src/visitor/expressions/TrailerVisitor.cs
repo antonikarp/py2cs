@@ -82,7 +82,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                 // Conversions: int(None), float(None) are illegal.
                 if (value == "null" && isTypeCastFromNullCheck)
                 {
-                    throw new IncorrectInputException("Illegal cast from None.");
+                    throw new IncorrectInputException("Illegal cast from None.", context.Start.Line);
                 }
                 if (state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(value) &&
                         state.output.currentClasses.Peek().currentFunctions.Peek().variables[value] == VarState.Types.Double)
@@ -117,7 +117,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                     string value = newVisitor.result.ToString();
                     if (value == "null" && isTypeCastFromNullCheck)
                     {
-                        throw new IncorrectInputException("Illegal cast from None.");
+                        throw new IncorrectInputException("Illegal cast from None.", context.Start.Line);
                     }
                     i += 2;
                 }
@@ -168,7 +168,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
             if (parts.Length == 1)
             {
                 result.tokens.Add("[");
-                CheckForIllegalDoubleIndex(value);
+                CheckForIllegalDoubleIndex(value, context);
                 result.tokens.Add(value);
                 result.tokens.Add("]");
             }
@@ -189,15 +189,15 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                 }
                 if (sliceStart != null)
                 {
-                    CheckForIllegalDoubleIndex(sliceStart);
+                    CheckForIllegalDoubleIndex(sliceStart, context);
                 }
                 if (sliceEnd != null)
                 {
-                    CheckForIllegalDoubleIndex(sliceEnd);
+                    CheckForIllegalDoubleIndex(sliceEnd, context);
                 }
                 if (sliceStride != null)
                 {
-                    CheckForIllegalDoubleIndex(sliceStride);
+                    CheckForIllegalDoubleIndex(sliceStride, context);
                 }
             }
         }
@@ -238,13 +238,13 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
 
         return result;
     }
-    private void CheckForIllegalDoubleIndex(string value)
+    private void CheckForIllegalDoubleIndex(string value, Python3Parser.TrailerContext context)
     {
         int intValue;
         double doubleValue;
         if (!Int32.TryParse(value, out intValue) && Double.TryParse(value, out doubleValue))
         {
-            throw new IncorrectInputException("Illegal double index.");
+            throw new IncorrectInputException("Illegal floating-point index.", context.Start.Line);
         }
     }
 
