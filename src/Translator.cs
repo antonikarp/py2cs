@@ -12,7 +12,6 @@ namespace py2cs
         public OutputVisitor outputVisitor;
         public static string input_path;
         public static string output_path;
-        public static List<string> importedFilenames = new List<string>();
 
         public void Translate(string input_path, string output_path, List<string> moduleNames)
         {

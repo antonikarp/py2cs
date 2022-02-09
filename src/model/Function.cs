@@ -206,8 +206,9 @@ public class Function
                 }
                 else
                 {
+                    string toReplace = "@@@{" + match.Groups[1].Value + "," + match.Groups[2].Value + "}";
                     string newLine = statements.lines[i].line;
-                    newLine = newLine.Replace("@@@{" + match.Groups[1].Value + "}", className + "." + match.Groups[1].Value);
+                    newLine = newLine.Replace(toReplace, className + "." + match.Groups[1].Value);
                     statements.lines[i].line = newLine;
                 }
             }

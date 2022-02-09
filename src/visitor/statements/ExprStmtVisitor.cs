@@ -344,20 +344,20 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             string rawIdentifier = leftVisitor.result.ToString();
             // There is a possibility that the identifer has a form: @@@{x}.
             // We need to strip these extra characters, so that we get 'x'.
-            Regex rx = new Regex("@@@{(.*)}");
+            Regex rx = new Regex("@@@{(.*),(.*)}");
             MatchCollection matches = rx.Matches(rawIdentifier);
             if (matches.Count > 0)
             {
                 rawIdentifier = matches[0].Groups[1].Value;
             }
-            // We cannot have augumented assignment to a variable we haven't declared.
+            // We cannot have augmented assignment to a variable we haven't declared.
             if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(rawIdentifier) &&
                 !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(rawIdentifier) &&
                 !state.output.currentClasses.Peek().currentFunctions.Peek().hiddenIdentifiers.Contains(rawIdentifier) &&
                 !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToGlobal.Contains(rawIdentifier) &&
                 !state.output.currentClasses.Peek().currentFunctions.Peek().identifiersReferringToNonlocal.Contains(rawIdentifier))
             {
-                throw new IncorrectInputException("Illegal augumented assignment.", context.Start.Line);
+                throw new IncorrectInputException("Illegal augmented assignment.", context.Start.Line);
             }
             for (int i = 0; i < leftVisitor.result.tokens.Count; ++i)
             {

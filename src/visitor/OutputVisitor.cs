@@ -19,6 +19,28 @@ public class OutputVisitor : Python3ParserBaseVisitor<State> {
         // Commit generated functions (for 'or', 'and' expressions).
         state.output.currentClasses.Peek().currentFunctions.Peek().CommitGeneratedFunctionInScope();
 
+        // Import pending modules.
+        foreach (var key in state.translateImportedModulesState.inputPathToOutputPath.Keys)
+        {
+            // Proceed only if this key is present in both of the dictionaries.
+            if (state.translateImportedModulesState.inputPathToImportedFileNames.ContainsKey(key))
+            {
+                py2cs.Translator translator = new py2cs.Translator();
+                translator.Translate(key, state.translateImportedModulesState.inputPathToOutputPath[key],
+                    state.translateImportedModulesState.inputPathToImportedFileNames[key]);
+
+                // Add filenames as command line arguments for compilation.
+                List<string> allClassesFromModule = translator.outputVisitor.state.output.allClassesNames;
+                for (int i = 0; i < allClassesFromModule.Count; ++i)
+                {
+                    if (!state.output.allClassesNames.Contains(allClassesFromModule[i]))
+                    {
+                        state.output.allClassesNames.Add(allClassesFromModule[i]);
+                    }
+                }
+            }
+        }
+
         return state;
     }
     public override State VisitStmt([NotNull] Python3Parser.StmtContext context)
