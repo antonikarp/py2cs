@@ -41,6 +41,9 @@ public class CompForVisitor : Python3ParserBaseVisitor<LineModel>
             // Override the type to be ListComp
             state.varState.type = VarState.Types.ListComp;
 
+            // Include System.Linq
+            state.output.usingDirs.Add("System.Linq");
+
             result.tokens.Add("(from ");
             ExprVisitor iteratorVisitor = new ExprVisitor(state);
             context.GetChild(1).Accept(iteratorVisitor);
