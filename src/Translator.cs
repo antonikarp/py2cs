@@ -36,7 +36,8 @@ namespace py2cs
 
             if (syntaxErrorListener.isSyntaxError)
             {
-                string content = "Syntax error: Unable to parse the input.";
+                string content = "Syntax error: (Line " + syntaxErrorListener.line +
+                    ", Pos: " + syntaxErrorListener.pos + ") Unable to parse the input.";
                 string textFilePath = output_path;
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);
@@ -55,7 +56,7 @@ namespace py2cs
                 // We have a language feature not handled by the tool.
                 // Write a .txt file with a message to the user. It is used
                 // also by scripts which checks the results of tests.
-                string content = "Not handled: " + ex.message;
+                string content = ex.ToString();
                 string textFilePath = output_path;
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);
@@ -81,7 +82,7 @@ namespace py2cs
             }
             catch (IncorrectInputException ex)
             {
-                string content = "Error: incorrect input. " + ex.message;
+                string content = ex.ToString();
                 string textFilePath = output_path;
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);
@@ -92,7 +93,7 @@ namespace py2cs
                 // We have a language feature not handled by the tool.
                 // Write a .txt file with a message to the user. It is used
                 // also by scripts which checks the results of tests.
-                string content = "Not handled: " + ex.message;
+                string content = ex.ToString();
                 string textFilePath = output_path;
                 textFilePath = textFilePath.Replace(".cs", ".txt");
                 File.WriteAllText(textFilePath, content);

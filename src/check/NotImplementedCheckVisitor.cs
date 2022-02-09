@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 
 public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
@@ -15,7 +16,7 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
     // Starred expressions.
     public override Empty VisitStar_expr([NotNull] Python3Parser.Star_exprContext context)
     {
-        throw new NotImplementedException("Starred expressions.");
+        throw new NotImplementedException("Starred expressions.", context.Start.Line);
     }
 
     // Multiple inheritance.
@@ -36,12 +37,12 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
             context.GetChild(3).GetType().ToString() == "Python3Parser+ArglistContext" &&
             context.GetChild(3).ChildCount >= 3)
         {
-            throw new NotImplementedException("Multiple inheritance.");
+            throw new NotImplementedException("Multiple inheritance.", context.Start.Line);
         }
         // We do not accept a redeclaration of a class.
         if (model.declaredClasses.Contains(context.GetChild(1).ToString()))
         {
-            throw new NotImplementedException("Redeclaration of a class.");
+            throw new NotImplementedException("Redeclaration of a class.", context.Start.Line);
         }
         else
         {
@@ -54,19 +55,19 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
     // Async statements.
     public override Empty VisitAsync_stmt([NotNull] Python3Parser.Async_stmtContext context)
     {
-        throw new NotImplementedException("Async statement.");
+        throw new NotImplementedException("Async statement.", context.Start.Line);
     }
 
     // Del statements.
     public override Empty VisitDel_stmt([NotNull] Python3Parser.Del_stmtContext context)
     {
-        throw new NotImplementedException("Del statement.");
+        throw new NotImplementedException("Del statement.", context.Start.Line);
     }
 
     // Statements like 'from lib import foo'
     public override Empty VisitImport_from([NotNull] Python3Parser.Import_fromContext context)
     {
-        throw new NotImplementedException("A 'from' import statement.");
+        throw new NotImplementedException("A 'from' import statement.", context.Start.Line);
     }
 
     // Function definitions - save the name of the function
@@ -92,13 +93,13 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
             context.GetChild(1).ChildCount >= 1 &&
             context.GetChild(1).GetChild(0).ToString() == ".")
         {
-            throw new NotImplementedException("Function attributes.");
+            throw new NotImplementedException("Function attributes.", context.Start.Line);
         }
         // Tuple comprehension is not handled.
         else if (context.atom() != null && context.atom().NAME() != null &&
             context.atom().NAME().ToString() == "tuple")
         {
-            throw new NotImplementedException("Tuple comprehension.");
+            throw new NotImplementedException("Tuple comprehension.", context.Start.Line);
         }
 
 
@@ -113,7 +114,7 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
         //           Child #1: __class__
         if (context.NAME() != null && notImplementedAttributes.Contains(context.NAME().ToString()))
         {
-            throw new NotImplementedException("Class attribute: " + context.NAME().ToString());
+            throw new NotImplementedException("Class attribute: " + context.NAME().ToString(), context.Start.Line);
         }
         return VisitChildren(context);
     }
@@ -121,13 +122,13 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
     // We do not handle lambdas.
     public override Empty VisitLambdef([NotNull] Python3Parser.LambdefContext context)
     {
-        throw new NotImplementedException("Lambda expression.");
+        throw new NotImplementedException("Lambda expression.", context.Start.Line);
     }
 
     // We do not handle 'with' statements.
     public override Empty VisitWith_stmt([NotNull] Python3Parser.With_stmtContext context)
     {
-        throw new NotImplementedException("A 'with' statement."); 
+        throw new NotImplementedException("A 'with' statement.", context.Start.Line); 
     }
 
     // Ellipsis (...) is not handled.
@@ -135,7 +136,7 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
     {
         if (context.ELLIPSIS() != null)
         {
-            throw new NotImplementedException("Ellipsis.");
+            throw new NotImplementedException("Ellipsis.", context.Start.Line);
         }
         return VisitChildren(context);
     }
@@ -143,7 +144,7 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
     // Decorators are not handled.
     public override Empty VisitDecorated([NotNull] Python3Parser.DecoratedContext context)
     {
-        throw new NotImplementedException("Decorators.");
+        throw new NotImplementedException("Decorators.", context.Start.Line);
     }
 
     // Try-else block is not handled.
@@ -151,7 +152,7 @@ public class NotImplementedCheckVisitor : Python3ParserBaseVisitor<Empty>
     {
         if (context.ELSE() != null)
         {
-            throw new NotImplementedException("Try-else block.");
+            throw new NotImplementedException("Try-else block.", context.Start.Line); ;
         }
         return VisitChildren(context);
     }

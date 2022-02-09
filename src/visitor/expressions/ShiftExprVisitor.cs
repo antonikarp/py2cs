@@ -49,11 +49,11 @@ public class ShiftExprVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(rightVisitor.result.tokens[i]);
             }
             string rhsValue = rightVisitor.result.ToString();
-            CheckForIllegalShiftArgument(rhsValue);
+            CheckForIllegalShiftArgument(rhsValue, context);
         }
         return result;
     }
-    private void CheckForIllegalShiftArgument(string value)
+    private void CheckForIllegalShiftArgument(string value, Python3Parser.Shift_exprContext context)
     {
         // Remove any parentheses.
         value = value.Replace("(", "").Replace(")", ""); 
@@ -63,7 +63,7 @@ public class ShiftExprVisitor : Python3ParserBaseVisitor<LineModel>
         bool doubleResult = Double.TryParse(value, out doubleValue);
         if ((!intResult && doubleResult) || (intResult && intValue < 0))
         {
-            throw new IncorrectInputException("Shift operator argument is a negative or a floating-point number.");
+            throw new IncorrectInputException("Shift operator argument is a negative or a floating-point number.", context.Start.Line);
         }
     }
 

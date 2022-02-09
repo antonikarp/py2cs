@@ -31,7 +31,7 @@ public class ArgumentVisitor : Python3ParserBaseVisitor<LineModel>
             // We have encountered illegal keyword documents. Throw an exception.
             if (state.illegalKeywordArgumentsState.isActive)
             {
-                throw new IncorrectInputException("Illegal keyword arguments.");
+                throw new IncorrectInputException("Illegal keyword arguments.", context.Start.Line);
             }
             TestVisitor keyVisitor = new TestVisitor(state);
             TestVisitor valueVisitor = new TestVisitor(state);

@@ -418,7 +418,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 (!state.exceptionAttributeState.isActive ||
                 state.exceptionAttributeState.exceptionName != name))
             {
-                throw new NotImplementedException("Object attribute or class attribute.");
+                throw new NotImplementedException("Object attribute or class attribute.", context.Start.Line);
             }
             else
             {
@@ -490,7 +490,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 // We are not handling assignments where on the lhs there is a slice.
                 if (state.lhsState.isLhsState)
                 {
-                    throw new NotImplementedException("Slice on the left-hand side of the assignment.");
+                    throw new NotImplementedException("Slice on the left-hand side of the assignment.", context.Start.Line);
                 }
 
                 int numberOfElements = state.output.currentClasses.Peek().
@@ -544,7 +544,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 // We are not handling assignments where on the lhs there is a slice.
                 if (state.lhsState.isLhsState)
                 {
-                    throw new NotImplementedException("Slice on the left-hand side of the assignment.");
+                    throw new NotImplementedException("Slice on the left-hand side of the assignment.", context.Start.Line);
                 }
 
                 // We have a slice:

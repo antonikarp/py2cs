@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
@@ -196,13 +196,13 @@ public class Function
 
         for (int i = 0; i < statements.lines.Count; ++i)
         {
-            Regex rx = new Regex("@@@{(.*)}");
+            Regex rx = new Regex("@@@{(.*),(.*)}");
             MatchCollection matches = rx.Matches(statements.lines[i].line);
             foreach (Match match in matches)
             {
                 if (!staticFieldIdentifiers.Contains(match.Groups[1].Value))
                 {
-                    throw new IncorrectInputException("Invalid global statement.");
+                    throw new IncorrectInputException("Invalid identifier: '" + match.Groups[1].Value + "'. 'Global' statement is incorrect.", Int32.Parse(match.Groups[2].Value));
                 }
                 else
                 {
