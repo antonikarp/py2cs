@@ -172,6 +172,36 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             }
             string varName = atomVisitor.result.ToString();
 
+            // String comprehension - method join on the string.
+            if (context.ChildCount == 3 &&
+                trailerVisitors[0].result.ToString() == ".join")
+            {
+                result.tokens.Add("String.Join(");
+                for (int i = 0; i < atomVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(atomVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(", ");
+                for (int i = 0; i < trailerVisitors[1].result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(trailerVisitors[1].result.tokens[i]);
+                }
+                result.tokens.Add(")");
+                return result;
+            }
+
+            // Method "isdigit" on a character.
+            else if (context.ChildCount == 3 &&
+                trailerVisitors[0].result.ToString() == ".isdigit")
+            {
+                result.tokens.Add("Char.IsDigit(");
+                for (int i = 0; i < atomVisitor.result.tokens.Count; ++i)
+                {
+                    result.tokens.Add(atomVisitor.result.tokens[i]);
+                }
+                result.tokens.Add(")");
+                return result;
+            }
 
             // Method "append" on a list.
             // So far we don't consider nested expressions like a.b.append()

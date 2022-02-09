@@ -54,8 +54,11 @@ for i in range(len(lines1)):
             unordered = False
         elif unordered and len(lines1[i]) > 0 and len(lines2[i]) > 0:
             print("********************")
-            print("line1 = ", lines1[i])
-            print("line2 = ", lines2[i])
+            print("In files:")
+            print("1.", first_path)
+            print("2.", second_path)
+            print("line from file 1 = " + colored(lines1[i], "cyan"))
+            print("line from file 2 = " + colored(lines2[i], "cyan"))
             print("Are they equivalent?")
             
         # Lines as strings (not numbers) are different.

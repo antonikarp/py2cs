@@ -63,7 +63,7 @@ public class ShiftExprVisitor : Python3ParserBaseVisitor<LineModel>
         bool doubleResult = Double.TryParse(value, out doubleValue);
         if ((!intResult && doubleResult) || (intResult && intValue < 0))
         {
-            throw new IncorrectInputException("Shift operator argument is negative or a double.");
+            throw new IncorrectInputException("Shift operator argument is a negative or a floating-point number.");
         }
     }
 

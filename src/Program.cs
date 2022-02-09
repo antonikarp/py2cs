@@ -19,18 +19,20 @@ py2cs - a source-to-source translator from Python to C# using ANTLR parser gener
 To perform translation:
 1. Set current working directory to the root directory of the repository.
 2. Clean directories:
-    - make sure that the ./output directory is empty
+    - make sure that the .cs files from the previous runs are deleted.
     - to clean directories from previous test runs, execute:
         $ cd tests
         $ ./clean_test_dirs.sh
         $ cd ..
-3. Copy all Python scripts that will be translated to ./input directory. If there are
-import dependencies, append ""_0"" to the name of the main file.
-4. Run the translator by the following command:
-        $ dotnet run
-   If you wish to additionaly compile the obtained .cs sources run:
-        $ dotnet run compile
-5. Possible errors in translation will be displayed on the console.
+3. Run the translator by the following command:
+        $ dotnet run <input_path> <output_dir>
+    where:
+    - <input_path> is a path to the input script. If there are multiple scripts
+        with import dependencies between each other, provide only the path to the main file
+    - <output_dir> is a path to a directory where the resulting programs will be placed.
+    example:
+        $ dotnet run ./input/example.py ./output       
+4. Possible errors in translation will be displayed on the console.
 ********************************************************************************
 ");
         }
