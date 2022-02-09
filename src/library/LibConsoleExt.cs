@@ -10,7 +10,14 @@ public static class ConsoleExt
 {
     public static string ToString(object obj)
     {
-        return obj.ToString();
+        if (obj is string)
+        {
+            return ""'"" + obj.ToString() + ""'"";
+        }
+        else
+        {
+            return obj.ToString();
+        }
     }
     public static string ToString(List<dynamic> list)
     {
@@ -166,13 +173,34 @@ public static class ConsoleExt
     }
     public static void WriteLine(object obj1, object obj2, params object[] additional)
     {
-        Console.Write(ToString(obj1));
+        if (obj1 is string)
+        {
+            Console.Write(obj1);
+        }
+        else
+        {
+            Console.Write(ToString(obj1));
+        }
         Console.Write("" "");
-        Console.Write(ToString(obj2));
+        if (obj2 is string)
+        {
+            Console.Write(obj2);
+        }
+        else
+        {
+            Console.Write(ToString(obj2));
+        }
         for (int i = 0; i < additional.Length; ++i)
         {
             Console.Write("" "");
-            Console.Write(ToString(additional[i]));
+            if (additional[i] is string)
+            {
+                Console.Write(additional[i]);
+            }
+            else
+            {
+                Console.Write(ToString(additional[i]));
+            }
         }
         Console.WriteLine();
     }
@@ -206,6 +234,11 @@ public static class ConsoleExt
         if (obj is null)
         {
             Console.WriteLine(""None"");
+            return;
+        }
+        else if (obj is string)
+        {
+            Console.WriteLine(obj);
             return;
         }
         string typeString = obj.GetType().ToString();

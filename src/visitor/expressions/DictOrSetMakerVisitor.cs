@@ -6,9 +6,13 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
 {
     public LineModel result;
     public State state;
+    public bool isZeroPresent;
+    public bool isOnePresent;
     public DictOrSetMakerVisitor(State _state)
     {
         state = _state;
+        isZeroPresent = false;
+        isOnePresent = false;
     }
     public override LineModel VisitDictorsetmaker([NotNull] Python3Parser.DictorsetmakerContext context)
     {
@@ -147,13 +151,41 @@ public class DictOrSetMakerVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     TestVisitor valVisitor = new TestVisitor(state);
                     context.GetChild(j).Accept(valVisitor);
-                    j += 2;
+                    string value = valVisitor.result.ToString();
+
+                    // In Python hash(1) == hash(True) and hash(0) == hash(False),
+                    // so both such values cannot be present in a set.
+                    bool isZero = (value == "0" || value == "false");
+                    bool isOne = (value == "1" || value == "true");
+                    if (isOne && !isOnePresent)
+                    {
+                        isOnePresent = true;
+                    }
+                    else if (isOne && isOnePresent)
+                    {
+                        // Skip this item.
+                        j += 2;
+                        continue;
+                    }
+                    else if (isZero && !isZeroPresent)
+                    {
+                        isZeroPresent = true;
+                    }
+                    else if (isZero && isZeroPresent)
+                    {
+                        // Skip this item.
+                        j += 2;
+                        continue;
+                    }
+
                     // Add a preceding comma to every item except for the first one.
-                    if (j != 2)
+                    if (j != 0)
                     {
                         result.tokens.Add(", ");
                     }
-                    result.tokens.Add("{" + valVisitor.result.ToString() + "}");
+
+                    result.tokens.Add("{" + value + "}");
+                    j += 2;
                 }
                 result.tokens.Add("}");
             }

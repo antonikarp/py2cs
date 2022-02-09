@@ -13,5 +13,7 @@ print(D)
 print()
 
 S = { 1, 2.5, (3,4,5), "text", None, x, True}
+print('_TEST_UNORDERED_ON')
 print(S)
+print('_TEST_UNORDERED_OFF')
 print()
