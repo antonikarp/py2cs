@@ -17,7 +17,8 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("scope"))
+                /*if (!potentialFilename.StartsWith("global") &&
+                    !potentialFilename.StartsWith("nonlocal"))
                 {
                     continue;
                 }*/
@@ -80,6 +81,6 @@ public class AutoTests
            RunTests("1_must_have/import/4", "import/4", "import");
            Directory.SetCurrentDirectory("../../"); 
            Directory.SetCurrentDirectory("../1_must_have/input");
-           RunTests("1_must_have/input", "input", "input");
+           RunTests("1_must_have/input", "input", "input"); 
     }
 }

@@ -146,6 +146,25 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 ++state.loopState.generatedInBlockCount;
             }
 
+            if (state.varReferringToGlobalState.isActive)
+            {
+                Regex rx = new Regex("@@@{(.*),(.*)}");
+                MatchCollection matches = rx.Matches(lhs);
+                if (matches.Count > 0)
+                {
+                    string identifier = matches[0].Groups[1].Value;
+                    // Make a new static field declaration only if there is no such static field identifier.
+                    // Otherwise the function ResolveGlobalVariables() will resolve the string: @@@{x, y}
+                    if (!state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(identifier))
+                    {
+                        lhs = identifier;
+                        isStaticMemberDeclaration = true;
+                        state.varReferringToGlobalState.isActive = false;
+                    }
+                }
+            }
+
+
             // Check if the variable has been already declared.
             // Or it can be declared as a field.
             string[] tokens = lhs.Split(".");
@@ -159,10 +178,9 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             // In case of assignmentToIterationVariable there will no assignments to a generated variable, because we generate the name.
             if (state.output.currentClasses.Peek().currentFunctions.Count > 0 &&
                 !state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(cleanedIdentifier)
-                && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1]))))
-                // Exclude declaration of a variable whose identifier is for instance: 'Program.x'
-                && state.varReferringToGlobalState.isActive == false &&
-                // We exclude the situation where the function is "Main" and the such static field has already been declared.
+                && ((tokens.Length < 2) || ((tokens.Length >= 2) && (!state.output.currentClasses.Peek().fields.Contains(tokens[1])))) &&
+                (!state.varReferringToGlobalState.isActive) &&
+                // We exclude the situation where the function is "Main" and such static field has already been declared.
                 (state.output.currentClasses.Peek().currentFunctions.Peek().name != "Main" ||
                 !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(cleanedIdentifier))
                 // We do not redeclare identifiers marked as 'nonlocal'
@@ -231,6 +249,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                     state.output.currentClasses.Peek().currentFunctions.Peek().variables.Add(lhs, state.varState.type);
                 }
             }
+            
 
             // Check if lhs is a function identifier. If so, it needs to be renamed
             foreach (var func in state.output.currentClasses.Peek().functions)
