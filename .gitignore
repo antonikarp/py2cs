@@ -148,77 +148,66 @@ _NCrunch*
 input/*
 output/*
 
-tests/scripts/6_differences/__pycache__/*
-tests/scripts/6_differences/testnames.txt
+tests/scripts/1_correct/__pycache__/*
+tests/scripts/1_correct/testnames.txt
 
-tests/scripts/5_error/__pycache__/*
-tests/scripts/5_error/testnames.txt
+tests/scripts/1_correct/import/1/__pycache__/*
+tests/scripts/1_correct/import/1/testnames.txt
 
-tests/scripts/1_must_have/__pycache__/*
-tests/scripts/1_must_have/testnames.txt
+tests/scripts/1_correct/import/2/__pycache__/*
+tests/scripts/1_correct/import/2/testnames.txt
 
-tests/scripts/3_nice_to_have/__pycache__/*
-tests/scripts/3_nice_to_have/testnames.txt
+tests/scripts/1_correct/import/3/__pycache__/*
+tests/scripts/1_correct/import/3/testnames.txt
 
-tests/scripts/4_not_implemented/__pycache__/*
-tests/scripts/4_not_implemented/testnames.txt
+tests/scripts/1_correct/import/4/__pycache__/*
+tests/scripts/1_correct/import/4/testnames.txt
 
-tests/scripts/2_should_have/__pycache__/*
-tests/scripts/2_should_have/testnames.txt
+tests/scripts/1_correct/import/5/__pycache__/*
+tests/scripts/1_correct/import/5/testnames.txt
 
-tests/scripts/1_must_have/import/1/__pycache__/*
-tests/scripts/1_must_have/import/1/testnames.txt
+tests/scripts/1_correct/input/__pycache__/*
+tests/scripts/1_correct/input/testnames.txt
 
-tests/scripts/1_must_have/import/2/__pycache__/*
-tests/scripts/1_must_have/import/2/testnames.txt
+tests/scripts/2_not_implemented/__pycache__/*
+tests/scripts/2_not_implemented/testnames.txt
 
-tests/scripts/1_must_have/import/3/__pycache__/*
-tests/scripts/1_must_have/import/3/testnames.txt
+tests/scripts/3_incorrect_scripts/__pycache__/*
+tests/scripts/3_incorrect_scripts/testnames.txt
 
-tests/scripts/1_must_have/import/4/__pycache__/*
-tests/scripts/1_must_have/import/4/testnames.txt
+tests/scripts/4_differences/__pycache__/*
+tests/scripts/4_differences/testnames.txt
 
-tests/scripts/1_must_have/input/__pycache__/*
-tests/scripts/1_must_have/input/testnames.txt
+tests/scripts_output/1_correct/*.txt
+tests/scripts_output/1_correct/import/1/*
+tests/scripts_output/1_correct/import/2/*
+tests/scripts_output/1_correct/import/3/*
+tests/scripts_output/1_correct/import/4/*
+tests/scripts_output/1_correct/import/5/*
+tests/scripts_output/1_correct/input/*
+tests/scripts_output/2_not_implemented/*
+tests/scripts_output/3_incorrect_scripts/*
+tests/scripts_output/4_differences/*
 
-tests/scripts_output/1_must_have/*.txt
-tests/scripts_output/1_must_have/import/1/*
-tests/scripts_output/1_must_have/import/2/*
-tests/scripts_output/1_must_have/import/3/*
-tests/scripts_output/1_must_have/import/4/*
-tests/scripts_output/1_must_have/input/*
-tests/scripts_output/2_should_have/*
-tests/scripts_output/3_nice_to_have/*
-tests/scripts_output/4_not_implemented/*
-tests/scripts_output/5_error/*
-tests/scripts_output/6_differences/*
+tests/generated/1_correct/*.cs
+tests/generated/1_correct/*.exe
+tests/generated/1_correct/import/1/*
+tests/generated/1_correct/import/2/*
+tests/generated/1_correct/import/3/*
+tests/generated/1_correct/import/4/*
+tests/generated/1_correct/import/5/*
+tests/generated/1_correct/input/*
+tests/generated/2_not_implemented/*
+tests/generated/3_incorrect_scripts/*
+tests/generated/4_differences/*
 
-tests/generated/1_must_have/*.cs
-tests/generated/1_must_have/*.exe
-tests/generated/1_must_have/import/1/*
-tests/generated/1_must_have/import/2/*
-tests/generated/1_must_have/import/3/*
-tests/generated/1_must_have/import/4/*
-tests/generated/1_must_have/input/*
-tests/generated/2_should_have/*
-tests/generated/3_nice_to_have/*
-tests/generated/4_not_implemented/*
-tests/generated/5_error/*
-tests/generated/6_differences/*
-
-tests/generated_output/1_must_have/*.txt
-tests/generated_output/1_must_have/import/1/*
-tests/generated_output/1_must_have/import/2/*
-tests/generated_output/1_must_have/import/3/*
-tests/generated_output/1_must_have/import/4/*
-tests/generated_output/1_must_have/input/*
-tests/generated_output/2_should_have/*
-tests/generated_output/3_nice_to_have/*
-tests/generated_output/4_not_implemented/*
-tests/generated_output/5_error/*
-tests/generated_output/6_differences/*
-
-tests/scripts/2_should_have/temp.py
-
-
-
+tests/generated_output/1_correct/*.txt
+tests/generated_output/1_correct/import/1/*
+tests/generated_output/1_correct/import/2/*
+tests/generated_output/1_correct/import/3/*
+tests/generated_output/1_correct/import/4/*
+tests/generated_output/1_correct/import/5/*
+tests/generated_output/1_correct/input/*
+tests/generated_output/2_not_implemented/*
+tests/generated_output/3_incorrect_scripts/*
+tests/generated_output/4_differences/*

@@ -10,14 +10,7 @@ x /= 3
 print(x)
 x = int(x)
 print(x)
-x **= 2
-print(x)
-x **= 0.5
-print(x)
 
-y1 = x
-y1 //= 2.5
-print(y1)
 y2 = x
 y2 %= 2.5
 print(y2)
