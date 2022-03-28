@@ -38,13 +38,14 @@ To perform translation:
         }
         static void Main(string[] args)
         {
-            if (args.Length != 2)
-            {
-                return;
-            }
             if (args.Length == 1 && args[0] == "help")
             {
                 PrintHelp();
+                return;
+            }
+
+            if (args.Length != 2)
+            {
                 return;
             }
 
