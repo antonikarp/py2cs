@@ -15,17 +15,19 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
         result = new Empty();
         
         string filename = "";
+        string filenameWithUnderscores = "";
         string name = "";
         DottedNameVisitor newVisitor = new DottedNameVisitor(state);
         context.dotted_name().Accept(newVisitor);
         filename = newVisitor.result.value;
-
+        filenameWithUnderscores = filename.Replace("/", "_");
         if (context.AS() == null)
         {
             // Here we process a simple import statement: "import <module>"
             // We have only one child: dotted_name
-            // Name of the module is the same as the filename. 
-            name = filename;
+            // Name of the module is the same as the filename except when it is nested.
+            // In such a case we take the rightmost part as a name
+            name = filenameWithUnderscores;
         }
         else
         {
@@ -64,7 +66,7 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
             new_output_path += tokens2[i];
             new_output_path += "/";
         }
-        new_output_path += filename;
+        new_output_path += filenameWithUnderscores;
         new_output_path += ".cs";
 
         // Explicitly set new paths which contain the imported filename at the end.
