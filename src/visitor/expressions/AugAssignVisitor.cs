@@ -3,15 +3,9 @@ public class AugAssignVisitor : Python3ParserBaseVisitor<TokenModel>
 {
     public TokenModel result;
     public State state;
-    public bool isPowerAssign;
-    public bool isIntegralDivisionAssign;
-    public bool isLeftShiftAssign;
-    public bool isRightShiftAssign;
     public AugAssignVisitor(State _state)
     {
         state = _state;
-        isPowerAssign = false;
-        isIntegralDivisionAssign = false;
     }
     public override TokenModel VisitAugassign([NotNull] Python3Parser.AugassignContext context)
     {
@@ -38,23 +32,19 @@ public class AugAssignVisitor : Python3ParserBaseVisitor<TokenModel>
         }
         else if (context.POWER_ASSIGN() != null)
         {
-            isPowerAssign = true;
-            result.value = "=";
+            throw new NotImplementedException("Power augmented assignment is not handled.", context.Start.Line);
         }
         else if (context.IDIV_ASSIGN() != null)
         {
-            isIntegralDivisionAssign = true;
-            result.value = "=";
+            throw new NotImplementedException("Integral division assignment is not handled.", context.Start.Line);
         }
         else if (context.LEFT_SHIFT_ASSIGN() != null)
         {
-            isLeftShiftAssign = true;
-            result.value = "=";
+            result.value = "<<=";
         }
         else if (context.RIGHT_SHIFT_ASSIGN() != null)
         {
-            isRightShiftAssign = true;
-            result.value = "=";
+            result.value = ">>=";
         }
         else if (context.AND_ASSIGN() != null)
         {
