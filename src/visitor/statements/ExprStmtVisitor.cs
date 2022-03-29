@@ -312,20 +312,20 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             state.stmtState.isStandalone = false;
             state.stmtState.isLocked = true;
 
-            TestlistStarExprVisitor rhsVisitor = new TestlistStarExprVisitor(state);
             int n = context.ChildCount;
-            context.GetChild(n - 1).Accept(rhsVisitor);
             int i = 0;
-            while (i < n - 1)
+            while (i < n)
             {
                 TestlistStarExprVisitor newVisitor = new TestlistStarExprVisitor(state);
                 context.GetChild(i).Accept(newVisitor);
                 string identifier = newVisitor.result.expressions[0];
 
                 // If there is a declaration in Main, move the declaration to the field declarations.
+                // Skip the last expression
                 if (state.output.currentClasses.Peek().currentFunctions.Peek().name == "Main" &&
                     state.loopState.loopType == LoopState.LoopType.NoLoop
-                    && !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(identifier))
+                    && !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(identifier) &&
+                    i != n - 1)
                 {
                     StringBuilder fieldDeclLine = new StringBuilder();
                     fieldDeclLine.Append("static dynamic ");
@@ -336,17 +336,13 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                         Add(fieldDeclIndentedLine);
                     state.output.currentClasses.Peek().staticFieldIdentifiers.Add(identifier);
                 }
-                else
+                if (i != 0)
                 {
-                    result.tokens.Add("dynamic ");
+                    result.tokens.Add(" = ");
                 }
                 result.tokens.Add(identifier);
-                result.tokens.Add(" = ");
-                result.tokens.Add(rhsVisitor.result.expressions[0]);
-                result.tokens.Add(";");
                 i += 2;
             }
-
         }
 
 
@@ -385,7 +381,7 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             result.tokens.Add(" " + opVisitor.result.value + " ");
             for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add(rightVisitor.result.tokens[i]);
+                 result.tokens.Add(rightVisitor.result.tokens[i]);
             }
             return result;
         }
