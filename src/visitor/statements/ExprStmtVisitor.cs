@@ -383,52 +383,9 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
                 result.tokens.Add(leftVisitor.result.tokens[i]);
             }
             result.tokens.Add(" " + opVisitor.result.value + " ");
-            // If we have a power assignment then:
-            // x **= y becomes
-            // x = Math.Pow(x, y);
-            if (opVisitor.isPowerAssign)
+            for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
             {
-                result.tokens.Add("Math.Pow(");
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(", ");
-                result.tokens.Add(rightVisitor.result.ToString());
-                result.tokens.Add(")");
-            }
-            // If we have an integral division assignment then:
-            // x //= y becomes
-            // x = Math.Floor((double) x/y)
-            else if (opVisitor.isIntegralDivisionAssign)
-            {
-                result.tokens.Add("Math.Floor((double) ");
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add("/");
-                result.tokens.Add(rightVisitor.result.ToString());
-                result.tokens.Add(")");
-            }
-            // Left shift:
-            // x <<= y becomes:
-            // x = x << y
-            else if (opVisitor.isLeftShiftAssign)
-            {
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(" << ");
-                result.tokens.Add(rightVisitor.result.ToString());
-            }
-            // Right shift:
-            // x >>= y becomes:
-            // x = x >> y
-            else if (opVisitor.isRightShiftAssign)
-            {
-                result.tokens.Add(leftVisitor.result.ToString());
-                result.tokens.Add(" >> ");
-                result.tokens.Add(rightVisitor.result.ToString());
-            }
-            else
-            {
-                for (int i = 0; i < rightVisitor.result.tokens.Count; ++i)
-                {
-                    result.tokens.Add(rightVisitor.result.tokens[i]);
-                }
+                result.tokens.Add(rightVisitor.result.tokens[i]);
             }
             return result;
         }

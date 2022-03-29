@@ -165,6 +165,7 @@ tests/scripts/1_correct/import/4/testnames.txt
 
 tests/scripts/1_correct/import/5/__pycache__/*
 tests/scripts/1_correct/import/5/testnames.txt
+tests/scripts/1_correct/import/5/include/__pycache__/*
 
 tests/scripts/1_correct/input/__pycache__/*
 tests/scripts/1_correct/input/testnames.txt
