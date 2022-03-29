@@ -365,6 +365,11 @@ public class ExprStmtVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 rawIdentifier = matches[0].Groups[1].Value;
             }
+            // Handle subscriptions like: L[3] += 2
+            else
+            {
+                rawIdentifier = rawIdentifier.Split("[")[0];
+            }
             // We cannot have augmented assignment to a variable we haven't declared.
             if (!state.output.currentClasses.Peek().currentFunctions.Peek().variables.ContainsKey(rawIdentifier) &&
                 !state.output.currentClasses.Peek().staticFieldIdentifiers.Contains(rawIdentifier) &&

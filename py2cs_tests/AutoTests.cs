@@ -17,7 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("assignment"))
+                /*if (!potentialFilename.StartsWith("augmented_assignment"))
                 {
                     continue;
                 }*/

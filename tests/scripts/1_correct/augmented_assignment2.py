@@ -11,6 +11,7 @@ print(L)
 L[fun(1)] -= 20
 print(L)
 
+print("_TEST_UNORDERED_ON")
 L[fun(2)] /= 2
 print(L)
 
@@ -34,3 +35,4 @@ print(L)
 
 L[fun(9)] ^= 15
 print(L)
+print("_TEST_UNORDERED_OFF")
