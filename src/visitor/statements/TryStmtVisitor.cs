@@ -7,10 +7,12 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
     public BlockModel result;
     public State state;
     public HashSet<string> exceptionTypesSoFar;
+    public SuiteVisitor elseBlockVisitor;
     public TryStmtVisitor(State _state)
     {
         state = _state;
         exceptionTypesSoFar = new HashSet<string>();
+        elseBlockVisitor = new SuiteVisitor(state);
     }
     public override BlockModel VisitTry_stmt([NotNull] Python3Parser.Try_stmtContext context)
     {
@@ -21,12 +23,34 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
         // ( Child #2: except_clause
         //   Child #3: ":"
         //   Child #4: suite ) - optional
-        // ( Child #5: finally
+        // ( Child #5: else
         //   Child #6: ":"
         //   Child #7: suite ) - optional
-        result = new BlockModel();
+        // ( Child #8: finally
+        //   Child #9: ":"
+        //   Child #10: suite ) - optional
 
+        result = new BlockModel();
         int n = context.ChildCount;
+        // Flush tryState
+        state.tryState = new TryState();
+        if (context.ELSE() != null)
+        {
+            state.tryState.hasElseBlock = true;
+            ++state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber;
+            int j = 0;
+            while (j < n)
+            {
+                if (context.GetChild(j).ToString() == "else")
+                {
+                    context.GetChild(j + 2).Accept(elseBlockVisitor);
+                }
+                j += 3;
+            }
+
+        }
+
+        
         int i = 0;
 
         while (i < n)
@@ -44,21 +68,35 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 SuiteVisitor suiteVisitor = new SuiteVisitor(state);
                 context.GetChild(i + 2).Accept(suiteVisitor);
                 int m = suiteVisitor.result.lines.Count;
-                for (int j = 0; j < m - 1; ++j)
+                if (state.tryState.hasElseBlock)
                 {
-                    result.lines.Add(suiteVisitor.result.lines[j]);
+                    for (int j = 0; j < m; ++j)
+                    {
+                        result.lines.Add(suiteVisitor.result.lines[j]);
+                    }
+                    IndentedLine lastLine = new IndentedLine("_generated_else_entry_"
+                        + state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber
+                        + " = false;", -1);
+                    result.lines.Add(lastLine);
                 }
-                // Indent back after the last line.
-                IndentedLine lastLine;
-                if (m - 1 >= 0)
+                else
                 {
-                    lastLine = new IndentedLine(suiteVisitor.result.lines[m - 1].line, -1);
+                    for (int j = 0; j < m - 1; ++j)
+                    {
+                        result.lines.Add(suiteVisitor.result.lines[j]);
+                    }
+                    // Indent back after the last line.
+                    IndentedLine lastLine;
+                    if (m - 1 >= 0)
+                    {
+                        lastLine = new IndentedLine(suiteVisitor.result.lines[m - 1].line, -1);
+                    }
+                    else // No lines in the suite.
+                    {
+                        lastLine = new IndentedLine("", -1);
+                    }
+                    result.lines.Add(lastLine);
                 }
-                else // No lines in the suite.
-                {
-                    lastLine = new IndentedLine("", -1);
-                }
-                result.lines.Add(lastLine);
                 IndentedLine closingBraceLine = new IndentedLine("}", 0);
                 result.lines.Add(closingBraceLine);
 
@@ -91,7 +129,7 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                             {
                                 newExceptClause += " || ";
                             }
-                            newExceptClause += ("ex is " + types[j]); 
+                            newExceptClause += ("ex is " + types[j]);
                         }
                         newExceptClause += ")";
                         exceptClause = newExceptClause;
@@ -140,7 +178,27 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                 IndentedLine firstLine = new IndentedLine("finally", 0);
                 result.lines.Add(firstLine);
                 IndentedLine openingBraceLine = new IndentedLine("{", 1);
+                IndentedLine closingBraceLine = new IndentedLine("}", 0);
                 result.lines.Add(openingBraceLine);
+
+                if (state.tryState.hasElseBlock)
+                {
+                    IndentedLine elseFirstLine = new IndentedLine("if ("
+                        + "!_generated_else_entry_"
+                        + state.output.currentClasses.Peek().currentFunctions.Peek().currentGeneratedElseBlockEntryNumber
+                        + ")", 0);
+                    result.lines.Add(elseFirstLine);
+                    result.lines.Add(openingBraceLine);
+                    int count = elseBlockVisitor.result.lines.Count;
+                    for (int j = 0; j < count - 1; ++j)
+                    {
+                        result.lines.Add(elseBlockVisitor.result.lines[j]);
+                    }
+                    IndentedLine elseLastLine = new IndentedLine(elseBlockVisitor.result.lines[count - 1].line, -1);
+                    result.lines.Add(elseLastLine);
+                    result.lines.Add(closingBraceLine);
+                }
+
                 SuiteVisitor suiteVisitor = new SuiteVisitor(state);
                 context.GetChild(i + 2).Accept(suiteVisitor);
                 int m = suiteVisitor.result.lines.Count;
@@ -159,7 +217,6 @@ public class TryStmtVisitor : Python3ParserBaseVisitor<BlockModel>
                     lastLine = new IndentedLine("", -1);
                 }
                 result.lines.Add(lastLine);
-                IndentedLine closingBraceLine = new IndentedLine("}", 0);
                 result.lines.Add(closingBraceLine);
 
             }
