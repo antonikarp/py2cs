@@ -21,6 +21,7 @@
     public TypeCastFromNullCheckState typeCastFromNullCheckState;
     public ExceptionAttributeState exceptionAttributeState;
     public TranslateImportedModulesState translateImportedModulesState;
+    public TryState tryState;
     public Output output;
     public State()
     {
@@ -45,6 +46,7 @@
         typeCastFromNullCheckState = new TypeCastFromNullCheckState();
         exceptionAttributeState = new ExceptionAttributeState();
         translateImportedModulesState = new TranslateImportedModulesState();
+        tryState = new TryState();
         output = new Output();
     }
 }

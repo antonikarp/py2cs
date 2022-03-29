@@ -43,6 +43,14 @@ for i in range(len(lines1)):
         if (abs(float(lines1[i]) - float(lines2[i])) > eps):
             print(colored(name + " failed.", "red"))
             exit()
+        if unordered and len(lines1[i]) > 0 and len(lines2[i]) > 0:
+            print("********************")
+            print("In files:")
+            print("1.", first_path)
+            print("2.", second_path)
+            print("line from file 1 = " + colored(lines1[i], "cyan"))
+            print("line from file 2 = " + colored(lines2[i], "cyan"))
+            print("Are they equivalent?")
     else:
         # Remove the \n character
         lines1[i] = lines1[i][:-1]
@@ -65,6 +73,7 @@ for i in range(len(lines1)):
         elif lines1[i] != lines2[i] and (not unordered):
             print(colored(name + " failed.", "red"))
             exit()
+
 
 # If we are here then we have passed the test.    
 print(colored(name + " passed.", "green"))
