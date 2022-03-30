@@ -20,7 +20,7 @@ do
 		python3 scripts/1_correct/import/"$dir_name"/"$name".py > scripts_output/1_correct/import/"$dir_name"/"$name".txt
 		
 		cd ..
-		dotnet run tests/scripts/1_correct/import/"$dir_name"/"$name".py tests/generated/1_correct/import/"$dir_name"
+		dotnet run tests/scripts/1_correct/import/"$dir_name"/"$name".py tests/generated/1_correct/import/"$dir_name" --nodelete
 		cd tests
 		
 		echo
@@ -45,7 +45,7 @@ do
 		python3 scripts/"$dir_name"/"$name".py < scripts/"$dir_name"/"$name".in > scripts_output/"$dir_name"/"$name".txt
 		
 		cd ..
-		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name" --nodelete
 		cd tests
 		
 		echo
@@ -70,7 +70,7 @@ do
 		python3 -O scripts/"$dir_name"/"$name".py > scripts_output/"$dir_name"/"$name".txt
 
 		cd ..
-		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name" --nodelete
 		cd tests
 		
 		echo
@@ -92,7 +92,7 @@ do
 	do
 		# There is no need to run scripts (which might not be correct), because we don't check its results. 
 		cd ..
-		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name" --nodelete
 		cd tests
 		
 		echo
@@ -108,7 +108,7 @@ do
 	cat scripts/"$dir_name"/testnames.txt 2> /dev/null | while read name
 	do
 		cd ..
-		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name" --nodelete
 		cd tests
 		
 		echo
@@ -126,7 +126,7 @@ do
 		python3 scripts/"$dir_name"/"$name".py 1> scripts_output/"$dir_name"/"$name".txt 2> /dev/null
 		
 		cd ..
-		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name"
+		dotnet run tests/scripts/"$dir_name"/"$name".py tests/generated/"$dir_name" --nodelete
 		cd tests
 		
 		echo
