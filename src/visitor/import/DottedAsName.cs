@@ -13,14 +13,20 @@ public class DottedAsNameVisitor : Python3ParserBaseVisitor<Empty>
     public override Empty VisitDotted_as_name([NotNull] Python3Parser.Dotted_as_nameContext context)
     {
         result = new Empty();
-        
         string filename = "";
+        string filenameWithDots = "";
         string filenameWithUnderscores = "";
         string name = "";
         DottedNameVisitor newVisitor = new DottedNameVisitor(state);
         context.dotted_name().Accept(newVisitor);
-        filename = newVisitor.result.value;
-        filenameWithUnderscores = filename.Replace("/", "_");
+        filenameWithDots = newVisitor.result.value;
+        filename = filenameWithDots.Replace(".", "/");
+        filenameWithUnderscores = filenameWithDots.Replace(".", "_");
+
+        // Save the mapping from the original name to the name with underscores
+        // to perform subtitution in each function that is commited to output.
+        state.output.nestedImportNames[filenameWithDots] = filenameWithUnderscores;
+
         if (context.AS() == null)
         {
             // Here we process a simple import statement: "import <module>"

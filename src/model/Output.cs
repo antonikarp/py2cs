@@ -29,6 +29,9 @@ public class Output
     // This is a mapping from the name of the imported to used names throughout the program.
     public Dictionary<string, List<string>> usedNamesFromImport;
 
+    // This is a mapping from an original nested import name to a name of the
+    // translated module, for instance: "dir.module" -> "dir_module"  
+    public Dictionary<string, string> nestedImportNames;
     public Output()
     {
         internalLines = new List<IndentedLine>();
@@ -65,6 +68,7 @@ public class Output
         usedNamesFromImport = new Dictionary<string, List<string>>();
         library = new Library(this);
         moduleNames = new List<string>();
+        nestedImportNames = new Dictionary<string, string>();
     }
 
     public string ToStringMain()
