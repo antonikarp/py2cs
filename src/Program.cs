@@ -48,6 +48,11 @@ To perform translation:
                 PrintHelp();
                 return;
             }
+            else if (args.Length <= 1)
+            {
+                Console.WriteLine("Too few arguments. Translation aborted.");
+                return;
+            }
 
             bool isNoDeleteSet = false;
             for (int i = 0; i < args.Length; ++i)
@@ -86,7 +91,17 @@ To perform translation:
             // Check if the output folder exists. If not, create it.
             if (!Directory.Exists(args[1]))
             {
-                Directory.CreateDirectory(args[1]);
+                try
+                {
+                    Directory.CreateDirectory(args[1]);
+                }
+                // The path is not valid. One of characters \/:*?"<>| is present.
+                catch (System.IO.IOException)
+                {
+                    Console.WriteLine("The path for the output folder: " + args[1]
+                        + "is not valid. Translation aborted.");
+                    return;
+                }
             }
 
             // Empty contents of the output folder with a possible exception of .gitignore file
