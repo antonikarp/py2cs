@@ -65,6 +65,11 @@ To perform translation:
 
             input_path = args[0];
 
+            // Substitute backslahes by forward slashes to make the program run on Windows
+            Console.WriteLine("input_path = " + input_path);
+            input_path = input_path.Replace('\\', '/');
+            args[1] = args[1].Replace('\\', '/');
+
             // Add .py to the input path if there is no such extension
             if (!input_path.EndsWith(".py"))
             {
