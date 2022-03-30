@@ -12,7 +12,11 @@ public class DottedNameVisitor : Python3ParserBaseVisitor<TokenModel>
     public override TokenModel VisitDotted_name([NotNull] Python3Parser.Dotted_nameContext context)
     {
         result = new TokenModel();
-        result.value = context.NAME().GetValue(0).ToString();
+        // Some children might be dots, for instance: "dir.module"
+        for (int i = 0; i < context.ChildCount; ++i)
+        {
+            result.value += context.GetChild(i).ToString();
+        }
         return result;
     }
 

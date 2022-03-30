@@ -214,13 +214,29 @@ public class Function
             }
         }
     }
+    public void ResolveNestedImports()
+    {
+        for (int i = 0; i < statements.lines.Count; ++i)
+        {
+            string oldLine = statements.lines[i].line;
+            string newLine = oldLine;
+            foreach (var kv in output.nestedImportNames)
+            {
+                newLine = newLine.Replace(kv.Key, kv.Value);
+            }
+            if (oldLine != newLine)
+            {
+                statements.lines[i].line = newLine;
+            }
+        }
+    }
 
     public void CommitToOutput()
     {
-
         ReturnNullIfVoid();
         CheckForCollidingDeclarations();
         ResolveGlobalVariables();
+        ResolveNestedImports();
 
         // Handle the default case (if this is not a constructor of the parent class
         // or even if it is not constructor) by storing a list of "dynamic" types.
