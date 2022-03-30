@@ -24,20 +24,27 @@ To perform translation:
         $ cd ..
 3. Run the translator by the following command (on all platforms):
         $ dotnet run <input_path> <output_dir>
-    where:
-    - <input_path> is a path to the input script. If there are multiple scripts
-        with import dependencies between each other, provide only the path to the main file.
-    - <output_dir> is a path to the directory where the resulting programs will be placed.
-    example:
+   where:
+   - <input_path> is a path to the input script. If there are multiple scripts
+    with import dependencies between each other, provide only the path to the main file.
+   - <output_dir> is a path to the directory where the resulting programs will be placed.
+
+   Example:
         $ dotnet run ./input/example.py ./output
-    The '.py' in the <input_path> can be skipped:
+   The '.py' in the <input_path> can be skipped:
         $ dotnet run ./input/example ./output
+
    By default, the contents of the <output_dir> will be deleted before the translation. However,
    if you specify a different <output_dir> the generated files will remain in the old
    <output_dir>. Before the translation you still need to manually delete such files.
+
    If you wish to disable this deletion, invoke the translator with flag --nodelete:
         $ dotnet run ./input/example.py ./output --nodelete
-4. Possible errors in translation will be displayed on the console.
+4. On Windows forward slashes ('/') can be replaced by backward slashes ('\').
+   After build, the translator can be invoked from the 'bin' directory by:
+        > .\py2cs input\example.py output
+   All such paths are relative to the current working directory. 
+5. Possible errors in translation will be displayed on the console.
 ********************************************************************************
 ");
         }
