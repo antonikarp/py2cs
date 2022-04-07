@@ -8,6 +8,10 @@
         text = @"
 public static class ConsoleExt
 {
+    public static string ToString(double a)
+    {
+        return a.ToString(CultureInfo.InvariantCulture);
+    }
     public static string ToString(object obj)
     {
         if (obj is string)
@@ -169,6 +173,13 @@ public static class ConsoleExt
         Console.Write(ToString(l1));
         Console.Write("" "");
         Console.Write(ToString(l2));
+        Console.WriteLine();
+    }
+    public static void WriteLine(string obj1, double obj2)
+    {
+        Console.Write(obj1);
+        Console.Write("" "");
+        Console.Write(obj2.ToString(CultureInfo.InvariantCulture));
         Console.WriteLine();
     }
     public static void WriteLine(object obj1, object obj2, params object[] additional)

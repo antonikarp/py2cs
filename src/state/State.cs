@@ -22,6 +22,7 @@
     public ExceptionAttributeState exceptionAttributeState;
     public TranslateImportedModulesState translateImportedModulesState;
     public TryState tryState;
+    public ToFloatConversionState toFloatConversionState;
     public Output output;
     public State()
     {
@@ -47,6 +48,7 @@
         exceptionAttributeState = new ExceptionAttributeState();
         translateImportedModulesState = new TranslateImportedModulesState();
         tryState = new TryState();
+        toFloatConversionState = new ToFloatConversionState();
         output = new Output();
     }
 }

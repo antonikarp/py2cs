@@ -31,6 +31,7 @@ public class Library
     {
         output.usingDirsLib.Add("System.Text");
         output.usingDirsLib.Add("System.Collections.Generic");
+        output.usingDirsLib.Add("System.Globalization");
         toCommit.Add(availableClasses["ConsoleExt"]);
     }
     public void CommitOnceEnumerable()

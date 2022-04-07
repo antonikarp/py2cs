@@ -380,6 +380,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     // One argument, use TrailerVisitor, we have: "float(a)".
                     result.tokens.Add("Convert.ToDouble");
+                    state.toFloatConversionState.isActive = true;
                     name = "";
                 }
             }
@@ -573,12 +574,17 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                     result.tokens.Add(trailerVisitor.result.tokens[i]);
                 }
             }
+            if (state.toFloatConversionState.isActive)
+            {
+                result.tokens.Add(", ");
+                result.tokens.Add("System.Globalization.CultureInfo.InvariantCulture");
+                state.toFloatConversionState = new ToFloatConversionState();
+            }
         }
         // We are done with the function call. Flush the IllegalKeywordArgumentsState
         state.illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
         // The same with TypeCastFromNullCheckState
         state.typeCastFromNullCheckState = new TypeCastFromNullCheckState();
-
         return result;
     }
 }

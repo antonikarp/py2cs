@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 public class ParamTypeDeduction
 {
     // This is a simple type deducer for types int, double, string.
@@ -14,7 +15,7 @@ public class ParamTypeDeduction
         {
             return VarState.Types.Int;
         }
-        if (double.TryParse(value, out varDouble))
+        if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out varDouble))
         {
             return VarState.Types.Double;
         }
