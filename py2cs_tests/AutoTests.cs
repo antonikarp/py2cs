@@ -17,7 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("assignment1"))
+                /*if (!potentialFilename.StartsWith("literals"))
                 {
                     continue;
                 }*/
@@ -41,8 +41,8 @@ public class AutoTests
         Directory.SetCurrentDirectory("../../../../tests/scripts/1_correct");
 
         // ----Uncomment this block to run tests in scripts/1_correct----
-        // Directory.SetCurrentDirectory("../1_correct");
-        // RunTests("1_correct", "", "");
+         Directory.SetCurrentDirectory("../1_correct");
+         RunTests("1_correct", "", "");
 
         // ----Uncomment this block to run tests in scripts/2_not_implemented----
         // Directory.SetCurrentDirectory("../2_not_implemented");
@@ -59,7 +59,7 @@ public class AutoTests
         //  ----Uncomment this block to run tests in
         //  scripts/1_correct/import
         //  scripts/1_correct/input----
-        /* Directory.SetCurrentDirectory("../1_correct/import/1");
+         Directory.SetCurrentDirectory("../1_correct/import/1");
          RunTests("1_correct/import/1", "import/1", "import");
          Directory.SetCurrentDirectory("../../");
          Directory.SetCurrentDirectory("../1_correct/import/2");
@@ -73,7 +73,7 @@ public class AutoTests
          Directory.SetCurrentDirectory("../../");
          Directory.SetCurrentDirectory("../1_correct/import/5");
          RunTests("1_correct/import/5", "import/5", "import");
-         Directory.SetCurrentDirectory("../../"); */
+         Directory.SetCurrentDirectory("../../"); 
          Directory.SetCurrentDirectory("../1_correct/input");
          RunTests("1_correct/input", "input", "input");
     }
