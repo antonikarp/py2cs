@@ -45,16 +45,16 @@ public class AutoTests
          RunTests("1_correct", "", "");
 
         // ----Uncomment this block to run tests in scripts/2_not_implemented----
-        // Directory.SetCurrentDirectory("../2_not_implemented");
-        // RunTests("2_not_implemented", "", "");
+         Directory.SetCurrentDirectory("../2_not_implemented");
+         RunTests("2_not_implemented", "", "");
 
         // ----Uncomment this block to run tests in scripts/3_incorrect_scripts----
-        // Directory.SetCurrentDirectory("../3_incorrect_scripts");
-        // RunTests("3_incorrect_scripts", "", "");
+         Directory.SetCurrentDirectory("../3_incorrect_scripts");
+         RunTests("3_incorrect_scripts", "", "");
 
         // ----Uncomment this block to run tests in scripts/4_differences----
-        // Directory.SetCurrentDirectory("../4_differences");
-        // RunTests("4_differences", "", "differences");
+         Directory.SetCurrentDirectory("../4_differences");
+         RunTests("4_differences", "", "differences");
 
         //  ----Uncomment this block to run tests in
         //  scripts/1_correct/import
