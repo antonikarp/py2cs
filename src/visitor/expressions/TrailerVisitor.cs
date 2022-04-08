@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime.Misc;
 using System;
+using System.Globalization;
 
 // This visitor is used in translating:
 // * function calls
@@ -122,6 +123,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
                     i += 2;
                 }
             }
+
             result.tokens.Add(")");
 
             // The case of 'enumerate'. We use a Linq query to create a list of tuples.
@@ -242,7 +244,7 @@ public class TrailerVisitor : Python3ParserBaseVisitor<LineModel>
     {
         int intValue;
         double doubleValue;
-        if (!Int32.TryParse(value, out intValue) && Double.TryParse(value, out doubleValue))
+        if (!Int32.TryParse(value, out intValue) && Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleValue))
         {
             throw new IncorrectInputException("Illegal floating-point index.", context.Start.Line);
         }

@@ -17,8 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("exceptions10") &&
-                    !potentialFilename.StartsWith("augmented_assignment1"))
+                /*if (!potentialFilename.StartsWith("literals"))
                 {
                     continue;
                 }*/
@@ -74,7 +73,7 @@ public class AutoTests
          Directory.SetCurrentDirectory("../../");
          Directory.SetCurrentDirectory("../1_correct/import/5");
          RunTests("1_correct/import/5", "import/5", "import");
-         Directory.SetCurrentDirectory("../../");
+         Directory.SetCurrentDirectory("../../"); 
          Directory.SetCurrentDirectory("../1_correct/input");
          RunTests("1_correct/input", "input", "input");
     }

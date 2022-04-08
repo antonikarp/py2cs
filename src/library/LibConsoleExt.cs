@@ -8,6 +8,14 @@
         text = @"
 public static class ConsoleExt
 {
+    public static string ToString(char a)
+    {
+        return a.ToString();
+    }
+    public static string ToString(double a)
+    {
+        return a.ToString(CultureInfo.InvariantCulture);
+    }
     public static string ToString(object obj)
     {
         if (obj is string)
@@ -58,7 +66,7 @@ public static class ConsoleExt
         {
             if (i != 0) { result.Append("", ""); }
             result.Append(""'"");
-            result.Append(ToString(l[i]));
+            result.Append(l[i]);
             result.Append(""'"");
         }
         result.Append(""]"");
@@ -169,6 +177,20 @@ public static class ConsoleExt
         Console.Write(ToString(l1));
         Console.Write("" "");
         Console.Write(ToString(l2));
+        Console.WriteLine();
+    }
+    public static void WriteLine(double obj1, double obj2)
+    {
+        Console.Write(obj1.ToString(CultureInfo.InvariantCulture));
+        Console.Write("" "");
+        Console.Write(obj2.ToString(CultureInfo.InvariantCulture));
+        Console.WriteLine();
+    }
+    public static void WriteLine(string obj1, double obj2)
+    {
+        Console.Write(obj1);
+        Console.Write("" "");
+        Console.Write(obj2.ToString(CultureInfo.InvariantCulture));
         Console.WriteLine();
     }
     public static void WriteLine(object obj1, object obj2, params object[] additional)

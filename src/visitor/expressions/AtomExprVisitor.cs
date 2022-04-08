@@ -336,6 +336,10 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
             // input(x) -> Console.Readline(); Console.Write(x) (another statement) 
             else if (name == "input")
             {
+                if (state.toFloatConversionState.isActive)
+                {
+                    state.toFloatConversionState.isLocked = true;
+                }
                 name = "Console.ReadLine";
                 state.inputState = new InputState();
                 state.inputState.isActive = true;
@@ -380,6 +384,7 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                 {
                     // One argument, use TrailerVisitor, we have: "float(a)".
                     result.tokens.Add("Convert.ToDouble");
+                    state.toFloatConversionState.isActive = true;
                     name = "";
                 }
             }
@@ -573,12 +578,33 @@ public class AtomExprVisitor : Python3ParserBaseVisitor<LineModel>
                     result.tokens.Add(trailerVisitor.result.tokens[i]);
                 }
             }
+            if (state.toFloatConversionState.isLocked)
+            {
+                state.toFloatConversionState.isLocked = false;
+            }
+            else if (state.toFloatConversionState.isActive)
+            {
+                bool isRemoved = false;
+                if (!state.toFloatConversionState.isLocked &&
+                    result.tokens.Count > 0 &&
+                    result.tokens[result.tokens.Count - 1] == ")")
+                {
+                    result.tokens.RemoveAt(result.tokens.Count - 1);
+                    isRemoved = true;
+                }
+                result.tokens.Add(", ");
+                result.tokens.Add("System.Globalization.CultureInfo.InvariantCulture");
+                state.toFloatConversionState = new ToFloatConversionState();
+                if (isRemoved)
+                {
+                    result.tokens.Add(")");
+                }
+            }
         }
         // We are done with the function call. Flush the IllegalKeywordArgumentsState
         state.illegalKeywordArgumentsState = new IllegalKeywordArgumentsState();
         // The same with TypeCastFromNullCheckState
         state.typeCastFromNullCheckState = new TypeCastFromNullCheckState();
-
         return result;
     }
 }
