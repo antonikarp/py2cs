@@ -1,5 +1,6 @@
 ﻿using System;
 using Antlr4.Runtime.Misc;
+using System.Globalization;
 
 // This is a visitor used to compute a "shift" expression composed with operators
 // "<<" and ">>". It traverses the parse tree from the node "shift_expr".
@@ -48,22 +49,48 @@ public class ShiftExprVisitor : Python3ParserBaseVisitor<LineModel>
             {
                 result.tokens.Add(rightVisitor.result.tokens[i]);
             }
+            string lhsValue = leftVisitor.result.ToString();
+            CheckForIllegalShiftArgumentLhs(lhsValue, context);
             string rhsValue = rightVisitor.result.ToString();
-            CheckForIllegalShiftArgument(rhsValue, context);
+            CheckForIllegalShiftArgumentRhs(rhsValue, context);
         }
         return result;
     }
-    private void CheckForIllegalShiftArgument(string value, Python3Parser.Shift_exprContext context)
+    private void CheckForIllegalShiftArgumentLhs(string value, Python3Parser.Shift_exprContext context)
     {
         // Remove any parentheses.
-        value = value.Replace("(", "").Replace(")", ""); 
+        value = value.Replace("(", "").Replace(")", "");
+        // Check if we are dealing with a declared identifier.
+        if (state.output.currentClasses.Peek().identifierToValueExpression.ContainsKey(value))
+        {
+            value = state.output.currentClasses.Peek().identifierToValueExpression[value];
+        }
         int intValue;
         double doubleValue;
         bool intResult = Int32.TryParse(value, out intValue);
-        bool doubleResult = Double.TryParse(value, out doubleValue);
-        if ((!intResult && doubleResult) || (intResult && intValue < 0))
+        bool doubleResult = Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleValue);
+        if (!intResult && doubleResult || value.StartsWith("\""))
         {
-            throw new IncorrectInputException("Shift operator argument is a negative or a floating-point number.", context.Start.Line);
+            throw new IncorrectInputException("Left operand in a shift expression is illegal.", context.Start.Line);
+        }
+
+    }
+    private void CheckForIllegalShiftArgumentRhs(string value, Python3Parser.Shift_exprContext context)
+    {
+        // Remove any parentheses.
+        value = value.Replace("(", "").Replace(")", "");
+        // Check if we are dealing with a declared identifier.
+        if (state.output.currentClasses.Peek().identifierToValueExpression.ContainsKey(value))
+        {
+            value = state.output.currentClasses.Peek().identifierToValueExpression[value];
+        }
+        int intValue;
+        double doubleValue;
+        bool intResult = Int32.TryParse(value, out intValue);
+        bool doubleResult = Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleValue);
+        if ((!intResult && doubleResult) || (intResult && intValue < 0) || value.StartsWith("\""))
+        {
+            throw new IncorrectInputException("Right operand in a shift expression is illegal.", context.Start.Line);
         }
     }
 
