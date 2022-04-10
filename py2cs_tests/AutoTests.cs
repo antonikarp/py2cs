@@ -17,7 +17,7 @@ public class AutoTests
             string potentialFilename = tokens[tokens.Length - 1];
             if (potentialFilename.EndsWith(".py"))
             {
-                /*if (!potentialFilename.StartsWith("literals"))
+                /*if (!potentialFilename.StartsWith("incorrect_shift2"))
                 {
                     continue;
                 }*/
